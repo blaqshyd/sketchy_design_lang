@@ -79,10 +79,10 @@ all in a consistent sketched aesthetic.
 
 ## Requirements for a Hand-Drawn Flutter Design System
 
-To build this “wired/rough” design language (let’s call it **RoughWire UI** for
-now), we need to plan out several components and development steps. Below is a
-comprehensive list of requirements and considerations for creating such a design
-system:
+To build this “wired/rough” design language (the **Sketch Design Language** –
+**Sketchy** for short), we need to plan out several components and development
+steps. Below is a comprehensive list of requirements and considerations for
+creating such a design system:
 
 1. **Design Principles & Visual Style Guide:** First, define the overall visual
    identity. This includes choosing the default color scheme, text styles, and
@@ -97,13 +97,13 @@ system:
 
 2. **Theming and Global Settings:** Provide a way to apply this style
    consistently across an app – similar to how Material has `ThemeData`. We
-   might create a **RoughWireTheme** that holds global configurations: e.g.
+   might create a **SketchyTheme** that holds global configurations: e.g.
    stroke color and width, roughness level (how “wiggly” the lines are), corner
    style (perhaps all rectangles have slightly jittered corners), and maybe a
    set of sketchy **icons** (if available). This theme can also incorporate
    light vs. dark mode variants (for instance, white strokes on dark background
    for dark theme). By offering a Theme, developers could wrap their app with
-   `RoughWireTheme(data: ..., child: MyApp)` or use a `ThemeData` extension so
+   `SketchyTheme(data: ..., child: MyApp)` or use a `ThemeData` extension so
    that our widgets pick up the settings. This ensures **Flutter apps of all
    kinds** can easily switch to the hand-drawn look by toggling the theme or
    importing our design language package.
@@ -222,7 +222,7 @@ system:
 
 8. **Multi-Platform Adaptivity:** Ensure the design language works across
    devices and input methods. Since the target is “Flutter apps of all kinds,”
-   our RoughWire UI should be responsive and adaptive:
+   our Sketchy UI should be responsive and adaptive:
 
    - On **mobile/touch**: widgets should be appropriately sized for touch
      targets (probably the same 48px min as Material), and perhaps have slightly
@@ -280,7 +280,7 @@ system:
     provide thorough documentation and demos. Requirements for this include:
 
     - Writing a **README** and website/documentation explaining how to use the
-      RoughWire widgets and theme. Include comparisons of normal vs. sketchy
+      Sketchy widgets and theme. Include comparisons of normal vs. sketchy
       widget usage (so developers can quickly map their knowledge, e.g. “use
       RoughCheckbox instead of Checkbox”).
     - Document the properties and customization options (e.g. how to change the
@@ -295,7 +295,7 @@ system:
     - Possibly include usage tips – because this style is unconventional, devs
       might wonder how it mixes with regular Material widgets. We should clarify
       if mixing is okay (it might look odd). Ideally, an app would use the
-      RoughWire design entirely for coherence. So the docs could encourage using
+      Sketchy design entirely for coherence. So the docs could encourage using
       our Scaffold or theme to wrap Material widgets to look blank if needed,
       etc.
 
@@ -317,7 +317,7 @@ system:
     - Keyboard navigation: verify that users can navigate between our controls
       using TAB/arrow keys where appropriate, and that focus indicators (as
       implemented in point 4) are visible.
-    - **Theme fallback**: if someone doesn’t use our RoughWireTheme, our widgets
+    - **Theme fallback**: if someone doesn’t use our SketchyTheme, our widgets
       should still have sensible defaults (perhaps just using black strokes).
       But they should also respond to theme if set. Testing this ensures
       flexibility.
@@ -325,11 +325,63 @@ system:
       (Android, iOS, web, Windows/Linux/macOS) to catch any platform-specific
       issues (like canvas differences, or text alignment quirks).
 
+12. **Standalone Application Shell:** Ship Sketchy as a complete UI stack so
+    developers never have to import `material.dart` or `cupertino.dart` when
+    they opt into the sketchy look.
+
+    - Provide a first-class `SketchyApp` (built on top of Flutter’s lower-level
+      `WidgetsApp` primitives) that wires up routing, localization, text
+      direction, and the Sketchy theme without touching Material/Cupertino.
+    - Include a thin `SketchyRouter` wrapper over `WidgetsApp`’s routing APIs,
+      `SketchyScaffold`, and navigation primitives so
+      every structural piece—from app bars to drawers—comes from this design
+      language.
+    - Any interoperability with Material/Cupertino should live behind optional
+      adapter layers; the default documentation and examples use only
+      Sketchy-specific imports.
+
+## Sketch Design Language Example Experiences
+
+Each example is a single self-contained file/screen that demonstrates a distinct
+facet of Sketchy—no multi-step tutorials.
+
+1. **Sketchy Spotlight Panel:** One card with grouped `rough_notation`
+   highlights drawing attention to primary/secondary `SketchyButton` controls,
+   showcasing annotations, interaction states, and responsive padding in a
+   single build function.
+2. **Wireframe Productivity Dashboard:** Desktop-first scene with a
+   `SketchyAppBar`, sidebar, draggable `SketchyCard` widgets, and rough dividers,
+   illustrating multi-column layout, chart styling via `rough_flutter`, and list
+   performance within one file.
+3. **Collaborative Design Critique Board:** A gallery screen framed by
+   `SketchyDecoration`, inline `SketchyBadge` comments, and hover-triggered
+   `SketchyAnnotate.circle` callouts, emphasizing typography overrides,
+   iconography, and overlay layering.
+4. **Mobile Expense Tracker Form:** Single-screen stack of `SketchyTextField`,
+   dropdown, and toggle controls with validation-driven Rough Notation error
+   indicators demonstrating form widgets, focus handling, and touch feedback.
+5. **Education Quiz Card:** One question card featuring multi-select chips,
+   rough progress indicators, and celebratory `SketchyHighlight` animations to
+   cover animated feedback, badges, and icon usage.
+6. **Developer Documentation Viewer:** Tablet-friendly file using `SketchyTabs`,
+   scrollable content with `SketchyDivider`, inline `SketchyTooltip` hints, and
+   hover animations for copy buttons—showcasing hover/focus behavior and
+   responsive helpers.
+7. **Hackathon Whiteboard Palette:** Single canvas built with raw
+   `rough_flutter` primitives plus a floating palette of `SketchyIconButton`,
+   slider, and switch controls to demonstrate low-level drawing integration and
+   continuous input performance.
+8. **Customer Support Live Chat:** A standalone chat transcript with
+   `SketchyListTile` message bubbles, typing indicators, suggestion chips
+   highlighted via Rough Notation, and accessibility toggles to validate
+   semantics, reduced-motion support, and long-session performance.
+
 By meeting all the above requirements, we will have essentially created a new
-Flutter design language: a **Hand-Drawn UI Toolkit**. This “RoughWire” design
-system would let developers style entire apps in a playful, sketch-like manner,
-much like Material and Cupertino provide polished native styles. It involves
-defining a clear style guide, building out the widget library (likely starting
+Flutter design language: a **Hand-Drawn UI Toolkit**. This **Sketch Design
+Language (“Sketchy”)** would let developers style entire apps in a playful,
+sketch-like manner, much like Material and Cupertino provide polished native
+styles. It involves defining a clear style guide, building out the widget
+library (likely starting
 from the existing
 wired_elements[flutterawesome.com](https://flutterawesome.com/a-series-of-basic-ui-elements-that-have-a-hand-drawn-look-with-flutter/#:~:text=Wired
 Elements is a series,on the library of flutter_rough) and
@@ -364,4 +416,3 @@ paradigm.
   widgets)[github.com](https://github.com/0xharkirat/rough_notation#:~:text=RoughNotation
   Flutter)[github.com](https://github.com/0xharkirat/rough_notation#:~:text=*
   Hand,off * Bracket)
-
