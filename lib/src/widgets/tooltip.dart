@@ -3,9 +3,15 @@ import 'package:flutter/widgets.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
+/// Basic tooltip that appears on hover.
 class SketchyTooltip extends StatefulWidget {
+  /// Creates a tooltip that displays [message] above [child].
   const SketchyTooltip({required this.message, required this.child, super.key});
+
+  /// Text shown when hovering.
   final String message;
+
+  /// Widget that triggers the tooltip.
   final Widget child;
 
   @override

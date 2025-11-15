@@ -19,11 +19,7 @@ import 'wired_base.dart';
 /// _controller.reset();
 /// ```
 class WiredProgress extends StatefulWidget {
-  const WiredProgress({
-    required this.controller,
-    Key? key,
-    this.value = 0.0,
-  }) : super(key: key);
+  const WiredProgress({required this.controller, super.key, this.value = 0.0});
 
   /// The current progress value, range is 0.0 ~ 1.0.
   final double value;
@@ -31,7 +27,7 @@ class WiredProgress extends StatefulWidget {
   final AnimationController controller;
 
   @override
-  _WiredProgressState createState() => _WiredProgressState();
+  State<WiredProgress> createState() => _WiredProgressState();
 }
 
 class _WiredProgressState extends State<WiredProgress> with WiredRepaintMixin {
@@ -46,17 +42,15 @@ class _WiredProgressState extends State<WiredProgress> with WiredRepaintMixin {
     super.initState();
 
     _tween = Tween<double>(begin: 0, end: 1);
-    _animation = _tween.animate(
-      CurvedAnimation(
-        parent: widget.controller,
-        curve: Curves.easeIn,
-      ),
-    )..addListener(() {
-        setState(() {});
-      });
+    _animation =
+        _tween.animate(
+          CurvedAnimation(parent: widget.controller, curve: Curves.easeIn),
+        )..addListener(() {
+          setState(() {});
+        });
 
     // Delay for calculate the width `_getWidth()` during the next frame
-    Future.delayed(const Duration(milliseconds: 0), () {
+    Future.delayed(Duration.zero, () {
       _tween.begin = widget.value;
       setState(() {});
     });

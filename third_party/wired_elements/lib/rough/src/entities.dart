@@ -35,7 +35,7 @@ class PointD extends Point<double> {
       }
     }
     // true if count is off
-    return count % 2 == 1;
+    return count.isOdd;
   }
 
   @override

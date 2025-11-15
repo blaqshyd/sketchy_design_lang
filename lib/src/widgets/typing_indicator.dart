@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_theme.dart';
 
+/// Animated “typing” indicator made of three dots.
 class SketchyTypingIndicator extends StatefulWidget {
+  /// Creates a typing indicator.
   const SketchyTypingIndicator({super.key});
 
   @override
@@ -19,7 +23,8 @@ class _SketchyTypingIndicatorState extends State<SketchyTypingIndicator>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
-    )..repeat();
+    );
+    unawaited(_controller.repeat());
   }
 
   @override

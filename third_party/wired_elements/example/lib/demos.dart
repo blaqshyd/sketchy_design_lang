@@ -13,9 +13,13 @@ import 'src/wired_radio_example.dart';
 import 'src/wired_slider_example.dart';
 import 'src/wired_toggle_example.dart';
 
+/// Primary handwriting font used by the demos.
 const String handWriting1 = 'Shadows Into Light';
+
+/// Secondary handwriting font used by the demos.
 const String handWriting2 = 'Architects Daughter';
 
+/// Collection of demo configurations.
 final List<Demo> demos = [
   NormalDemo(
     'Wired button example',
@@ -91,18 +95,31 @@ final List<Demo> demos = [
   ),
 ];
 
+/// Base configuration shared by all demo types.
 abstract class Demo {
+  /// Creates a new demo configuration.
   Demo(this.name, this.description, this.icon);
+
+  /// Display name for the demo.
   final String name;
+
+  /// Short description used in the list.
   final String description;
+
+  /// Icon rendered beside the description.
   final Widget icon;
 
+  /// Builds the actual demo page.
   Widget buildPage(BuildContext context);
 }
 
+/// Simple demo backed by a [WidgetBuilder].
 class NormalDemo extends Demo {
+  /// Creates a demo backed by [builder].
   NormalDemo(String name, String description, this.builder, Widget icon)
-      : super(name, description, icon);
+    : super(name, description, icon);
+
+  /// Builder invoked when opening the demo.
   final WidgetBuilder builder;
 
   @override

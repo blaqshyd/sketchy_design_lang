@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'sketchy_colors.dart';
 import 'sketchy_typography.dart';
 
+/// Complete Sketchy configuration (colors, typography, metrics).
 class SketchyThemeData {
+  /// Creates a theme with the provided palette and typography.
   const SketchyThemeData({
     required this.colors,
     required this.typography,
@@ -11,6 +13,7 @@ class SketchyThemeData {
     this.borderRadius = 12.0,
   });
 
+  /// Default light theme used by the examples.
   factory SketchyThemeData.light() {
     const colors = SketchyColors(
       ink: Color(0xFF1B1B1B),
@@ -46,6 +49,7 @@ class SketchyThemeData {
     );
   }
 
+  /// Dark-mode variant built from a darker palette.
   factory SketchyThemeData.dark() {
     const colors = SketchyColors(
       ink: Color(0xFFF4F4F4),
@@ -80,11 +84,20 @@ class SketchyThemeData {
       ),
     );
   }
+
+  /// Colors used throughout Sketchy widgets.
   final SketchyColors colors;
+
+  /// Typography styles used for text rendering.
   final SketchyTypographyData typography;
+
+  /// Default stroke width for drawn outlines.
   final double strokeWidth;
+
+  /// Default border radius for card-like widgets.
   final double borderRadius;
 
+  /// Returns a new theme with the provided overrides.
   SketchyThemeData copyWith({
     SketchyColors? colors,
     SketchyTypographyData? typography,
@@ -98,15 +111,21 @@ class SketchyThemeData {
   );
 }
 
+/// Inherited widget wiring [SketchyThemeData] into the tree.
 class SketchyTheme extends InheritedWidget {
+  /// Creates a [SketchyTheme] that exposes [data] to descendants.
   const SketchyTheme({required this.data, required super.child, super.key});
+
+  /// Active theme data.
   final SketchyThemeData data;
 
+  /// Returns the nearest [SketchyThemeData] from the widget tree.
   static SketchyThemeData of(BuildContext context) {
     final theme = context.dependOnInheritedWidgetOfExactType<SketchyTheme>();
     if (theme == null) {
       throw FlutterError(
-        'No SketchyTheme found in context. Wrap your app with SketchyApp or SketchyTheme.',
+        'No SketchyTheme found in context. Wrap your app with SketchyApp '
+        'or SketchyTheme.',
       );
     }
     return theme.data;

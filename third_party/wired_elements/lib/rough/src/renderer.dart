@@ -5,8 +5,15 @@ import 'core.dart';
 import 'entities.dart';
 import 'geometry.dart';
 
-List<Op> _line(double x1, double y1, double x2, double y2, DrawConfig config,
-    bool move, bool overlay) {
+List<Op> _line(
+  double x1,
+  double y1,
+  double x2,
+  double y2,
+  DrawConfig config,
+  bool move,
+  bool overlay,
+) {
   final lengthSq = pow(x1 - x2, 2) + pow(y1 - y2, 2);
   final length = sqrt(lengthSq);
   double roughnessGain;
@@ -40,8 +47,14 @@ List<Op> _line(double x1, double y1, double x2, double y2, DrawConfig config,
     if (overlay) {
       ops.add(Op.move(PointD(x1 + randomHalf(), y1 + randomHalf())));
     } else {
-      ops.add(Op.move(PointD(x1 + config.offsetSymmetric(offset, roughnessGain),
-          y1 + config.offsetSymmetric(offset, roughnessGain))));
+      ops.add(
+        Op.move(
+          PointD(
+            x1 + config.offsetSymmetric(offset, roughnessGain),
+            y1 + config.offsetSymmetric(offset, roughnessGain),
+          ),
+        ),
+      );
     }
   }
   if (overlay) {
@@ -55,10 +68,7 @@ List<Op> _line(double x1, double y1, double x2, double y2, DrawConfig config,
           offsetX + x1 + 2 * (x2 - x1) * divergePoint + randomHalf(),
           offsetY + y1 + 2 * (y2 - y1) * divergePoint + randomHalf(),
         ),
-        PointD(
-          x2 + randomHalf(),
-          y2 + randomHalf(),
-        ),
+        PointD(x2 + randomHalf(), y2 + randomHalf()),
       ),
     );
   } else {
@@ -72,10 +82,7 @@ List<Op> _line(double x1, double y1, double x2, double y2, DrawConfig config,
           offsetX + x1 + 2 * (x2 - x1) * divergePoint + randomFull(),
           offsetY + y1 + 2 * (y2 - y1) * divergePoint + randomFull(),
         ),
-        PointD(
-          x2 + randomFull(),
-          y2 + randomFull(),
-        ),
+        PointD(x2 + randomFull(), y2 + randomFull()),
       ),
     );
   }
@@ -84,13 +91,23 @@ List<Op> _line(double x1, double y1, double x2, double y2, DrawConfig config,
 
 class OpSetBuilder {
   static OpSet buildLine(
-          double x1, double y1, double x2, double y2, DrawConfig config) =>
-      OpSet(
-          type: OpSetType.path,
-          ops: OpsGenerator.doubleLine(x1, y1, x2, y2, config));
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    DrawConfig config,
+  ) => OpSet(
+    type: OpSetType.path,
+    ops: OpsGenerator.doubleLine(x1, y1, x2, y2, config),
+  );
 
   static OpSet ellipse(
-      double x, double y, double width, double height, DrawConfig config) {
+    double x,
+    double y,
+    double width,
+    double height,
+    DrawConfig config,
+  ) {
     final params = generateEllipseParams(width, height, config);
     return ellipseSet(x, y, config, params);
   }
@@ -104,23 +121,46 @@ class OpSetBuilder {
       var ops = <Op>[];
       for (var i = 0; i < len - 1; i++) {
         ops += OpsGenerator.doubleLine(
-            points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, config);
+          points[i].x,
+          points[i].y,
+          points[i + 1].x,
+          points[i + 1].y,
+          config,
+        );
       }
       if (close) {
-        ops += OpsGenerator.doubleLine(points[len - 1].x, points[len - 1].y,
-            points[0].x, points[0].y, config);
+        ops += OpsGenerator.doubleLine(
+          points[len - 1].x,
+          points[len - 1].y,
+          points[0].x,
+          points[0].y,
+          config,
+        );
       }
       return OpSet(type: OpSetType.path, ops: ops);
     } else if (len == 2) {
       return buildLine(
-          points[0].x, points[0].x, points[1].x, points[1].x, config);
+        points[0].x,
+        points[0].x,
+        points[1].x,
+        points[1].x,
+        config,
+      );
     } else {
       return OpSet(type: OpSetType.path, ops: []);
     }
   }
 
-  static OpSet arc(PointD center, double width, double height, double start,
-      double stop, bool closed, bool roughClosure, DrawConfig config) {
+  static OpSet arc({
+    required PointD center,
+    required double width,
+    required double height,
+    required double start,
+    required double stop,
+    required bool closed,
+    required bool roughClosure,
+    required DrawConfig config,
+  }) {
     final ops = <Op>[];
     final cx = center.x;
     final cy = center.y;
@@ -146,10 +186,24 @@ class OpSetBuilder {
     if (closed) {
       if (roughClosure) {
         ops
-          ..addAll(OpsGenerator.doubleLine(
-              cx, cy, cx + rx * cos(strt), cy + ry * sin(strt), config))
-          ..addAll(OpsGenerator.doubleLine(
-              cx, cy, cx + rx * cos(stp), cy + ry * sin(stp), config));
+          ..addAll(
+            OpsGenerator.doubleLine(
+              cx,
+              cy,
+              cx + rx * cos(strt),
+              cy + ry * sin(strt),
+              config,
+            ),
+          )
+          ..addAll(
+            OpsGenerator.doubleLine(
+              cx,
+              cy,
+              cx + rx * cos(stp),
+              cy + ry * sin(stp),
+              config,
+            ),
+          );
       } else {
         ops
           ..add(Op.lineTo(PointD(cx, cy)))
@@ -159,8 +213,14 @@ class OpSetBuilder {
     return OpSet(type: OpSetType.path, ops: ops);
   }
 
-  static List<PointD> arcPolygon(PointD center, double width, double height,
-      double startAngle, double stopAngle, DrawConfig config) {
+  static List<PointD> arcPolygon(
+    PointD center,
+    double width,
+    double height,
+    double startAngle,
+    double stopAngle,
+    DrawConfig config,
+  ) {
     var radiusX = (width / 2).abs();
     var radiusY = (height / 2).abs();
     radiusX += config.offsetSymmetric(radiusX * 0.01);
@@ -180,28 +240,44 @@ class OpSetBuilder {
     //final double increment = (stop - start) / (config.curveStepCount * 2);
     final points = <PointD>[];
     for (var angle = start; angle <= stop; angle = angle + increment) {
-      points.add(PointD(
-          center.x + radiusX * cos(angle), center.y + radiusY * sin(angle)));
+      points.add(
+        PointD(
+          center.x + radiusX * cos(angle),
+          center.y + radiusY * sin(angle),
+        ),
+      );
     }
     points
-      ..add(PointD(
-          center.x + radiusX * cos(stop), center.y + radiusY * sin(stop)))
+      ..add(
+        PointD(center.x + radiusX * cos(stop), center.y + radiusY * sin(stop)),
+      )
       ..add(center);
     return points;
   }
 
   static OpSet curve(List<PointD> points, DrawConfig config) {
     final op1 = OpsGenerator.curveWithOffset(
-        points, 1 * (1 + config.roughness! * 0.2), config);
+      points,
+      1 * (1 + config.roughness! * 0.2),
+      config,
+    );
     final op2 = OpsGenerator.curveWithOffset(
-        points, 1.5 * (1 + config.roughness! * 0.2), config);
+      points,
+      1.5 * (1 + config.roughness! * 0.2),
+      config,
+    );
     return OpSet(type: OpSetType.path, ops: op1 + op2);
   }
 }
 
 class OpsGenerator {
   static List<Op> doubleLine(
-      double x1, double y1, double x2, double y2, DrawConfig config) {
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    DrawConfig config,
+  ) {
     final o1 = _line(x1, y1, x2, y2, config, true, false);
     final o2 = _line(x1, y1, x2, y2, config, true, true);
     return o1 + o2;
@@ -218,10 +294,14 @@ class OpsGenerator {
         final next = points[i + 1];
         final afterNext = points[i + 2];
         final previous = points[i - 1];
-        final control1 = PointD(point.x + (s * next.x - s * previous.x) / 6,
-            point.y + (s * next.y - s * previous.y) / 6);
-        final control2 = PointD(next.x + (s * point.x - s * afterNext.x) / 6,
-            next.y + (s * point.y - s * afterNext.y) / 6);
+        final control1 = PointD(
+          point.x + (s * next.x - s * previous.x) / 6,
+          point.y + (s * next.y - s * previous.y) / 6,
+        );
+        final control2 = PointD(
+          next.x + (s * point.x - s * afterNext.x) / 6,
+          next.y + (s * point.y - s * afterNext.y) / 6,
+        );
         final end = PointD(next.x, next.y);
         ops.add(Op.curveTo(control1, control2, end));
       }
@@ -230,47 +310,70 @@ class OpsGenerator {
       return [Op.move(points[1]), Op.curveTo(points[1], points[2], points[2])];
     } else if (len == 2) {
       return doubleLine(
-          points[0].x, points[0].y, points[1].x, points[1].y, config);
+        points[0].x,
+        points[0].y,
+        points[1].x,
+        points[1].y,
+        config,
+      );
     }
     return [];
   }
 
   static List<Op> curveWithOffset(
-      List<PointD> points, double offset, DrawConfig config) {
+    List<PointD> points,
+    double offset,
+    DrawConfig config,
+  ) {
     final result = <PointD>[
       PointD(
         points.first.x + config.offsetSymmetric(offset),
         points.first.y + config.offsetSymmetric(offset),
       ),
-      ...points.map((point) => PointD(
-            point.x + config.offsetSymmetric(offset),
-            point.y + config.offsetSymmetric(offset),
-          )),
+      ...points.map(
+        (point) => PointD(
+          point.x + config.offsetSymmetric(offset),
+          point.y + config.offsetSymmetric(offset),
+        ),
+      ),
       PointD(
         points.last.x + config.offsetSymmetric(offset),
         points.last.y + config.offsetSymmetric(offset),
-      )
+      ),
     ];
     return curve(result, config);
   }
 
-  static List<Op> arc(double increment, double cx, double cy, double rx,
-      double ry, double strt, double stp, double offset, DrawConfig config) {
+  static List<Op> arc(
+    double increment,
+    double cx,
+    double cy,
+    double rx,
+    double ry,
+    double strt,
+    double stp,
+    double offset,
+    DrawConfig config,
+  ) {
     final points = <PointD>[];
     final radOffset = strt + config.offsetSymmetric(0.1);
-    points.add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          0.9 * rx * cos(radOffset - increment),
-      config.offsetSymmetric(offset) +
-          cy +
-          0.9 * ry * sin(radOffset - increment),
-    ));
+    points.add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            0.9 * rx * cos(radOffset - increment),
+        config.offsetSymmetric(offset) +
+            cy +
+            0.9 * ry * sin(radOffset - increment),
+      ),
+    );
     for (var angle = radOffset; angle <= stp; angle += increment) {
-      points.add(PointD(
-        config.offsetSymmetric(offset) + cx + rx * cos(angle),
-        config.offsetSymmetric(offset) + cy + ry * sin(angle),
-      ));
+      points.add(
+        PointD(
+          config.offsetSymmetric(offset) + cx + rx * cos(angle),
+          config.offsetSymmetric(offset) + cy + ry * sin(angle),
+        ),
+      );
     }
     points
       ..add(PointD(cx + rx * cos(stp), cy + ry * sin(stp)))
@@ -280,10 +383,15 @@ class OpsGenerator {
 }
 
 EllipseParams generateEllipseParams(
-    double width, double height, DrawConfig config) {
+  double width,
+  double height,
+  DrawConfig config,
+) {
   final psq = sqrt(pi * 2 * sqrt((pow(width / 2, 2) + pow(height / 2, 2)) / 2));
-  final double stepCount =
-      max(config.curveStepCount!, (config.curveStepCount! / sqrt(200)) * psq);
+  final double stepCount = max(
+    config.curveStepCount!,
+    (config.curveStepCount! / sqrt(200)) * psq,
+  );
   final increment = (pi * 2) / stepCount;
   final curveFitRandomness = 1 - config.curveFitting!;
 
@@ -296,7 +404,11 @@ EllipseParams generateEllipseParams(
 }
 
 EllipseResult ellipseWithParamsx(
-    double x, double y, DrawConfig config, EllipseParams ellipseParams) {
+  double x,
+  double y,
+  DrawConfig config,
+  EllipseParams ellipseParams,
+) {
   final ellipsePoints1 = _computeEllipsePoints(
     increment: ellipseParams.increment,
     cx: x,
@@ -321,8 +433,9 @@ EllipseResult ellipseWithParamsx(
   final o1 = OpsGenerator.curve(ellipsePoints1.allPoints!, config);
   final o2 = OpsGenerator.curve(ellipsePoints2.allPoints!, config);
   return EllipseResult(
-      estimatedPoints: ellipsePoints1.corePoints,
-      opSet: OpSet(type: OpSetType.path, ops: o1 + o2));
+    estimatedPoints: ellipsePoints1.corePoints,
+    opSet: OpSet(type: OpSetType.path, ops: o1 + o2),
+  );
 }
 
 ComputedEllipsePoints _computeEllipsePoints({
@@ -338,17 +451,21 @@ ComputedEllipsePoints _computeEllipsePoints({
   final corePoints = <PointD>[];
   final allPoints = <PointD>[];
   final radOffset = config!.offsetSymmetric(0.5) - pi / 2;
-  allPoints.add(PointD(
-    config.offsetSymmetric(offset!) +
-        cx! +
-        0.9 * rx! * cos(radOffset - increment!),
-    config.offsetSymmetric(offset) +
-        cy! +
-        0.9 * ry! * sin(radOffset - increment),
-  ));
-  for (var angle = radOffset;
-      angle < (pi * 2 + radOffset - 0.01);
-      angle = angle + increment) {
+  allPoints.add(
+    PointD(
+      config.offsetSymmetric(offset!) +
+          cx! +
+          0.9 * rx! * cos(radOffset - increment!),
+      config.offsetSymmetric(offset) +
+          cy! +
+          0.9 * ry! * sin(radOffset - increment),
+    ),
+  );
+  for (
+    var angle = radOffset;
+    angle < (pi * 2 + radOffset - 0.01);
+    angle = angle + increment
+  ) {
     final p = PointD(
       config.offsetSymmetric(offset) + cx + rx * cos(angle),
       config.offsetSymmetric(offset) + cy + ry * sin(angle),
@@ -357,35 +474,45 @@ ComputedEllipsePoints _computeEllipsePoints({
     corePoints.add(p);
   }
   allPoints
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          rx * cos(radOffset + pi * 2 + overlap! * 0.5),
-      config.offsetSymmetric(offset) +
-          cy +
-          ry * sin(radOffset + pi * 2 + overlap * 0.5),
-    ))
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          0.98 * rx * cos(radOffset + overlap),
-      config.offsetSymmetric(offset) +
-          cy +
-          0.98 * ry * sin(radOffset + overlap),
-    ))
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          0.9 * rx * cos(radOffset + overlap * 0.5),
-      config.offsetSymmetric(offset) +
-          cy +
-          0.9 * ry * sin(radOffset + overlap * 0.5),
-    ));
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            rx * cos(radOffset + pi * 2 + overlap! * 0.5),
+        config.offsetSymmetric(offset) +
+            cy +
+            ry * sin(radOffset + pi * 2 + overlap * 0.5),
+      ),
+    )
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            0.98 * rx * cos(radOffset + overlap),
+        config.offsetSymmetric(offset) +
+            cy +
+            0.98 * ry * sin(radOffset + overlap),
+      ),
+    )
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            0.9 * rx * cos(radOffset + overlap * 0.5),
+        config.offsetSymmetric(offset) +
+            cy +
+            0.9 * ry * sin(radOffset + overlap * 0.5),
+      ),
+    );
   return ComputedEllipsePoints(corePoints: corePoints, allPoints: allPoints);
 }
 
 OpSet ellipseSet(
-    double x, double y, DrawConfig config, EllipseParams ellipseParams) {
+  double x,
+  double y,
+  DrawConfig config,
+  EllipseParams ellipseParams,
+) {
   final ellipsePoints1 = computeEllipseAllPoints(
     increment: ellipseParams.increment,
     cx: x,
@@ -413,12 +540,18 @@ OpSet ellipseSet(
 }
 
 List<PointD> ellipseEstimated(
-    double x, double y, DrawConfig config, EllipseParams ellipseParams) {
+  double x,
+  double y,
+  DrawConfig config,
+  EllipseParams ellipseParams,
+) {
   final corePoints = <PointD>[];
   final radOffset = config.offsetSymmetric(0.5) - pi / 2;
-  for (var angle = radOffset;
-      angle < (pi * 2 + radOffset - 0.01);
-      angle = angle + ellipseParams.increment!) {
+  for (
+    var angle = radOffset;
+    angle < (pi * 2 + radOffset - 0.01);
+    angle = angle + ellipseParams.increment!
+  ) {
     final p = PointD(
       config.offsetSymmetric(1) + x + ellipseParams.rx! * cos(angle),
       config.offsetSymmetric(1) + y + ellipseParams.ry! * sin(angle),
@@ -440,46 +573,58 @@ List<PointD> computeEllipseAllPoints({
 }) {
   final allPoints = <PointD>[];
   final radOffset = config!.offsetSymmetric(0.5) - pi / 2;
-  allPoints.add(PointD(
-    config.offsetSymmetric(offset!) +
-        cx! +
-        0.9 * rx! * cos(radOffset - increment!),
-    config.offsetSymmetric(offset) +
-        cy! +
-        0.9 * ry! * sin(radOffset - increment),
-  ));
-  for (var angle = radOffset;
-      angle < (pi * 2 + radOffset - 0.01);
-      angle = angle + increment) {
-    allPoints.add(PointD(
-      config.offsetSymmetric(offset) + cx + rx * cos(angle),
-      config.offsetSymmetric(offset) + cy + ry * sin(angle),
-    ));
+  allPoints.add(
+    PointD(
+      config.offsetSymmetric(offset!) +
+          cx! +
+          0.9 * rx! * cos(radOffset - increment!),
+      config.offsetSymmetric(offset) +
+          cy! +
+          0.9 * ry! * sin(radOffset - increment),
+    ),
+  );
+  for (
+    var angle = radOffset;
+    angle < (pi * 2 + radOffset - 0.01);
+    angle = angle + increment
+  ) {
+    allPoints.add(
+      PointD(
+        config.offsetSymmetric(offset) + cx + rx * cos(angle),
+        config.offsetSymmetric(offset) + cy + ry * sin(angle),
+      ),
+    );
   }
   allPoints
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          rx * cos(radOffset + pi * 2 + overlap! * 0.5),
-      config.offsetSymmetric(offset) +
-          cy +
-          ry * sin(radOffset + pi * 2 + overlap * 0.5),
-    ))
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          0.98 * rx * cos(radOffset + overlap),
-      config.offsetSymmetric(offset) +
-          cy +
-          0.98 * ry * sin(radOffset + overlap),
-    ))
-    ..add(PointD(
-      config.offsetSymmetric(offset) +
-          cx +
-          0.9 * rx * cos(radOffset + overlap * 0.5),
-      config.offsetSymmetric(offset) +
-          cy +
-          0.9 * ry * sin(radOffset + overlap * 0.5),
-    ));
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            rx * cos(radOffset + pi * 2 + overlap! * 0.5),
+        config.offsetSymmetric(offset) +
+            cy +
+            ry * sin(radOffset + pi * 2 + overlap * 0.5),
+      ),
+    )
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            0.98 * rx * cos(radOffset + overlap),
+        config.offsetSymmetric(offset) +
+            cy +
+            0.98 * ry * sin(radOffset + overlap),
+      ),
+    )
+    ..add(
+      PointD(
+        config.offsetSymmetric(offset) +
+            cx +
+            0.9 * rx * cos(radOffset + overlap * 0.5),
+        config.offsetSymmetric(offset) +
+            cy +
+            0.9 * ry * sin(radOffset + overlap * 0.5),
+      ),
+    );
   return allPoints;
 }

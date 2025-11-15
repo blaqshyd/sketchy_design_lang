@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Tabbed document viewer with tooltips and copy buttons.
 class DocsViewerExample extends StatefulWidget {
   const DocsViewerExample({super.key});
 
@@ -91,31 +92,38 @@ const _docs = [
   _DocChapter('Welcome to Sketchy', [
     _DocSection(
       'Install',
-      'Add the sketchy_design_lang dependency and wrap your app with SketchyApp.',
+      'Add the sketchy_design_lang dependency and wrap your app with '
+          'SketchyApp.',
     ),
     _DocSection(
       'Theme',
-      'Use SketchyThemeData.light() or SketchyThemeData.dark() to configure ink & paper colors.',
+      'Use SketchyThemeData.light() or '
+          'SketchyThemeData.dark() to configure '
+          'ink & paper colors.',
     ),
   ]),
   _DocChapter('API reference', [
     _DocSection(
       'SketchyButton',
-      'Primary, secondary, and ghost variants map cleanly onto wired_elements primitives.',
+      'Primary, secondary, and ghost variants map cleanly onto '
+          'wired_elements primitives.',
     ),
     _DocSection(
       'SketchyCard',
-      'Wrap content with hand-drawn shells; combine with SketchyAnnotate to create focus.',
+      'Wrap content with hand-drawn shells; combine with SketchyAnnotate to '
+          'create focus.',
     ),
   ]),
   _DocChapter('Cookbook', [
     _DocSection(
       'List tiles',
-      'Use SketchyListTile for navigable rows; pair with SketchyDivider for grouping.',
+      'Use SketchyListTile for navigable rows; pair with SketchyDivider for '
+          'grouping.',
     ),
     _DocSection(
       'Annotations',
-      'SketchyAnnotate.highlight provides quick callouts for onboarding or tours.',
+      'SketchyAnnotate.highlight provides quick callouts for onboarding or '
+          'tours.',
     ),
   ]),
 ];

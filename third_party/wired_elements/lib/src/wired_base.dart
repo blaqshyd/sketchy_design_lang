@@ -40,31 +40,25 @@ class WiredBase {
 /// The wired base widget usually being extends by specific wired widgets like
 /// [WiredButton] for the purpose of isolates repaints.
 ///
-/// If not do this, all the wired widgets (use rough decoration like [RoughBoxDecoration])
-/// in current screen will repaints together, which is not make sence.
+/// If not do this, all the wired widgets (use rough decoration like
+/// [RoughBoxDecoration]) in current screen will repaints together, which is not
+/// make sence.
 abstract class WiredBaseWidget extends StatelessWidget {
   const WiredBaseWidget({Key? key}) : super(key: key);
 
   /// Wrap with [RepaintBoundary] to isolates repaints.
   @override
-  Widget build(BuildContext context) => RepaintBoundary(
-        key: key,
-        child: buildWiredElement(),
-      );
+  Widget build(BuildContext context) =>
+      RepaintBoundary(key: key, child: buildWiredElement());
 
   /// The method for extended widget to implement to build widgets.
   Widget buildWiredElement();
 }
 
-/// The mixin for isolates repaints.
-///
-/// See [WiredBaseWidget] for same purpose.
-abstract class WiredRepaintMixin {
+/// Mixin to wrap content with a [RepaintBoundary] to isolate repaints.
+mixin WiredRepaintMixin {
   Widget buildWiredElement({required Widget child, Key? key}) =>
-      RepaintBoundary(
-        key: key,
-        child: child,
-      );
+      RepaintBoundary(key: key, child: child);
 }
 
 /// Base wired rectangle.
@@ -85,7 +79,11 @@ class WiredRectangleBase extends WiredPainterBase {
 
   @override
   void paintRough(
-      Canvas canvas, Size size, DrawConfig drawConfig, Filler filler) {
+    Canvas canvas,
+    Size size,
+    DrawConfig drawConfig,
+    Filler filler,
+  ) {
     final generator = Generator(drawConfig, filler);
 
     final figure = generator.rectangle(
@@ -95,7 +93,10 @@ class WiredRectangleBase extends WiredPainterBase {
       size.height,
     );
     canvas.drawRough(
-        figure, WiredBase.pathPaint, WiredBase.fillPainter(fillColor));
+      figure,
+      WiredBase.pathPaint,
+      WiredBase.fillPainter(fillColor),
+    );
   }
 }
 
@@ -103,7 +104,11 @@ class WiredRectangleBase extends WiredPainterBase {
 class WiredInvertedTriangleBase extends WiredPainterBase {
   @override
   void paintRough(
-      Canvas canvas, Size size, DrawConfig drawConfig, Filler filler) {
+    Canvas canvas,
+    Size size,
+    DrawConfig drawConfig,
+    Filler filler,
+  ) {
     final generator = Generator(drawConfig, filler);
 
     final points = [
@@ -113,11 +118,15 @@ class WiredInvertedTriangleBase extends WiredPainterBase {
     ];
     final figure = generator.polygon(points);
     canvas.drawRough(
-        figure, WiredBase.pathPaint, WiredBase.fillPainter(borderColor));
+      figure,
+      WiredBase.pathPaint,
+      WiredBase.fillPainter(borderColor),
+    );
   }
 }
 
-/// Base wired line with start point [x1], [y1] and end point [x2], [y2] using [strokeWidth].
+/// Base wired line with start point [x1], [y1] and end point [x2], [y2] using
+/// [strokeWidth].
 ///
 /// [strokeWidth] defaults to 1.
 class WiredLineBase extends WiredPainterBase {
@@ -136,7 +145,11 @@ class WiredLineBase extends WiredPainterBase {
 
   @override
   void paintRough(
-      Canvas canvas, Size size, DrawConfig drawConfig, Filler filler) {
+    Canvas canvas,
+    Size size,
+    DrawConfig drawConfig,
+    Filler filler,
+  ) {
     var startX = x1;
     var startY = y1;
     var endX = x2;
@@ -155,7 +168,10 @@ class WiredLineBase extends WiredPainterBase {
 
     final figure = generator.line(startX, startY, endX, endY);
     canvas.drawRough(
-        figure, WiredBase.pathPainter(strokeWidth), WiredBase.fillPaint);
+      figure,
+      WiredBase.pathPainter(strokeWidth),
+      WiredBase.fillPaint,
+    );
   }
 }
 
@@ -169,7 +185,11 @@ class WiredCircleBase extends WiredPainterBase {
 
   @override
   void paintRough(
-      Canvas canvas, Size size, DrawConfig drawConfig, Filler filler) {
+    Canvas canvas,
+    Size size,
+    DrawConfig drawConfig,
+    Filler filler,
+  ) {
     final generator = Generator(drawConfig, filler);
 
     final figure = generator.circle(
@@ -180,6 +200,9 @@ class WiredCircleBase extends WiredPainterBase {
           : size.height * diameterRatio,
     );
     canvas.drawRough(
-        figure, WiredBase.pathPaint, WiredBase.fillPainter(fillColor));
+      figure,
+      WiredBase.pathPaint,
+      WiredBase.fillPainter(fillColor),
+    );
   }
 }

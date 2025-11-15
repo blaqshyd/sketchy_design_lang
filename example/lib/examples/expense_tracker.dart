@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Form screen covering text fields, dropdowns, switches, and validation.
 class ExpenseTrackerExample extends StatefulWidget {
   const ExpenseTrackerExample({super.key});
 

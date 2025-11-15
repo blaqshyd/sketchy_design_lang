@@ -4,15 +4,23 @@ import 'package:rough_flutter/rough_flutter.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
+/// Segmented control used to switch between sections.
 class SketchyTabs extends StatelessWidget {
+  /// Creates a new tab bar with the provided labels.
   const SketchyTabs({
     required this.tabs,
     required this.selectedIndex,
     required this.onChanged,
     super.key,
   });
+
+  /// Tab labels.
   final List<String> tabs;
+
+  /// Currently selected tab index.
   final int selectedIndex;
+
+  /// Callback invoked when a tab is selected.
   final ValueChanged<int> onChanged;
 
   @override

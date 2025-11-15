@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import '../rough/rough.dart';
 
+import '../rough/rough.dart';
 import 'canvas/wired_canvas.dart';
 import 'const.dart';
 import 'wired_base.dart';
 
 /// Wired toggle
 class WiredToggle extends StatefulWidget {
-  const WiredToggle({
-    required this.value,
-    required this.onChange,
-    Key? key,
-  }) : super(key: key);
+  const WiredToggle({required this.value, required this.onChange, super.key});
   final bool value;
   final bool Function(bool)? onChange;
 
@@ -35,68 +31,58 @@ class _WiredToggleState extends State<WiredToggle>
       vsync: this,
     );
 
-    _animation = Tween<double>(
-      begin: -_thumbRadius,
-      end: _thumbRadius * 1.5,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeIn,
-      ),
-    )..addListener(
-        () {
+    _animation =
+        Tween<double>(begin: -_thumbRadius, end: _thumbRadius * 1.5).animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+        )..addListener(() {
           setState(() {});
-        },
-      );
+        });
 
     _toggle();
   }
 
   @override
   Widget build(BuildContext context) => buildWiredElement(
-        child: GestureDetector(
-          onTap: () {
-            if (widget.onChange != null) {
-              final result = widget.onChange!(!_isSwitched);
-              if (result) {
-                _isSwitched = !_isSwitched;
-                _toggle();
-              }
-            }
-          },
-          child: _buildSwicher(),
-        ),
-      );
+    child: GestureDetector(
+      onTap: () {
+        if (widget.onChange != null) {
+          final result = widget.onChange!(!_isSwitched);
+          if (result) {
+            _isSwitched = !_isSwitched;
+            _toggle();
+          }
+        }
+      },
+      child: _buildSwicher(),
+    ),
+  );
 
   Widget _buildSwicher() => Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            left: _animation.value,
-            top: -_thumbRadius / 2,
-            child: SizedBox(
-              height: _thumbRadius * 2,
-              width: _thumbRadius * 2,
-              child: WiredCanvas(
-                painter: WiredCircleBase(
-                  diameterRatio: .7,
-                  fillColor: textColor,
-                ),
-                fillerType: RoughFilter.HachureFiller,
-                fillerConfig: FillerConfig.build(hachureGap: 1),
-              ),
-            ),
+    clipBehavior: Clip.none,
+    children: [
+      Positioned(
+        left: _animation.value,
+        top: -_thumbRadius / 2,
+        child: SizedBox(
+          height: _thumbRadius * 2,
+          width: _thumbRadius * 2,
+          child: WiredCanvas(
+            painter: WiredCircleBase(diameterRatio: .7, fillColor: textColor),
+            fillerType: RoughFilter.HachureFiller,
+            fillerConfig: FillerConfig.build(hachureGap: 1),
           ),
-          SizedBox(
-            width: _thumbRadius * 2.5,
-            height: _thumbRadius,
-            child: WiredCanvas(
-              painter: WiredRectangleBase(),
-              fillerType: RoughFilter.NoFiller,
-            ),
-          ),
-        ],
-      );
+        ),
+      ),
+      SizedBox(
+        width: _thumbRadius * 2.5,
+        height: _thumbRadius,
+        child: WiredCanvas(
+          painter: WiredRectangleBase(),
+          fillerType: RoughFilter.NoFiller,
+        ),
+      ),
+    ],
+  );
 
   void _toggle() {
     _isSwitched ? _controller.forward() : _controller.reverse();

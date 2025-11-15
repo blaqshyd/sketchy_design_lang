@@ -4,15 +4,34 @@ import 'package:rough_flutter/rough_flutter.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
-enum SketchyBadgeTone { info, accent, success, neutral }
+/// Tones supported by [SketchyBadge].
+enum SketchyBadgeTone {
+  /// Informational tone.
+  info,
 
+  /// Accent tone for primary emphasis.
+  accent,
+
+  /// Success tone.
+  success,
+
+  /// Neutral ink tone.
+  neutral,
+}
+
+/// Pill-shaped label used for tagging content.
 class SketchyBadge extends StatelessWidget {
+  /// Creates a badge with the provided [label] and [tone].
   const SketchyBadge({
     required this.label,
     super.key,
     this.tone = SketchyBadgeTone.info,
   });
+
+  /// Text displayed inside the badge.
   final String label;
+
+  /// Visual tone applied to the badge fill.
   final SketchyBadgeTone tone;
 
   @override

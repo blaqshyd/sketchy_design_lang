@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Gallery grid demonstrating badges + hover annotations.
 class CollaborativeCritiqueBoardExample extends StatelessWidget {
   const CollaborativeCritiqueBoardExample({super.key});
 

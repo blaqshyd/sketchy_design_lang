@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Quiz scenario demonstrating chips + progress indicators.
 class QuizCardExample extends StatefulWidget {
   const QuizCardExample({super.key});
 
@@ -33,7 +34,8 @@ class _QuizCardExampleState extends State<QuizCardExample> {
                 const SketchyProgressBar(value: 0.4),
                 const SizedBox(height: 16),
                 Text(
-                  'Which statements describe the benefits of sketch-style interfaces?',
+                  'Which statements describe the benefits of sketch-style '
+                  'interfaces?',
                   style: typography.title,
                 ),
                 const SizedBox(height: 16),

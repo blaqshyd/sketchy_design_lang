@@ -26,12 +26,8 @@ import 'wired_base.dart';
 /// ),
 /// ```
 class WiredCombo extends StatefulWidget {
-  const WiredCombo({
-    required this.items,
-    Key? key,
-    this.value,
-    this.onChanged,
-  }) : super(key: key);
+  const WiredCombo({required this.items, Key? key, this.value, this.onChanged})
+    : super(key: key);
 
   /// The selected value for combo.
   final dynamic value;
@@ -60,65 +56,64 @@ class _WiredComboState extends State<WiredCombo> {
   Widget build(BuildContext context) => _buildWidget();
 
   Widget _buildWidget() => Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.zero,
-        margin: EdgeInsets.zero,
-        height: _height,
-        child: Stack(
-          children: [
-            Positioned(
-              right: 10,
-              top: 20,
-              child: WiredCanvas(
-                painter: WiredInvertedTriangleBase(),
-                fillerType: RoughFilter.HachureFiller,
-                fillerConfig: FillerConfig.build(hachureGap: 2),
-                size: const Size(18, 18),
-              ),
-            ),
-            SizedBox(
-              height: _height,
-              width: double.infinity,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  itemHeight: _height,
-                  isExpanded: true,
-                  elevation: 0,
-                  icon: const Visibility(
-                    visible: false,
-                    child: Icon(Icons.arrow_downward),
-                  ),
-                  value: _value,
-                  items: widget.items
-                      .map((item) => DropdownMenuItem<dynamic>(
-                            value: item.value,
-                            child: Stack(
-                              children: [
-                                WiredCanvas(
-                                  painter: WiredRectangleBase(),
-                                  fillerType: RoughFilter.NoFiller,
-                                  size: Size(double.infinity, _height),
-                                ),
-                                Positioned(
-                                  top: 20,
-                                  child: item.child,
-                                ),
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: (dynamic value) {
-                    _value = value;
-                    if (widget.onChanged != null) {
-                      widget.onChanged!(_value);
-                    }
-
-                    setState(() {});
-                  },
-                ),
-              ),
-            ),
-          ],
+    color: Colors.transparent,
+    padding: EdgeInsets.zero,
+    margin: EdgeInsets.zero,
+    height: _height,
+    child: Stack(
+      children: [
+        Positioned(
+          right: 10,
+          top: 20,
+          child: WiredCanvas(
+            painter: WiredInvertedTriangleBase(),
+            fillerType: RoughFilter.HachureFiller,
+            fillerConfig: FillerConfig.build(hachureGap: 2),
+            size: const Size(18, 18),
+          ),
         ),
-      );
+        SizedBox(
+          height: _height,
+          width: double.infinity,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              itemHeight: _height,
+              isExpanded: true,
+              elevation: 0,
+              icon: const Visibility(
+                visible: false,
+                child: Icon(Icons.arrow_downward),
+              ),
+              value: _value,
+              items: widget.items
+                  .map(
+                    (item) => DropdownMenuItem<dynamic>(
+                      value: item.value,
+                      child: Stack(
+                        children: [
+                          WiredCanvas(
+                            painter: WiredRectangleBase(),
+                            fillerType: RoughFilter.NoFiller,
+                            size: Size(double.infinity, _height),
+                          ),
+                          Positioned(top: 20, child: item.child),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (dynamic value) {
+                _value = value;
+                if (widget.onChanged != null) {
+                  widget.onChanged!(_value);
+                }
+
+                setState(() {});
+              },
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }

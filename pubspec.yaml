@@ -12,12 +12,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  wired_elements:
-    path: third_party/wired_elements
   rough_flutter: ^0.1.2
   rough_notation: ^0.0.1
+  wired_elements:
+    path: third_party/wired_elements
 
 dev_dependencies:
+  all_lint_rules_community: ^0.0.38
   flutter_test:
     sdk: flutter
-  all_lint_rules_community: ^0.0.38
+
+flutter:
+  uses-material-design: false
+  assets:
+    - assets/fonts/ComicShanns-Regular.ttf
+  fonts:
+    - family: ComicShanns
+      fonts:
+        - asset: assets/fonts/ComicShanns-Regular.ttf

@@ -21,8 +21,11 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
 3. Interaction states & animations that feel hand-drawn (hover, press, focus).
 4. Typography + iconography that reinforce the rough aesthetic.
 5. First-class Rough Notation integration for highlights/onboarding.
-6. Multi-platform responsiveness & accessibility.
-7. Performance knobs, diagnostics, and automated testing.
+6. Multi-platform responsiveness & accessibility (including responsive gallery).
+7. Performance knobs, diagnostics, and automated testing (roughness slider, seed
+   caching).
+8. Built-in color modes + gallery controls demonstrating mode/roughness
+   switching.
 
 ### Non-goals
 
@@ -44,14 +47,14 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
 
 ## 3. System Overview
 
-| Layer | Responsibilities | Key Artifacts | Dependencies |
-| --- | --- | --- | --- |
-| Tokens & Theme | Color palette, typography, spacing, stroke randomness, icon sets | `SketchyColorScheme`, `SketchyTypography`, `SketchyThemeData`/`ThemeExtension` | Flutter core (`dart:ui`, `widgets`) |
-| Rendering Utilities | Rough canvas wrappers, painters, shape caches | `RoughStroke`, `RoughSeed`, `SketchyDecoration` | `rough_flutter` |
-| Widget Library | Controls, inputs, containers, navigation built with wired/rough look | `SketchyButton`, `SketchyCheckbox`, `SketchyCard`, etc. | `wired_elements`, rendering utilities |
-| Application Shell | Material/Cupertino-free app bootstrap, routing, scaffolding | `SketchyApp`, `SketchyRouter`, `SketchyScaffold`, `SketchyAppBar` | Flutter `WidgetsApp`, widget library |
-| Interaction & Annotation | Hover/press/focus feedback, Rough Notation hooks | `SketchyInteractionController`, `SketchyHighlight`, `SketchyTutorial` | `rough_notation` |
-| Tooling & Docs | Example app, storybook, guidance | `/example` showcase, markdown docs, screenshot tests | Flutter tooling |
+| Layer                    | Responsibilities                                                     | Key Artifacts                                                                  | Dependencies                          |
+| ------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
+| Tokens & Theme           | Color palette, typography, spacing, stroke randomness, icon sets     | `SketchyColorScheme`, `SketchyTypography`, `SketchyThemeData`/`ThemeExtension` | Flutter core (`dart:ui`, `widgets`)   |
+| Rendering Utilities      | Rough canvas wrappers, painters, shape caches                        | `RoughStroke`, `RoughSeed`, `SketchyDecoration`                                | `rough_flutter`                       |
+| Widget Library           | Controls, inputs, containers, navigation built with wired/rough look | `SketchyButton`, `SketchyCheckbox`, `SketchyCard`, etc.                        | `wired_elements`, rendering utilities |
+| Application Shell        | Material/Cupertino-free app bootstrap, routing, scaffolding          | `SketchyApp`, `SketchyRouter`, `SketchyScaffold`, `SketchyAppBar`              | Flutter `WidgetsApp`, widget library  |
+| Interaction & Annotation | Hover/press/focus feedback, Rough Notation hooks                     | `SketchyInteractionController`, `SketchyHighlight`, `SketchyTutorial`          | `rough_notation`                      |
+| Tooling & Docs           | Example app, storybook, guidance                                     | `/example` showcase, markdown docs, screenshot tests                           | Flutter tooling                       |
 
 ## 4. Detailed Design
 
@@ -70,15 +73,23 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
      Optionally expose a thin `ThemeData` adapter for teams that must mix with
      legacy Material widgets, but Sketchy apps should function without any
      Material/Cupertino imports.
-2. **Color Palette**
-   - Start with a light/dark palette referencing wired default colors plus
-     neutrals for surfaces.
+2. **Color Modes & Palette**
+   - Define a discrete set of named modes (Light, Red, Orange, Yellow, Green,
+     Cyan, Blue, Indigo, Violet, Magenta, Dark) based on
+     `specs/sketchy-mode-colors.png`. Each mode exposes primary/secondary,
+     surface, and accent tokens so widgets can swap colors instantly.
    - Structure tokens by semantic role, not widget type, so downstream apps can
-     map brand colors easily.
+     map brand colors easily and opt into custom palettes.
+   - Surface a lightweight mode-switch control (used in the gallery) that can be
+     embedded in real apps.
 3. **Typography**
-   - Package at least two open fonts (`Comic Shanns` and `Cabin Sketch`) in
-     `/assets/fonts`.
+   - Package Comic Shanns as the default handwritten font (with secondary fonts
+     like Cabin Sketch available) and register it via `pubspec.yaml`.
    - Provide fallbacks and allow consumers to override via `SketchyTypography`.
+4. **Roughness Controls**
+   - Add a normalized `roughness` parameter to the theme (0–1, default 0.5) that
+     influences stroke jitter, hatch density, and rendering caches. Widgets read
+     from this knob so performance/font choices can adjust at runtime.
 4. **Iconography**
    - Convert Excalidraw Awesome Icons SVG set into icon font or Flutter vector
      assets (custom `SketchyIcons` class).
@@ -91,7 +102,7 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
    - Default docs and examples wrap apps with `SketchyApp`, ensuring the design
      language is end-to-end self-sufficient.
 
-### 4.2 Rendering Utilities
+### 4.2 Rendering Utilities & Sketch Primitives
 
 - Build a thin abstraction over `rough_flutter` to centralize seeds, caching,
   and stroke generation:
@@ -101,6 +112,13 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
     theme-aware colors and randomness.
   - Utility for generating irregular outlines that follow layout constraints
     (respecting device pixel ratios).
+- Introduce **SketchyShape** primitives (rectangle, circle, speech bubble,
+  iconography base, etc.) that capture their random seed and computed paths at
+  creation time. Widgets hold onto these primitives and reuse them across paint
+  cycles so there’s zero flicker even during animations.
+- Expose the primitives publicly (e.g., `SketchyShape.rectangle(config)`),
+  enabling app developers to draw custom sketchy visuals without reinventing the
+  caching rules.
 - Provide diagnostics (debug paints) via assert-enabled `debugSketchyPaint`.
 
 ### 4.3 Widget Library
@@ -173,18 +191,30 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
 - Offer theme-level knobs: `roughness`, `fillWeight`, `animationComplexity`.
 - Provide a `SketchyPerformanceOverlay` debug widget to visualize paint costs.
 
+### 4.7 Example Gallery Requirements
+
+- Responsive layout: list-only navigation ≤800px, master/detail split >800px
+  with the first sample auto-selected.
+- App bar controls:
+  - Sketchy color-mode circle cycling through the named modes (tooltip “mode.”).
+  - Roughness slider bound to the global theme (and persisted while browsing).
+- Mascot from `specs/sketchy-mascot.png` floats bottom-left with tooltip “meh.”.
+- All wired_elements scenarios (button, card, dialog, divider, input, combo,
+  calendar, toggle, progress, etc.) are represented inside the Sketchy gallery
+  so the old third-party examples can be removed.
+
 ## 5. Implementation Plan
 
 ### Phase Breakdown
 
-| Phase | Duration | Milestones | Dependencies |
-| --- | --- | --- | --- |
-| 0. Project Setup | 1 sprint | Add package dependencies, fonts, icons, linting, CI skeleton, sample example app shell | None |
-| 1. Foundations | 2 sprints | Theme/tokens, SketchyTheme shim, rendering utilities, typography + icon plumbing | Phase 0 |
-| 2. Core Controls | 3 sprints | Buttons, toggles, sliders, text fields w/ states and validation | Phase 1 |
-| 3. Surfaces & Layout | 2 sprints | Cards, lists, navigation shell, responsive helpers | Phase 2 |
-| 4. Interaction & Notation | 2 sprints | Interaction controller, focus highlights, Rough Notation wrappers + tutorials | Phases 1–3 |
-| 5. Performance + QA | 1 sprint | Profiling, caching, docs, golden tests, release candidate | Prior phases |
+| Phase                     | Duration  | Milestones                                                                             | Dependencies |
+| ------------------------- | --------- | -------------------------------------------------------------------------------------- | ------------ |
+| 0. Project Setup          | 1 sprint  | Add package dependencies, fonts, icons, linting, CI skeleton, sample example app shell | None         |
+| 1. Foundations            | 2 sprints | Theme/tokens, SketchyTheme shim, rendering utilities, typography + icon plumbing       | Phase 0      |
+| 2. Core Controls          | 3 sprints | Buttons, toggles, sliders, text fields w/ states and validation                        | Phase 1      |
+| 3. Surfaces & Layout      | 2 sprints | Cards, lists, navigation shell, responsive helpers                                     | Phase 2      |
+| 4. Interaction & Notation | 2 sprints | Interaction controller, focus highlights, Rough Notation wrappers + tutorials          | Phases 1–3   |
+| 5. Performance + QA       | 1 sprint  | Profiling, caching, docs, golden tests, release candidate                              | Prior phases |
 
 ### Backlog Details
 
@@ -223,6 +253,11 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
    - Widget tests for focus/interaction states.
    - Benchmark sample list views using `flutter drive`.
    - Publish API docs + cookbook in `/specs` or `/docs`.
+8. **Example Gallery & Modes**
+   - Implement responsive gallery shell (list-only + master/detail).
+   - Add color-mode picker, roughness slider, and mascot overlay.
+   - Port wired_elements demo scenarios into the gallery and remove the original
+     `third_party/wired_elements/example` directory once parity is confirmed.
 
 ### Deliverables per Phase
 
@@ -256,13 +291,13 @@ a blank Flutter package to a cohesive, hand-drawn design system powered by
 
 ## 8. Risks & Mitigations
 
-| Risk | Impact | Mitigation |
-| --- | --- | --- |
-| Performance regressions on large lists | Janky UX | Early profiling, caching, expose knobs, document limits |
-| Dependency drift in `wired_elements` | API breakage | Pin versions, add wrapper layer, contribute fixes upstream if needed |
-| Font/icon licensing or size | App bundle bloat | Use permissive fonts, subset icon font per platform, allow opt-out |
-| Animations feeling slow on touch devices | UX mismatch | Provide reduced-motion mode and tune durations per platform |
-| Accessibility gaps | Users unable to navigate | Adopt Flutter semantics testing, include keyboard navigation support from day one |
+| Risk                                     | Impact                   | Mitigation                                                                        |
+| ---------------------------------------- | ------------------------ | --------------------------------------------------------------------------------- |
+| Performance regressions on large lists   | Janky UX                 | Early profiling, caching, expose knobs, document limits                           |
+| Dependency drift in `wired_elements`     | API breakage             | Pin versions, add wrapper layer, contribute fixes upstream if needed              |
+| Font/icon licensing or size              | App bundle bloat         | Use permissive fonts, subset icon font per platform, allow opt-out                |
+| Animations feeling slow on touch devices | UX mismatch              | Provide reduced-motion mode and tune durations per platform                       |
+| Accessibility gaps                       | Users unable to navigate | Adopt Flutter semantics testing, include keyboard navigation support from day one |
 
 ## 9. Example Experiences (Implementation Targets)
 
@@ -287,9 +322,9 @@ storybook or `/example` app without multi-step flows.
 6. **Developer Documentation Viewer** – Tablet-friendly tabbed document with
    `SketchyTabs`, scrollable sections, inline tooltips, and hover animations for
    copy buttons to exercise hover/focus and responsive helpers.
-7. **Hackathon Whiteboard Palette** – Free-form canvas using raw
-   `rough_flutter` primitives plus floating `SketchyIconButton`, slider, and
-   switch controls to test low-level drawing integration and continuous input.
+7. **Hackathon Whiteboard Palette** – Free-form canvas using raw `rough_flutter`
+   primitives plus floating `SketchyIconButton`, slider, and switch controls to
+   test low-level drawing integration and continuous input.
 8. **Customer Support Live Chat** – `SketchyListTile` chat transcript with
    typing indicators, suggestion chips highlighted via Rough Notation, and
    accessibility toggles validating semantics and reduced-motion support.

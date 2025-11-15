@@ -25,21 +25,16 @@ class WiredDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Stack(
-        children: [
-          SizedBox(
-            height: 1,
-            width: double.infinity,
-            child: WiredCanvas(
-              painter: WiredLineBase(
-                x1: 0,
-                y1: 0,
-                x2: double.infinity,
-                y2: 0,
-              ),
-              fillerType: RoughFilter.NoFiller,
-            ),
-          ),
-          const Divider(color: Colors.transparent),
-        ],
-      );
+    children: [
+      SizedBox(
+        height: 1,
+        width: double.infinity,
+        child: WiredCanvas(
+          painter: WiredLineBase(x1: 0, y1: 0, x2: double.infinity, y2: 0),
+          fillerType: RoughFilter.NoFiller,
+        ),
+      ),
+      const Divider(color: Colors.transparent),
+    ],
+  );
 }

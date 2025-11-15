@@ -4,9 +4,24 @@ import 'package:rough_notation/rough_notation.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
-enum SketchyAnnotationType { box, circle, underline, highlight }
+/// Annotation styles supported by [SketchyAnnotate].
+enum SketchyAnnotationType {
+  /// Draws a rough rectangle around the child.
+  box,
 
+  /// Draws a rough circle around the child.
+  circle,
+
+  /// Underlines the child with a rough stroke.
+  underline,
+
+  /// Highlights the child with a marker-like fill.
+  highlight,
+}
+
+/// Widget that wraps [child] with RoughNotation effects.
 class SketchyAnnotate extends StatelessWidget {
+  /// Internal constructor shared by the named factories.
   const SketchyAnnotate._({
     required this.child,
     required this.type,
@@ -14,6 +29,7 @@ class SketchyAnnotate extends StatelessWidget {
     this.label,
   });
 
+  /// Draws a rough box around [child].
   const SketchyAnnotate.box({required Widget child, Key? key, String? label})
     : this._(
         key: key,
@@ -22,6 +38,7 @@ class SketchyAnnotate extends StatelessWidget {
         label: label,
       );
 
+  /// Draws a rough circle around [child].
   const SketchyAnnotate.circle({required Widget child, Key? key, String? label})
     : this._(
         key: key,
@@ -30,6 +47,7 @@ class SketchyAnnotate extends StatelessWidget {
         label: label,
       );
 
+  /// Underlines [child] with a rough stroke.
   const SketchyAnnotate.underline({
     required Widget child,
     Key? key,
@@ -41,6 +59,7 @@ class SketchyAnnotate extends StatelessWidget {
          label: label,
        );
 
+  /// Highlights [child] with a rough fill.
   const SketchyAnnotate.highlight({
     required Widget child,
     Key? key,
@@ -51,8 +70,14 @@ class SketchyAnnotate extends StatelessWidget {
          type: SketchyAnnotationType.highlight,
          label: label,
        );
+
+  /// Widget being annotated.
   final Widget child;
+
+  /// Optional label rendered below the annotation.
   final String? label;
+
+  /// Annotation style to apply.
   final SketchyAnnotationType type;
 
   @override

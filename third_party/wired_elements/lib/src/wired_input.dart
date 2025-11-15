@@ -57,11 +57,7 @@ class WiredInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (labelText != null)
-          Text(
-            '$labelText',
-            style: labelStyle,
-          ),
+        if (labelText != null) Text('$labelText', style: labelStyle),
         if (labelText != null) const SizedBox(width: 10),
         Expanded(
           child: Stack(

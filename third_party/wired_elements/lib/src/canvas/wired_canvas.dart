@@ -26,7 +26,7 @@ class WiredCanvas extends StatelessWidget {
 
     final filler = _filters[fillerType]!.call(effectiveFillerConfig);
     return CustomPaint(
-      size: size == null ? const Size.square(double.infinity) : size!,
+      size: size == null ? Size.infinite : size!,
       painter: WiredPainter(effectiveDrawConfig, filler, painter),
     );
   }
@@ -34,14 +34,14 @@ class WiredCanvas extends StatelessWidget {
 
 Map<RoughFilter, Filler Function(FillerConfig)> _filters =
     <RoughFilter, Filler Function(FillerConfig)>{
-  RoughFilter.NoFiller: (fillerConfig) => NoFiller(fillerConfig),
-  RoughFilter.HachureFiller: (fillerConfig) => HachureFiller(fillerConfig),
-  RoughFilter.ZigZagFiller: (fillerConfig) => ZigZagFiller(fillerConfig),
-  RoughFilter.HatchFiller: (fillerConfig) => HatchFiller(fillerConfig),
-  RoughFilter.DotFiller: (fillerConfig) => DotFiller(fillerConfig),
-  RoughFilter.DashedFiller: (fillerConfig) => DashedFiller(fillerConfig),
-  RoughFilter.SolidFiller: (fillerConfig) => SolidFiller(fillerConfig),
-};
+      RoughFilter.NoFiller: (fillerConfig) => NoFiller(fillerConfig),
+      RoughFilter.HachureFiller: (fillerConfig) => HachureFiller(fillerConfig),
+      RoughFilter.ZigZagFiller: (fillerConfig) => ZigZagFiller(fillerConfig),
+      RoughFilter.HatchFiller: (fillerConfig) => HatchFiller(fillerConfig),
+      RoughFilter.DotFiller: (fillerConfig) => DotFiller(fillerConfig),
+      RoughFilter.DashedFiller: (fillerConfig) => DashedFiller(fillerConfig),
+      RoughFilter.SolidFiller: (fillerConfig) => SolidFiller(fillerConfig),
+    };
 
 enum RoughFilter {
   NoFiller,

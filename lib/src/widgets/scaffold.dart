@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import '../theme/sketchy_theme.dart';
 import 'app_bar.dart';
 
+/// Minimal scaffold that avoids pulling in Material widgets.
 class SketchyScaffold extends StatelessWidget {
+  /// Creates a scaffold with optional [appBar], [body], and FAB.
   const SketchyScaffold({
     super.key,
     this.appBar,
@@ -11,9 +13,17 @@ class SketchyScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.backgroundColor,
   });
+
+  /// Optional Sketchy app bar.
   final SketchyAppBar? appBar;
+
+  /// Primary body content.
   final Widget? body;
+
+  /// Optional floating action button.
   final Widget? floatingActionButton;
+
+  /// Override for the paper background color.
   final Color? backgroundColor;
 
   @override

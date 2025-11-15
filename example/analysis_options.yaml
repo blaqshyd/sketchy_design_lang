@@ -8,6 +8,7 @@ analyzer:
     - "bin/cache/**"
     - "lib/generated_plugin_registrant.dart"
     - "lib/pubspec.dart"
+    - "../third_party/**"
 
 
   errors:

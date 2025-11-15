@@ -3,15 +3,23 @@ import 'package:rough_flutter/rough_flutter.dart';
 
 import '../theme/sketchy_theme.dart';
 
+/// Rough-styled app bar used by Sketchy screens.
 class SketchyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  /// Creates a sketchy app bar with the given [title].
   const SketchyAppBar({
     required this.title,
     super.key,
     this.actions,
     this.leading,
   });
+
+  /// Title widget displayed at the center.
   final Widget title;
+
+  /// Optional action widgets rendered on the trailing edge.
   final List<Widget>? actions;
+
+  /// Optional leading widget (e.g., back button).
   final Widget? leading;
 
   @override

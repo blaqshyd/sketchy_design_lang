@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Chat transcript showing list tiles, typing indicator, and annotations.
 class LiveChatExample extends StatelessWidget {
   const LiveChatExample({super.key});
 

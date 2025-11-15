@@ -3,7 +3,9 @@ import 'package:wired_elements/wired_elements.dart';
 
 import '../theme/sketchy_typography.dart';
 
+/// Rough-styled text field wrapper.
 class SketchyTextField extends StatelessWidget {
+  /// Creates a text field with optional label, hint, and error text.
   const SketchyTextField({
     super.key,
     this.label,
@@ -12,10 +14,20 @@ class SketchyTextField extends StatelessWidget {
     this.hintText,
     this.errorText,
   });
+
+  /// Optional label displayed before the field.
   final String? label;
+
+  /// Controller bound to the inner text field.
   final TextEditingController? controller;
+
+  /// Callback invoked when the text changes.
   final ValueChanged<String>? onChanged;
+
+  /// Placeholder hint rendered within the field.
   final String? hintText;
+
+  /// Error message shown below the field.
   final String? errorText;
 
   @override

@@ -3,6 +3,7 @@ import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
 import '../examples/examples.dart';
 
+/// Landing page that lists all example scenes.
 class ExampleGallery extends StatelessWidget {
   const ExampleGallery({super.key});
 
@@ -27,8 +28,8 @@ class ExampleGallery extends StatelessWidget {
               const SizedBox(height: 16),
               SketchyButton.primary(
                 label: 'Open',
-                onPressed: () {
-                  Navigator.of(
+                onPressed: () async {
+                  await Navigator.of(
                     context,
                   ).push(SketchyPageRoute(builder: entry.builder));
                 },

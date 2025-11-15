@@ -4,7 +4,9 @@ import 'package:wired_elements/wired_elements.dart';
 
 import '../theme/sketchy_typography.dart';
 
+/// Sketchy wrapper around [WiredCombo].
 class SketchyDropdown<T> extends StatelessWidget {
+  /// Creates a dropdown with the given [items] and [label].
   const SketchyDropdown({
     required this.label,
     required this.items,
@@ -12,9 +14,17 @@ class SketchyDropdown<T> extends StatelessWidget {
     this.value,
     this.onChanged,
   });
+
+  /// Field label shown above the dropdown.
   final String label;
+
+  /// Options the user may select from.
   final List<T> items;
+
+  /// Currently selected value.
   final T? value;
+
+  /// Callback invoked when the selection changes.
   final ValueChanged<T?>? onChanged;
 
   @override
@@ -38,11 +48,7 @@ class SketchyDropdown<T> extends StatelessWidget {
                 ),
               )
               .toList(),
-          onChanged: (dynamic selected) {
-            if (onChanged != null) {
-              onChanged!(selected as T?);
-            }
-          },
+          onChanged: (dynamic selected) => onChanged?.call(selected as T?),
         ),
       ],
     );

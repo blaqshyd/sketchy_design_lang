@@ -97,12 +97,12 @@ creating such a design system:
 
 2. **Theming and Global Settings:** Provide a way to apply this style
    consistently across an app – similar to how Material has `ThemeData`. We
-   might create a **SketchyTheme** that holds global configurations: e.g.
-   stroke color and width, roughness level (how “wiggly” the lines are), corner
-   style (perhaps all rectangles have slightly jittered corners), and maybe a
-   set of sketchy **icons** (if available). This theme can also incorporate
-   light vs. dark mode variants (for instance, white strokes on dark background
-   for dark theme). By offering a Theme, developers could wrap their app with
+   might create a **SketchyTheme** that holds global configurations: e.g. stroke
+   color and width, roughness level (how “wiggly” the lines are), corner style
+   (perhaps all rectangles have slightly jittered corners), and maybe a set of
+   sketchy **icons** (if available). This theme can also incorporate light vs.
+   dark mode variants (for instance, white strokes on dark background for dark
+   theme). By offering a Theme, developers could wrap their app with
    `SketchyTheme(data: ..., child: MyApp)` or use a `ThemeData` extension so
    that our widgets pick up the settings. This ensures **Flutter apps of all
    kinds** can easily switch to the hand-drawn look by toggling the theme or
@@ -177,13 +177,11 @@ creating such a design system:
    default Material ripples or highlight glows are suppressed in favor of our
    custom ones. This is important for consistency.
 
-5. **Typography**: integrate an existing hand-drawn font by default use in the
-   theme, although allow the user to override as they choose. I'm thinking
-   [Comic Shanns](https://github.com/shannpersand/comic-shanns) right now (it's
-   so mono-spaced and cool!) or
-   [Excalifont](https://plus.excalidraw.com/excalifont). But [Cabin
-   Sketch](https://www.1001fonts.com/cabin-sketch-font.html) is cool, too, and
-   it's been optimized for size!
+5. **Typography**: ship [Comic
+   Shanns](https://github.com/shannpersand/comic-shanns) as the default typeface
+   baked into the Sketchy theme so every app instantly looks hand-drawn. Still
+   expose typography overrides so teams can swap in other handwritten fonts
+   (Excalifont, Cabin Sketch, etc.) without rewriting widgets.
 
 6. **Iconography**: integrate a comprehensive set of hand-drawn icons, like
    [this Awesome Icons Excalidraw icon
@@ -247,7 +245,8 @@ creating such a design system:
      platform conventions (like safe area handling for notches, etc., which we’d
      still honor in layouts).
 
-9. **Performance Optimization:** Drawing a lot of “rough” shapes can be CPU/GPU
+9. **Performance Optimization & Roughness Control:** Drawing a lot of “rough”
+   shapes can be CPU/GPU intensive, so we must optimize the implementation.
    intensive, so we must optimize the implementation. Requirements here include:
 
    - Reuse drawing objects where possible. For example, if many buttons use the
@@ -256,10 +255,9 @@ creating such a design system:
      **rough_flutter** library provides a `Generator` that can produce shapes;
      we might share one generator with a fixed seed so that multiple widgets
      don’t all repaint unpredictably.
-   - Provide knobs to adjust complexity: e.g. a global “roughness” setting that,
-     if turned down, draws fewer jitter lines (for better performance on low-end
-     devices). Or allow opting out of hatch fills in favor of solid fills if
-     needed.
+   - Provide knobs to adjust complexity: expose a theme-level **roughness** knob
+     (0 → laser-straight lines, 1 → maximum wobble, default 0.5) and optionally
+     disable hatch fills to meet device performance budgets.
    - Leverage `RoughBoxDecoration` and similar classes to integrate with
      Flutter’s painting optimizations. For instance, using `RoughBoxDecoration`
      on a Container means we can cache the drawn shape as part of the widget’s
@@ -333,12 +331,52 @@ creating such a design system:
       `WidgetsApp` primitives) that wires up routing, localization, text
       direction, and the Sketchy theme without touching Material/Cupertino.
     - Include a thin `SketchyRouter` wrapper over `WidgetsApp`’s routing APIs,
-      `SketchyScaffold`, and navigation primitives so
-      every structural piece—from app bars to drawers—comes from this design
-      language.
+      `SketchyScaffold`, and navigation primitives so every structural
+      piece—from app bars to drawers—comes from this design language.
     - Any interoperability with Material/Cupertino should live behind optional
       adapter layers; the default documentation and examples use only
       Sketchy-specific imports.
+
+13. **Sketchy Drawing Primitives & Flicker Control:** Widgets and end-users
+    should be able to draw their own sketch shapes without suffering per-frame
+    randomness flicker.
+
+    - Provide a small catalog of **SketchyShape** primitives (e.g., rectangle,
+      circle, arc, line, badge bubble) that cache their random seed and drawing
+      instructions the moment they are created.
+    - Each widget instance maintains its own primitive cache so two buttons on
+      the same screen still feel unique but never redraw with different wobble
+      mid-animation.
+    - Expose those primitives as a public API so app teams can extend Sketchy
+      with bespoke visuals while benefiting from caching, seeding, and theming.
+
+14. **Color Modes & Theme Palette:** Replace simple light/dark switches with a
+    curated “Sketchy Mode” palette derived from `specs/sketchy-mode-colors.png`.
+
+    - Define named modes (Light, Red, Orange, Yellow, Green, Cyan, Blue, Indigo,
+      Violet, Magenta, Dark) with primary/secondary swatches and make
+      them easy to swap at runtime.
+    - Default to the **Blue** mode, but ensure `SketchyThemeData` can transition
+      all tokens when the active mode changes.
+    - Provide tooling (e.g., a sketchy color-circle control) so the example
+      gallery and consuming apps can expose a friendly mode switcher.
+
+15. **Example Gallery Experience:** The `/example` app doubles as our storybook
+    and must showcase everything in context.
+
+    - **Responsive layout:** at ≤800px, show a single-column list that navigates
+      to detail pages; at >800px, render a master/detail split view with the
+      first example automatically selected so the detail pane is never empty.
+    - **Controls in the app bar:** surface both the color-mode picker (sketchy
+      circle with tooltip “mode.”) and a roughness slider so users can explore
+      the theme knobs live.
+    - **Mascot:** display `specs/sketchy-mascot.png` as a floating, padded icon
+      in the lower-left corner with tooltip “meh.” for some on-brand whimsy.
+    - **Example coverage:** migrate every wired_elements scenario (buttons,
+      dialog, calendar, combo, checkbox, toggle, progress, etc.) into the
+      Sketchy gallery—either one-to-one or consolidated—then remove the
+      now-redundant third-party example folders so we have a single source of
+      truth.
 
 ## Sketch Design Language Example Experiences
 
@@ -350,9 +388,9 @@ facet of Sketchy—no multi-step tutorials.
    showcasing annotations, interaction states, and responsive padding in a
    single build function.
 2. **Wireframe Productivity Dashboard:** Desktop-first scene with a
-   `SketchyAppBar`, sidebar, draggable `SketchyCard` widgets, and rough dividers,
-   illustrating multi-column layout, chart styling via `rough_flutter`, and list
-   performance within one file.
+   `SketchyAppBar`, sidebar, draggable `SketchyCard` widgets, and rough
+   dividers, illustrating multi-column layout, chart styling via
+   `rough_flutter`, and list performance within one file.
 3. **Collaborative Design Critique Board:** A gallery screen framed by
    `SketchyDecoration`, inline `SketchyBadge` comments, and hover-triggered
    `SketchyAnnotate.circle` callouts, emphasizing typography overrides,
@@ -381,8 +419,7 @@ Flutter design language: a **Hand-Drawn UI Toolkit**. This **Sketch Design
 Language (“Sketchy”)** would let developers style entire apps in a playful,
 sketch-like manner, much like Material and Cupertino provide polished native
 styles. It involves defining a clear style guide, building out the widget
-library (likely starting
-from the existing
+library (likely starting from the existing
 wired_elements[flutterawesome.com](https://flutterawesome.com/a-series-of-basic-ui-elements-that-have-a-hand-drawn-look-with-flutter/#:~:text=Wired
 Elements is a series,on the library of flutter_rough) and
 rough_notation[github.com](https://github.com/0xharkirat/rough_notation#:~:text=RoughNotation

@@ -4,8 +4,12 @@ import 'package:wired_elements/wired_elements.dart';
 import '../demos.dart';
 import 'wired_text.dart';
 
+/// Demonstrates wired input fields.
 class WiredInputExample extends StatelessWidget {
-  const WiredInputExample({required this.title, Key? key}) : super(key: key);
+  /// Creates the input example.
+  const WiredInputExample({required this.title, super.key});
+
+  /// Title shown in the app bar.
   final String title;
 
   @override
@@ -15,12 +19,7 @@ class WiredInputExample extends StatelessWidget {
     final controller3 = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: WiredText(
-          title,
-          fontSize: 20,
-        ),
-      ),
+      appBar: AppBar(title: WiredText(title, fontSize: 20)),
       body: Container(
         padding: const EdgeInsets.all(50),
         child: Column(
@@ -29,10 +28,7 @@ class WiredInputExample extends StatelessWidget {
           children: [
             WiredInput(
               controller: controller1,
-              style: const TextStyle(
-                fontFamily: handWriting2,
-                fontSize: 18,
-              ),
+              style: const TextStyle(fontFamily: handWriting2, fontSize: 18),
               labelText: 'Name',
               labelStyle: const TextStyle(
                 fontFamily: handWriting2,
@@ -47,17 +43,13 @@ class WiredInputExample extends StatelessWidget {
                 fontFamily: handWriting2,
                 fontSize: 18,
               ),
-              style: const TextStyle(
-                fontFamily: handWriting2,
-              ),
+              style: const TextStyle(fontFamily: handWriting2),
               hintText: 'Please enter user email',
             ),
             const SizedBox(height: 15),
             WiredInput(
               controller: controller3,
-              style: const TextStyle(
-                fontFamily: handWriting2,
-              ),
+              style: const TextStyle(fontFamily: handWriting2),
               hintText: 'Your age please!',
             ),
           ],

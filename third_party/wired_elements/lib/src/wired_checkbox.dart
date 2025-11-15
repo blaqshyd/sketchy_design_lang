@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../rough/rough.dart';
 
+import '../rough/rough.dart';
 import 'const.dart';
 import 'wired_base.dart';
 
@@ -19,8 +19,8 @@ class WiredCheckbox extends StatefulWidget {
   const WiredCheckbox({
     required this.value,
     required this.onChanged,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// Determines the checkbox checked or not.
   final bool? value;
@@ -29,7 +29,7 @@ class WiredCheckbox extends StatefulWidget {
   final void Function(bool?) onChanged;
 
   @override
-  _WiredCheckboxState createState() => _WiredCheckboxState();
+  State<WiredCheckbox> createState() => _WiredCheckboxState();
 }
 
 class _WiredCheckboxState extends State<WiredCheckbox> with WiredRepaintMixin {
@@ -42,39 +42,34 @@ class _WiredCheckboxState extends State<WiredCheckbox> with WiredRepaintMixin {
   }
 
   @override
-  Widget build(BuildContext context) => buildWiredElement(
-        key: widget.key,
-        child: _buildWidget(),
-      );
+  Widget build(BuildContext context) =>
+      buildWiredElement(key: widget.key, child: _buildWidget());
 
   Widget _buildWidget() => Container(
-        padding: EdgeInsets.zero,
-        height: 27,
-        width: 27,
-        decoration: const RoughBoxDecoration(
-          shape: RoughBoxShape.rectangle,
-          borderStyle: RoughDrawingStyle(
-            width: 1,
-            color: borderColor,
-          ),
+    padding: EdgeInsets.zero,
+    height: 27,
+    width: 27,
+    decoration: const RoughBoxDecoration(
+      shape: RoughBoxShape.rectangle,
+      borderStyle: RoughDrawingStyle(width: 1, color: borderColor),
+    ),
+    child: SizedBox(
+      height: double.infinity,
+      child: Transform.scale(
+        // Checkbox default size is 18.0, so 18.0 * 1.5 = 27 for the outer Container's width & height
+        scale: 1.5,
+        child: Checkbox(
+          fillColor: WidgetStateProperty.all(Colors.transparent),
+          checkColor: borderColor,
+          onChanged: (value) {
+            setState(() {
+              widget.onChanged(value);
+              _value = value!;
+            });
+          },
+          value: _value,
         ),
-        child: SizedBox(
-          height: double.infinity,
-          child: Transform.scale(
-            // Checkbox default size is 18.0, so 18.0 * 1.5 = 27 for the outer Container's width & height
-            scale: 1.5,
-            child: Checkbox(
-              fillColor: WidgetStateProperty.all(Colors.transparent),
-              checkColor: borderColor,
-              onChanged: (value) {
-                setState(() {
-                  widget.onChanged(value);
-                  _value = value!;
-                });
-              },
-              value: _value,
-            ),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 }

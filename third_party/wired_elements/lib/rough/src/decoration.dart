@@ -9,8 +9,7 @@ import 'generator.dart';
 import 'rough.dart';
 
 class RoughDrawingStyle {
-  // final BorderRadius borderRadius;
-  // this.boxShadow?,
+  // final BorderRadius borderRadius; this.boxShadow?,
 
   const RoughDrawingStyle({
     this.width,
@@ -28,8 +27,8 @@ class RoughDrawingStyle {
 ///
 enum RoughBoxShape {
   /// An axis-aligned, 2D rectangle. May have rounded corners (described by a
-  /// [BorderRadius]). The center of edges of the rectangle will match the
-  /// edges of the box into which the [RoughBoxDecoration] is painted.
+  /// [BorderRadius]). The center of edges of the rectangle will match the edges
+  /// of the box into which the [RoughBoxDecoration] is painted.
   rectangle,
 
   /// A circle centered in the middle of the box into which the [Border] or
@@ -39,9 +38,9 @@ enum RoughBoxShape {
   circle,
 
   /// An ellipse centered in the middle of the box into which the [Border] or
-  /// [BoxDecoration] is painted. The horizontal diameter of the ellipse is the width
-  /// the box and the vertical diameter is the height of the box, such that the ellipse
-  /// path center touches the edges of the box.
+  /// [BoxDecoration] is painted. The horizontal diameter of the ellipse is the
+  /// width the box and the vertical diameter is the height of the box, such
+  /// that the ellipse path center touches the edges of the box.
   ellipse,
 }
 
@@ -69,9 +68,7 @@ class RoughBoxDecoration extends Decoration {
 }
 
 class RoughDecorationPainter extends BoxPainter {
-  RoughDecorationPainter(
-    this.roughDecoration,
-  );
+  RoughDecorationPainter(this.roughDecoration);
   final RoughBoxDecoration roughDecoration;
 
   @override
@@ -90,8 +87,12 @@ class RoughDecorationPainter extends BoxPainter {
     Drawable drawable;
     switch (roughDecoration.shape) {
       case RoughBoxShape.rectangle:
-        drawable = generator.rectangle(offset.dx, offset.dy,
-            configuration.size!.width, configuration.size!.height);
+        drawable = generator.rectangle(
+          offset.dx,
+          offset.dy,
+          configuration.size!.width,
+          configuration.size!.height,
+        );
         break;
       case RoughBoxShape.circle:
         final centerX = offset.dx + configuration.size!.width / 2;
@@ -103,8 +104,12 @@ class RoughDecorationPainter extends BoxPainter {
         final centerX = offset.dx + configuration.size!.width / 2;
         final centerY = offset.dy + configuration.size!.height / 2;
 
-        drawable = generator.ellipse(centerX, centerY,
-            configuration.size!.width, configuration.size!.height);
+        drawable = generator.ellipse(
+          centerX,
+          centerY,
+          configuration.size!.width,
+          configuration.size!.height,
+        );
         break;
     }
 

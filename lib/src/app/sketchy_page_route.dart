@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+/// Lightweight fade transition used throughout Sketchy navigation.
 class SketchyPageRoute<T> extends PageRouteBuilder<T> {
+  /// Creates a page route that fades between pages.
   SketchyPageRoute({required WidgetBuilder builder, super.settings})
     : super(
         pageBuilder: (context, animation, secondaryAnimation) =>

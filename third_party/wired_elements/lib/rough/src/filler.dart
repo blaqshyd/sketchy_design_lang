@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import '../rough.dart';
-
 import 'core.dart';
 import 'geometry.dart';
 import 'renderer.dart';
@@ -15,6 +14,38 @@ class IntersectionInfo {
 enum FillStyle { fill, sketch }
 
 class FillerConfig {
+  /// * [fillWeight] When using dots styles to fill the shape, this value
+  ///   represents the diameter of the dot.
+  /// * [hachureAngle] Numerical value (in degrees) that defines the angle of
+  ///   the hachure lines. Default value is -41 degrees.
+  /// * [hachureGap] Numerical value that defines the average gap, in pixels,
+  ///   between two hachure lines. Default value is 15.
+  /// * [dashOffset] When filling a shape using the [DashedFiller], this
+  ///   property indicates the nominal length of dash (in pixels). If not set,
+  ///   it defaults to the hachureGap value.
+  /// * [dashGap] When filling a shape using the [DashedFiller], this property
+  ///   indicates the nominal gap between dashes (in pixels). If not set, it
+  ///   defaults to the hachureGap value.
+  /// * [zigzagOffset] When filling a shape using the [ZigZagLineFiller], this
+  ///   property indicates the nominal width of the zig-zag triangle in each
+  ///   line. If not set, it defaults to the hachureGap value.
+  factory FillerConfig.build({
+    DrawConfig? drawConfig,
+    double fillWeight = 1,
+    double hachureAngle = 320,
+    double hachureGap = 15,
+    double dashOffset = 15,
+    double dashGap = 2,
+    double zigzagOffset = 5,
+  }) => FillerConfig._(
+    drawConfig: drawConfig ?? DrawConfig.build(),
+    fillWeight: fillWeight,
+    hachureAngle: hachureAngle,
+    hachureGap: hachureGap,
+    dashOffset: dashOffset,
+    dashGap: dashGap,
+    zigzagOffset: zigzagOffset,
+  );
   const FillerConfig._({
     DrawConfig? drawConfig,
     this.fillWeight,
@@ -32,33 +63,9 @@ class FillerConfig {
   final double? dashGap;
   final double? zigzagOffset;
 
-  /// * [fillWeight] When using dots styles to fill the shape, this value represents the diameter of the dot.
-  /// * [hachureAngle] Numerical value (in degrees) that defines the angle of the hachure lines. Default value is -41 degrees.
-  /// * [hachureGap] Numerical value that defines the average gap, in pixels, between two hachure lines. Default value is 15.
-  /// * [dashOffset] When filling a shape using the [DashedFiller], this property indicates the nominal length of dash (in pixels). If not set, it defaults to the hachureGap value.
-  /// * [dashGap] When filling a shape using the [DashedFiller], this property indicates the nominal gap between dashes (in pixels). If not set, it defaults to the hachureGap value.
-  /// * [zigzagOffset] When filling a shape using the [ZigZagLineFiller], this property indicates the nominal width of the zig-zag triangle in each line. If not set, it defaults to the hachureGap value.
-  static FillerConfig build({
-    DrawConfig? drawConfig,
-    double fillWeight = 1,
-    double hachureAngle = 320,
-    double hachureGap = 15,
-    double dashOffset = 15,
-    double dashGap = 2,
-    double zigzagOffset = 5,
-  }) =>
-      FillerConfig._(
-        drawConfig: drawConfig ?? DrawConfig.build(),
-        fillWeight: fillWeight,
-        hachureAngle: hachureAngle,
-        hachureGap: hachureGap,
-        dashOffset: dashOffset,
-        dashGap: dashGap,
-        zigzagOffset: zigzagOffset,
-      );
-
-  static FillerConfig defaultConfig =
-      FillerConfig.build(drawConfig: DrawConfig.defaultValues);
+  static FillerConfig defaultConfig = FillerConfig.build(
+    drawConfig: DrawConfig.defaultValues,
+  );
 
   DrawConfig? get drawConfig => _drawConfig;
 
@@ -70,16 +77,15 @@ class FillerConfig {
     double? dashOffset,
     double? dashGap,
     double? zigzagOffset,
-  }) =>
-      FillerConfig._(
-        drawConfig: drawConfig ?? _drawConfig,
-        fillWeight: fillWeight ?? this.fillWeight,
-        hachureAngle: hachureAngle ?? this.hachureAngle,
-        hachureGap: hachureGap ?? this.hachureGap,
-        dashOffset: dashOffset ?? this.dashOffset,
-        dashGap: dashGap ?? this.dashGap,
-        zigzagOffset: zigzagOffset ?? this.zigzagOffset,
-      );
+  }) => FillerConfig._(
+    drawConfig: drawConfig ?? _drawConfig,
+    fillWeight: fillWeight ?? this.fillWeight,
+    hachureAngle: hachureAngle ?? this.hachureAngle,
+    hachureGap: hachureGap ?? this.hachureGap,
+    dashOffset: dashOffset ?? this.dashOffset,
+    dashGap: dashGap ?? this.dashGap,
+    zigzagOffset: zigzagOffset ?? this.zigzagOffset,
+  );
 }
 
 abstract class Filler {
@@ -152,15 +158,23 @@ abstract class Filler {
             }
             final ce = activeEdges[i].edge;
             final ne = activeEdges[next].edge;
-            lines.add(Line(PointD(ce.x!.roundToDouble(), y),
-                PointD(ne.x!.roundToDouble(), y)));
+            lines.add(
+              Line(
+                PointD(ce.x!.roundToDouble(), y),
+                PointD(ne.x!.roundToDouble(), y),
+              ),
+            );
           }
         }
 
         y += gap;
         activeEdges = activeEdges
-            .map((ae) => ActiveEdge(ae.s,
-                ae.edge.copyWith(x: ae.edge.x! + (gap! * ae.edge.slope!))))
+            .map(
+              (ae) => ActiveEdge(
+                ae.s,
+                ae.edge.copyWith(x: ae.edge.x! + (gap! * ae.edge.slope!)),
+              ),
+            )
             .toList();
       }
     }
@@ -175,12 +189,14 @@ abstract class Filler {
       final p2 = vertices[i + 1];
       if (p1.y != p2.y) {
         final double yMin = min(p1.y, p2.y);
-        edges.add(Edge(
-          yMin: yMin,
-          yMax: max(p1.y, p2.y),
-          x: yMin == p1.y ? p1.x : p2.x,
-          slope: (p2.x - p1.x) / (p2.y - p1.y),
-        ));
+        edges.add(
+          Edge(
+            yMin: yMin,
+            yMax: max(p1.y, p2.y),
+            x: yMin == p1.y ? p1.x : p2.x,
+            slope: (p2.x - p1.x) / (p2.y - p1.y),
+          ),
+        );
       }
     }
     edges.sort(edgeSorter);
@@ -204,7 +220,10 @@ abstract class Filler {
   }
 
   OpSet fillPolygon(
-      List<PointD> points, FillerConfig config, bool connectEnds) {
+    List<PointD> points,
+    FillerConfig config,
+    bool connectEnds,
+  ) {
     var lines = buildFillLines(points, config);
     if (connectEnds) {
       final connectingLines = connectLines(points, lines);
@@ -328,8 +347,9 @@ class HatchFiller extends Filler {
   @override
   OpSet fill(List<PointD> points) {
     final set1 = fillPolygon(points, _config!, false);
-    final rotated =
-        _config!.copyWith(hachureAngle: _config!.hachureAngle! + 90);
+    final rotated = _config!.copyWith(
+      hachureAngle: _config!.hachureAngle! + 90,
+    );
     final set2 = fillPolygon(points, rotated, false);
     return OpSet(type: OpSetType.fillSketch, ops: set1.ops! + set2.ops!);
   }
@@ -362,26 +382,37 @@ class DashedFiller extends Filler {
       for (var i = 0; i < count; i++) {
         final segmentStartOffset = i * (offset + gap);
 
-        final segmentStartX = lineStart.x +
+        final segmentStartX =
+            lineStart.x +
             (segmentStartOffset * cos(alpha)) +
             (lineOffset * cos(alpha));
-        final segmentStartY = lineStart.y +
+        final segmentStartY =
+            lineStart.y +
             segmentStartOffset * sin(alpha) +
             (lineOffset * sin(alpha));
         final gapStart = PointD(segmentStartX, segmentStartY);
 
         final segmentEndOffset = segmentStartOffset + offset;
 
-        final segmentEndX = lineStart.x +
+        final segmentEndX =
+            lineStart.x +
             (segmentEndOffset * cos(alpha)) +
             (lineOffset * cos(alpha));
-        final segmentEndY = lineStart.y +
+        final segmentEndY =
+            lineStart.y +
             (segmentEndOffset * sin(alpha)) +
             (lineOffset * sin(alpha));
         final gapEnd = PointD(segmentEndX, segmentEndY);
 
-        ops.addAll(OpsGenerator.doubleLine(
-            gapStart.x, gapStart.y, gapEnd.x, gapEnd.y, config.drawConfig!));
+        ops.addAll(
+          OpsGenerator.doubleLine(
+            gapStart.x,
+            gapStart.y,
+            gapEnd.x,
+            gapEnd.y,
+            config.drawConfig!,
+          ),
+        );
       }
     }
     return ops;
@@ -394,8 +425,10 @@ class DotFiller extends Filler {
   @override
   OpSet fill(List<PointD> points) {
     final dotConfig = _config!.copyWith(
-      drawConfig:
-          _config!.drawConfig!.copyWith(curveStepCount: 4, roughness: 1),
+      drawConfig: _config!.drawConfig!.copyWith(
+        curveStepCount: 4,
+        roughness: 1,
+      ),
       hachureAngle: 1,
     );
     final lines = buildFillLines(points, dotConfig);
@@ -418,8 +451,13 @@ class DotFiller extends Filler {
         final y = minY + off + (i * gap);
         final cx = config.drawConfig!.offset(x - ro, x + ro);
         final cy = config.drawConfig!.offset(y - ro, y + ro);
-        final el =
-            OpSetBuilder.ellipse(cx, cy, fWeight, fWeight, config.drawConfig!);
+        final el = OpSetBuilder.ellipse(
+          cx,
+          cy,
+          fWeight,
+          fWeight,
+          config.drawConfig!,
+        );
         ops.addAll(el.ops!);
       }
     }
@@ -435,12 +473,14 @@ class SolidFiller extends Filler {
     var result = <PointD>[];
     if (points.length > 2) {
       result = points
-          .map((point) => PointD(
-                point.x +
-                    _config!.drawConfig!.offsetSymmetric(_config!.fillWeight!),
-                point.y +
-                    _config!.drawConfig!.offsetSymmetric(_config!.fillWeight!),
-              ))
+          .map(
+            (point) => PointD(
+              point.x +
+                  _config!.drawConfig!.offsetSymmetric(_config!.fillWeight!),
+              point.y +
+                  _config!.drawConfig!.offsetSymmetric(_config!.fillWeight!),
+            ),
+          )
           .toList();
       result
         ..add(result.first)
@@ -448,7 +488,8 @@ class SolidFiller extends Filler {
         ..add(result[2]);
     }
     return OpSet(
-        type: OpSetType.fillPath,
-        ops: OpsGenerator.curve(result, _config!.drawConfig!));
+      type: OpSetType.fillPath,
+      ops: OpsGenerator.curve(result, _config!.drawConfig!),
+    );
   }
 }

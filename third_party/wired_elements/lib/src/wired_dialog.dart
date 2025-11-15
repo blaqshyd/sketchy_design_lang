@@ -52,11 +52,8 @@ import 'wired_base.dart';
 ///   ),
 /// ```
 class WiredDialog extends StatelessWidget {
-  const WiredDialog({
-    required this.child,
-    Key? key,
-    this.padding,
-  }) : super(key: key);
+  const WiredDialog({required this.child, Key? key, this.padding})
+    : super(key: key);
 
   /// The content in dialog.
   final Widget child;
@@ -66,20 +63,17 @@ class WiredDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Dialog(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: WiredCanvas(
-                painter: WiredRectangleBase(),
-                fillerType: RoughFilter.NoFiller,
-              ),
-            ),
-            Padding(
-              padding: padding ?? const EdgeInsets.all(20),
-              child: child,
-            ),
-          ],
+    child: Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: WiredCanvas(
+            painter: WiredRectangleBase(),
+            fillerType: RoughFilter.NoFiller,
+          ),
         ),
-      );
+        Padding(padding: padding ?? const EdgeInsets.all(20), child: child),
+      ],
+    ),
+  );
 }

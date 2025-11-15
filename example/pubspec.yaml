@@ -1,6 +1,6 @@
 name: example
 description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 version: 0.1.0
 
 environment:
@@ -13,6 +13,6 @@ dependencies:
     path: ../
 
 dev_dependencies:
+  all_lint_rules_community: ^0.0.38
   flutter_test:
     sdk: flutter
-  all_lint_rules_community: ^0.0.38

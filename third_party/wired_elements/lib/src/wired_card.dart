@@ -56,30 +56,29 @@ class WiredCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.zero,
-        margin: EdgeInsets.zero,
-        height: height,
-        child: Stack(
+    color: Colors.transparent,
+    padding: EdgeInsets.zero,
+    margin: EdgeInsets.zero,
+    height: height,
+    child: Stack(
+      children: [
+        WiredCanvas(
+          painter: WiredRectangleBase(),
+          fillerType: fill ? RoughFilter.HachureFiller : RoughFilter.NoFiller,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            WiredCanvas(
-              painter: WiredRectangleBase(),
-              fillerType:
-                  fill ? RoughFilter.HachureFiller : RoughFilter.NoFiller,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Card(
-                    color: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    child: child,
-                  ),
-                ),
-              ],
+            Expanded(
+              child: Card(
+                color: Colors.transparent,
+                shadowColor: Colors.transparent,
+                child: child,
+              ),
             ),
           ],
         ),
-      );
+      ],
+    ),
+  );
 }

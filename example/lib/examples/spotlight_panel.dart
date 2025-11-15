@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Example card demonstrating annotations over hero content.
 class SketchySpotlightPanelExample extends StatelessWidget {
   const SketchySpotlightPanelExample({super.key});
 
@@ -29,8 +30,9 @@ class SketchySpotlightPanelExample extends StatelessWidget {
                   Text('Team Hub', style: typography.headline),
                   const SizedBox(height: 8),
                   Text(
-                    'Spin up a collaborative canvas that feels like a living wireframe. '
-                    'Invite teammates, drop sketches, and layer annotations in seconds.',
+                    'Spin up a collaborative canvas that feels like a living '
+                    'wireframe. Invite teammates, drop sketches, and layer '
+                    'annotations in seconds.',
                     style: typography.body,
                   ),
                   const SizedBox(height: 24),

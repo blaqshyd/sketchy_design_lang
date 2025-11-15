@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Desktop dashboard combining cards, charts, and list tiles.
 class WireframeDashboardExample extends StatelessWidget {
   const WireframeDashboardExample({super.key});
 
@@ -144,6 +145,7 @@ class _DashboardCard extends StatelessWidget {
   }
 }
 
+/// Minimal rough-styled line chart used inside the dashboard.
 class RoughChart extends StatelessWidget {
   const RoughChart({required this.data, super.key});
   final List<double> data;

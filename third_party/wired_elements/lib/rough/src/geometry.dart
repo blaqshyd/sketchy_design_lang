@@ -27,8 +27,12 @@ PointD rotatePoint(PointD point, PointD center, double degrees) {
 }
 
 List<Line> rotateLines(List<Line> lines, PointD center, double degrees) => lines
-    .map((line) => Line(rotatePoint(line.source, center, degrees),
-        rotatePoint(line.target, center, degrees)))
+    .map(
+      (line) => Line(
+        rotatePoint(line.source, center, degrees),
+        rotatePoint(line.target, center, degrees),
+      ),
+    )
     .toList();
 
 enum PointsOrientation { collinear, clockwise, counterclockwise }
@@ -73,11 +77,11 @@ class Edge {
   double? slope;
 
   Edge copyWith({double? yMin, double? yMax, double? x, double? slope}) => Edge(
-        yMin: yMin ?? this.yMin,
-        yMax: yMax ?? this.yMax,
-        x: x ?? this.x,
-        slope: slope ?? this.slope,
-      );
+    yMin: yMin ?? this.yMin,
+    yMax: yMax ?? this.yMax,
+    x: x ?? this.x,
+    slope: slope ?? this.slope,
+  );
 
   @override
   String toString() => 'Edge{yMin: $yMin, yMax: $yMax, x: $x, isLope: $slope}';

@@ -3,9 +3,12 @@ import 'package:flutter/widgets.dart';
 import '../theme/sketchy_theme.dart';
 import 'sketchy_page_route.dart';
 
+/// Signature for building Sketchy routes.
 typedef SketchyRouteBuilder = WidgetBuilder;
 
+/// Minimal app shell that wires Sketchy theming into a [WidgetsApp].
 class SketchyApp extends StatelessWidget {
+  /// Creates a Sketchy-powered application.
   const SketchyApp({
     required this.title,
     required this.theme,
@@ -17,13 +20,29 @@ class SketchyApp extends StatelessWidget {
     this.navigatorKey,
     this.navigatorObservers,
   });
+
+  /// Title exposed to Flutter’s window bindings.
   final String title;
+
+  /// Global theme configuration consumed by Sketchy widgets.
   final SketchyThemeData theme;
+
+  /// Widget shown for the default `/` route.
   final Widget home;
+
+  /// Optional static route table.
   final Map<String, SketchyRouteBuilder>? routes;
+
+  /// Hook for dynamic route generation.
   final RouteFactory? onGenerateRoute;
+
+  /// Handler invoked when no route matches.
   final RouteFactory? onUnknownRoute;
+
+  /// Key controlling the navigator bound to this app.
   final GlobalKey<NavigatorState>? navigatorKey;
+
+  /// Observers listening to navigator lifecycle events.
   final List<NavigatorObserver>? navigatorObservers;
 
   @override

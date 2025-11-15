@@ -4,6 +4,7 @@ import 'package:rough_flutter/rough_flutter.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
+/// Choice chip rendered with rough outlines.
 class SketchyChip extends StatelessWidget {
   const SketchyChip._({
     required this.label,
@@ -13,6 +14,7 @@ class SketchyChip extends StatelessWidget {
     super.key,
   });
 
+  /// Selectable chip variant.
   const SketchyChip.choice({
     required String label,
     required bool selected,
@@ -26,6 +28,7 @@ class SketchyChip extends StatelessWidget {
          filled: true,
        );
 
+  /// Non-interactive suggestion chip.
   const SketchyChip.suggestion({required String label, Key? key})
     : this._(
         key: key,
@@ -34,9 +37,17 @@ class SketchyChip extends StatelessWidget {
         onSelected: null,
         filled: false,
       );
+
+  /// Chip label text.
   final String label;
+
+  /// Whether the chip is currently selected.
   final bool selected;
+
+  /// Callback invoked when the chip is tapped.
   final VoidCallback? onSelected;
+
+  /// Whether the chip draws a filled background.
   final bool filled;
 
   @override

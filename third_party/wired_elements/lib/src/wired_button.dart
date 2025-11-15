@@ -16,11 +16,8 @@ import 'wired_base.dart';
 /// ),
 /// ```
 class WiredButton extends WiredBaseWidget {
-  const WiredButton({
-    required this.child,
-    required this.onPressed,
-    Key? key,
-  }) : super(key: key);
+  const WiredButton({required this.child, required this.onPressed, Key? key})
+    : super(key: key);
 
   /// Typically the button's label.
   final Widget child;
@@ -30,24 +27,19 @@ class WiredButton extends WiredBaseWidget {
 
   @override
   Widget buildWiredElement() => Container(
-        padding: EdgeInsets.zero,
-        height: 42,
-        decoration: const RoughBoxDecoration(
-          shape: RoughBoxShape.rectangle,
-          borderStyle: RoughDrawingStyle(
-            width: 1,
-            color: borderColor,
-          ),
-        ),
-        child: SizedBox(
-          height: double.infinity,
-          child: TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: textColor,
-            ),
-            onPressed: onPressed,
-            child: child,
-          ),
-        ),
-      );
+    padding: EdgeInsets.zero,
+    height: 42,
+    decoration: const RoughBoxDecoration(
+      shape: RoughBoxShape.rectangle,
+      borderStyle: RoughDrawingStyle(width: 1, color: borderColor),
+    ),
+    child: SizedBox(
+      height: double.infinity,
+      child: TextButton(
+        style: TextButton.styleFrom(foregroundColor: textColor),
+        onPressed: onPressed,
+        child: child,
+      ),
+    ),
+  );
 }

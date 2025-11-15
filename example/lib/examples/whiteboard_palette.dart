@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
+/// Canvas playground mixing low-level drawing with palette controls.
 class WhiteboardPaletteExample extends StatefulWidget {
   const WhiteboardPaletteExample({super.key});
 

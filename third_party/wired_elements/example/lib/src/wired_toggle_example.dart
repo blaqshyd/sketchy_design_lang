@@ -3,8 +3,12 @@ import 'package:wired_elements/wired_elements.dart';
 
 import 'wired_text.dart';
 
+/// Demonstrates wired toggle switches.
 class WiredToggleExample extends StatelessWidget {
-  const WiredToggleExample({required this.title, Key? key}) : super(key: key);
+  /// Creates the toggle example.
+  const WiredToggleExample({required this.title, super.key});
+
+  /// Title shown in the app bar.
   final String title;
 
   @override
@@ -13,12 +17,7 @@ class WiredToggleExample extends StatelessWidget {
     const secondVal = true;
 
     return Scaffold(
-      appBar: AppBar(
-        title: WiredText(
-          title,
-          fontSize: 20,
-        ),
-      ),
+      appBar: AppBar(title: WiredText(title, fontSize: 20)),
       body: Container(
         color: Colors.transparent,
         padding: const EdgeInsets.all(50),

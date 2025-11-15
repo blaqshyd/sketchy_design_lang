@@ -16,7 +16,13 @@ extension Rough on Canvas {
           break;
         case OpType.curveTo:
           path.cubicTo(
-              data[0].x, data[0].y, data[1].x, data[1].y, data[2].x, data[2].y);
+            data[0].x,
+            data[0].y,
+            data[1].x,
+            data[1].y,
+            data[2].x,
+            data[2].y,
+          );
           break;
         case OpType.lineTo:
           path.lineTo(data[0].x, data[0].y);
@@ -30,7 +36,7 @@ extension Rough on Canvas {
   ///
   ///
   void drawRough(Drawable drawable, Paint pathPaint, Paint fillPaint) {
-    for (final drawing in drawable.sets ?? []) {
+    for (final drawing in drawable.sets ?? <OpSet>[]) {
       switch (drawing.type!) {
         case OpSetType.path:
           drawPath(_drawToContext(drawing), pathPaint);

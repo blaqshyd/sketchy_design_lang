@@ -2,35 +2,71 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_theme.dart';
 
+/// Symbols supported by [SketchyIcon].
 enum SketchyIconSymbol {
+  /// Plus icon.
   plus,
+
+  /// Chevron pointing to the right.
   chevronRight,
+
+  /// Pen icon.
   pen,
+
+  /// Rectangle outline.
   rectangle,
+
+  /// Eraser icon.
   eraser,
+
+  /// Copy-esque double rectangle.
   copy,
+
+  /// Paper-plane “send” icon.
   send,
 }
 
+/// Convenience constants for referencing [SketchyIconSymbol]s.
 class SketchyIcons {
+  /// Plus icon symbol.
   static const SketchyIconSymbol plus = SketchyIconSymbol.plus;
+
+  /// Right chevron symbol.
   static const SketchyIconSymbol chevronRight = SketchyIconSymbol.chevronRight;
+
+  /// Pen icon symbol.
   static const SketchyIconSymbol pen = SketchyIconSymbol.pen;
+
+  /// Rectangle icon symbol.
   static const SketchyIconSymbol rectangle = SketchyIconSymbol.rectangle;
+
+  /// Eraser icon symbol.
   static const SketchyIconSymbol eraser = SketchyIconSymbol.eraser;
+
+  /// Copy icon symbol.
   static const SketchyIconSymbol copy = SketchyIconSymbol.copy;
+
+  /// Send icon symbol.
   static const SketchyIconSymbol send = SketchyIconSymbol.send;
 }
 
+/// Custom painter-based icon rendered in the sketch style.
 class SketchyIcon extends StatelessWidget {
+  /// Creates an icon for the given [icon] symbol.
   const SketchyIcon({
     required this.icon,
     super.key,
     this.size = 20,
     this.color,
   });
+
+  /// Symbol to draw.
   final SketchyIconSymbol icon;
+
+  /// Visual size of the icon.
   final double size;
+
+  /// Optional override for the ink color.
   final Color? color;
 
   @override

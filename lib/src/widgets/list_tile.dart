@@ -4,9 +4,18 @@ import 'package:rough_flutter/rough_flutter.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
-enum SketchyTileAlignment { start, end }
+/// Alignment options for [SketchyListTile].
+enum SketchyTileAlignment {
+  /// Bubble aligns to the start (left in LTR).
+  start,
 
+  /// Bubble aligns to the end (right in LTR).
+  end,
+}
+
+/// Sketchy-styled list tile widget.
 class SketchyListTile extends StatelessWidget {
+  /// Creates a new list tile with optional leading/trailing widgets.
   const SketchyListTile({
     super.key,
     this.leading,
@@ -16,11 +25,23 @@ class SketchyListTile extends StatelessWidget {
     this.onTap,
     this.alignment = SketchyTileAlignment.start,
   });
+
+  /// Widget placed before the title.
   final Widget? leading;
+
+  /// Primary label widget.
   final Widget? title;
+
+  /// Secondary label widget.
   final Widget? subtitle;
+
+  /// Widget placed at the end of the row.
   final Widget? trailing;
+
+  /// Tap handler for the tile.
   final VoidCallback? onTap;
+
+  /// Alignment of the bubble (start for agent, end for customer, etc.).
   final SketchyTileAlignment alignment;
 
   @override

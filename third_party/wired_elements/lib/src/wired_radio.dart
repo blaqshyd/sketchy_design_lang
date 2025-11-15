@@ -54,51 +54,58 @@ class _WiredRadioState<T> extends State<WiredRadio<T>> {
   Widget build(BuildContext context) {
     _groupValue = widget.groupValue;
     _isSelected = _groupValue == widget.value;
-    return Stack(
-      children: [
-        Positioned(
-          left: 0,
-          top: 0,
-          child: SizedBox(
-            height: 48,
-            width: 48,
-            child: WiredCanvas(
-              painter: WiredCircleBase(diameterRatio: .7),
-              fillerType: RoughFilter.NoFiller,
-            ),
-          ),
-        ),
-        if (_isSelected)
-          Positioned(
-            left: 12,
-            top: 12,
-            child: SizedBox(
-              height: 24,
-              width: 24,
-              child: WiredCanvas(
-                painter: WiredCircleBase(
-                  diameterRatio: .7,
-                  fillColor: textColor,
+    return SizedBox(
+      height: 48,
+      width: 48,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _handleTap,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 0,
+              top: 0,
+              child: SizedBox(
+                height: 48,
+                width: 48,
+                child: WiredCanvas(
+                  painter: WiredCircleBase(diameterRatio: .7),
+                  fillerType: RoughFilter.NoFiller,
                 ),
-                fillerType: RoughFilter.HachureFiller,
-                fillerConfig: FillerConfig.build(hachureGap: 1),
               ),
             ),
-          ),
-        Radio<T>(
-          value: widget.value,
-          groupValue: widget.groupValue,
-          fillColor: WidgetStateProperty.all(Colors.transparent),
-          onChanged: (value) {
-            if (widget.onChanged != null) {
-              _isSelected = widget.onChanged!(value);
-              if (_isSelected) {
-                _groupValue = value;
-              }
-            }
-          },
+            if (_isSelected)
+              Positioned(
+                left: 12,
+                top: 12,
+                child: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: WiredCanvas(
+                    painter: WiredCircleBase(
+                      diameterRatio: .7,
+                      fillColor: textColor,
+                    ),
+                    fillerType: RoughFilter.HachureFiller,
+                    fillerConfig: FillerConfig.build(hachureGap: 1),
+                  ),
+                ),
+              ),
+          ],
         ),
-      ],
+      ),
     );
+  }
+
+  void _handleTap() {
+    if (widget.onChanged == null) return;
+    final selected = widget.onChanged!(widget.value);
+    if (!mounted) return;
+    setState(() {
+      _isSelected = selected;
+      if (selected) {
+        _groupValue = widget.value;
+      }
+    });
   }
 }

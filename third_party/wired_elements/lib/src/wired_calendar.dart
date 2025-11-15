@@ -22,7 +22,7 @@ import 'wired_base.dart';
 /// ```
 class WiredCalendar extends StatefulWidget {
   const WiredCalendar({Key? key, this.selected, this.onSelected})
-      : super(key: key);
+    : super(key: key);
 
   /// The date to be selected.
   /// Format: "YYYYMMDD"
@@ -32,7 +32,7 @@ class WiredCalendar extends StatefulWidget {
   final void Function(String selected)? onSelected;
 
   @override
-  _WiredCalendarState createState() => _WiredCalendarState();
+  State<WiredCalendar> createState() => _WiredCalendarState();
 }
 
 class _WiredCalendarState extends State<WiredCalendar> {
@@ -49,7 +49,7 @@ class _WiredCalendarState extends State<WiredCalendar> {
     'September',
     'October',
     'November',
-    'December'
+    'December',
   ];
 
   DateTime _firstOfMonthDate = DateTime.now();
@@ -68,18 +68,16 @@ class _WiredCalendarState extends State<WiredCalendar> {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            _buildWeekdaysNav(),
-            const SizedBox(height: 20),
-            _buildWeeksHeaderUI(),
-            Expanded(
-              child: _buildWeekdaysUI(),
-            ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.all(10),
+    child: Column(
+      children: [
+        _buildWeekdaysNav(),
+        const SizedBox(height: 20),
+        _buildWeeksHeaderUI(),
+        Expanded(child: _buildWeekdaysUI()),
+      ],
+    ),
+  );
 
   void _refresh() {
     _setInitialConditions();
@@ -87,47 +85,39 @@ class _WiredCalendarState extends State<WiredCalendar> {
   }
 
   Padding _buildWeekdaysNav() => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        InkWell(
+          onTap: _onPre,
+          child: _wiredText('<<', fontWeight: FontWeight.bold, fontSize: 24),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: _onPre,
-              child: _wiredText(
-                '<<',
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
-            _wiredText(
-              _monthYear,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-            InkWell(
-              onTap: _onNext,
-              child: _wiredText(
-                '>>',
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
-          ],
+        _wiredText(_monthYear, fontWeight: FontWeight.bold, fontSize: 22),
+        InkWell(
+          onTap: _onNext,
+          child: _wiredText('>>', fontWeight: FontWeight.bold, fontSize: 24),
         ),
-      );
+      ],
+    ),
+  );
 
   void _onPre() {
-    _firstOfMonthDate =
-        DateTime(_firstOfMonthDate.year, _firstOfMonthDate.month - 1, 1);
+    _firstOfMonthDate = DateTime(
+      _firstOfMonthDate.year,
+      _firstOfMonthDate.month - 1,
+      1,
+    );
     _computeCalendar();
     setState(() {});
   }
 
   void _onNext() {
-    _firstOfMonthDate =
-        DateTime(_firstOfMonthDate.year, _firstOfMonthDate.month + 1, 1);
+    _firstOfMonthDate = DateTime(
+      _firstOfMonthDate.year,
+      _firstOfMonthDate.month + 1,
+      1,
+    );
     _computeCalendar();
     setState(() {});
   }
@@ -136,11 +126,7 @@ class _WiredCalendarState extends State<WiredCalendar> {
     final headers = <Widget>[];
     for (final weekday in _weekdaysShort) {
       headers.add(
-        _buildCell(
-          weekday,
-          fontWeight: FontWeight.bold,
-          fontSize: 18.0,
-        ),
+        _buildCell(weekday, fontWeight: FontWeight.bold, fontSize: 18.0),
       );
     }
 
@@ -174,10 +160,7 @@ class _WiredCalendarState extends State<WiredCalendar> {
       );
     }
 
-    return GridView.count(
-      crossAxisCount: 7,
-      children: [...weekdays],
-    );
+    return GridView.count(crossAxisCount: 7, children: [...weekdays]);
   }
 
   void _initParams() {
@@ -203,19 +186,23 @@ class _WiredCalendarState extends State<WiredCalendar> {
     _monthYear =
         '${_months[_firstOfMonthDate.month - 1]} ${_firstOfMonthDate.year}';
 
-    final firstDayInMonth =
-        DateTime(_firstOfMonthDate.year, _firstOfMonthDate.month, 1);
+    final firstDayInMonth = DateTime(
+      _firstOfMonthDate.year,
+      _firstOfMonthDate.month,
+      1,
+    );
     var dayInMonthOffset = 0 - (firstDayInMonth.weekday % 7);
     final amountOfWeeks =
         (DateTime(_firstOfMonthDate.year, _firstOfMonthDate.month + 1, 0).day -
-                dayInMonthOffset) /
-            7;
+            dayInMonthOffset) /
+        7;
 
     _weeks.clear();
     for (var weekIndex = 0; weekIndex < amountOfWeeks; weekIndex++) {
       for (var dayOfWeekIndex = 0; dayOfWeekIndex < 7; dayOfWeekIndex++) {
         final day = DateTime.fromMillisecondsSinceEpoch(
-            firstDayInMonth.millisecondsSinceEpoch + DAY * dayInMonthOffset);
+          firstDayInMonth.millisecondsSinceEpoch + DAY * dayInMonthOffset,
+        );
         final formatedDate = _format(day);
 
         _weeks.add(
@@ -244,36 +231,21 @@ class _WiredCalendarState extends State<WiredCalendar> {
     fontWeight = FontWeight.w500,
     fontSize = 20.0,
     color = textColor,
-  }) =>
-      selected
-          ? Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  width: width,
-                  height: height,
-                  child: WiredCanvas(
-                    painter: WiredCircleBase(diameterRatio: .8),
-                    fillerType: RoughFilter.NoFiller,
-                  ),
-                ),
-                SizedBox(
-                  width: width,
-                  height: height,
-                  child: Center(
-                    child: _wiredText(
-                      text,
-                      fontWeight: fontWeight,
-                      fontSize: fontSize,
-                      color: color,
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : SizedBox(
+  }) => selected
+      ? Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned(
+              left: 0,
+              top: 0,
+              width: width,
+              height: height,
+              child: WiredCanvas(
+                painter: WiredCircleBase(diameterRatio: .8),
+                fillerType: RoughFilter.NoFiller,
+              ),
+            ),
+            SizedBox(
               width: width,
               height: height,
               child: Center(
@@ -284,24 +256,37 @@ class _WiredCalendarState extends State<WiredCalendar> {
                   color: color,
                 ),
               ),
-            );
+            ),
+          ],
+        )
+      : SizedBox(
+          width: width,
+          height: height,
+          child: Center(
+            child: _wiredText(
+              text,
+              fontWeight: fontWeight,
+              fontSize: fontSize,
+              color: color,
+            ),
+          ),
+        );
 
   Text _wiredText(
     String text, {
     FontWeight fontWeight = FontWeight.w500,
     double fontSize = 18.0,
     Color color = textColor,
-  }) =>
-      Text(
-        text,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: 'Architects Daughter',
-          fontWeight: fontWeight,
-          fontSize: fontSize,
-          color: color,
-        ),
-      );
+  }) => Text(
+    text,
+    textAlign: TextAlign.center,
+    style: TextStyle(
+      fontFamily: 'Architects Daughter',
+      fontWeight: fontWeight,
+      fontSize: fontSize,
+      color: color,
+    ),
+  );
 
   String _format(DateTime d) =>
       '${d.year}${d.month.toString().padLeft(2, '0')}${d.day.toString().padLeft(2, '0')}';

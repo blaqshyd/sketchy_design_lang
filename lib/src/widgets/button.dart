@@ -4,9 +4,21 @@ import 'package:rough_flutter/rough_flutter.dart';
 import '../theme/sketchy_theme.dart';
 import '../theme/sketchy_typography.dart';
 
-enum SketchyButtonVariant { primary, secondary, ghost }
+/// Available button variants.
+enum SketchyButtonVariant {
+  /// Filled accent button.
+  primary,
 
+  /// Muted secondary button.
+  secondary,
+
+  /// Transparent ghost button.
+  ghost,
+}
+
+/// Rough-styled button used throughout the Sketchy widget set.
 class SketchyButton extends StatelessWidget {
+  /// Shared private constructor for the named factories.
   const SketchyButton._({
     required this.label,
     required this.onPressed,
@@ -14,6 +26,7 @@ class SketchyButton extends StatelessWidget {
     super.key,
   });
 
+  /// Creates a filled primary button.
   const SketchyButton.primary({
     required String label,
     Key? key,
@@ -25,6 +38,7 @@ class SketchyButton extends StatelessWidget {
          variant: SketchyButtonVariant.primary,
        );
 
+  /// Creates a secondary button with a muted fill.
   const SketchyButton.secondary({
     required String label,
     Key? key,
@@ -36,6 +50,7 @@ class SketchyButton extends StatelessWidget {
          variant: SketchyButtonVariant.secondary,
        );
 
+  /// Creates a ghost button with a transparent fill.
   const SketchyButton.ghost({
     required String label,
     Key? key,
@@ -46,8 +61,14 @@ class SketchyButton extends StatelessWidget {
          onPressed: onPressed,
          variant: SketchyButtonVariant.ghost,
        );
+
+  /// Text rendered inside the button.
   final String label;
+
+  /// Callback invoked when the button is pressed.
   final VoidCallback? onPressed;
+
+  /// Visual style applied to the button.
   final SketchyButtonVariant variant;
 
   @override
