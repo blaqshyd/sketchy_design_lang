@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired checkbox.
 ///
@@ -43,33 +43,42 @@ class _WiredCheckboxState extends State<WiredCheckbox> with WiredRepaintMixin {
 
   @override
   Widget build(BuildContext context) =>
-      buildWiredElement(key: widget.key, child: _buildWidget());
+      buildWiredElement(key: widget.key, child: _buildWidget(context));
 
-  Widget _buildWidget() => Container(
-    padding: EdgeInsets.zero,
-    height: 27,
-    width: 27,
-    decoration: const RoughBoxDecoration(
-      shape: RoughBoxShape.rectangle,
-      borderStyle: RoughDrawingStyle(width: 1, color: borderColor),
-    ),
-    child: SizedBox(
-      height: double.infinity,
-      child: Transform.scale(
-        // Checkbox default size is 18.0, so 18.0 * 1.5 = 27 for the outer Container's width & height
-        scale: 1.5,
-        child: Checkbox(
-          fillColor: WidgetStateProperty.all(Colors.transparent),
-          checkColor: borderColor,
-          onChanged: (value) {
-            setState(() {
-              widget.onChanged(value);
-              _value = value!;
-            });
-          },
-          value: _value,
+  Widget _buildWidget(BuildContext context) {
+    final theme = WiredTheme.of(context);
+    return Container(
+      padding: EdgeInsets.zero,
+      height: 27,
+      width: 27,
+      decoration: RoughBoxDecoration(
+        shape: RoughBoxShape.rectangle,
+        borderStyle: RoughDrawingStyle(
+          width: theme.strokeWidth,
+          color: theme.borderColor,
         ),
       ),
-    ),
-  );
+      child: SizedBox(
+        height: double.infinity,
+        child: Transform.scale(
+          scale: 1.5,
+          child: Checkbox(
+            fillColor: WidgetStateProperty.all(Colors.transparent),
+            checkColor: theme.borderColor,
+            side: BorderSide(
+              color: theme.borderColor,
+              width: theme.strokeWidth,
+            ),
+            onChanged: (value) {
+              setState(() {
+                widget.onChanged(value);
+                _value = value!;
+              });
+            },
+            value: _value,
+          ),
+        ),
+      ),
+    );
+  }
 }

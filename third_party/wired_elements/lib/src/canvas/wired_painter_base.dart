@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import '../../rough/rough.dart';
+import '../wired_theme.dart';
 
 abstract class WiredPainterBase {
   void paintRough(
@@ -8,5 +9,6 @@ abstract class WiredPainterBase {
     Size size,
     DrawConfig drawConfig,
     Filler filler,
+    WiredThemeData theme,
   );
 }

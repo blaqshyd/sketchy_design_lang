@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'canvas/wired_canvas.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired calendar.
 ///
@@ -57,13 +57,26 @@ class _WiredCalendarState extends State<WiredCalendar> {
   String _monthYear = '';
 
   String? _selected;
+  late WiredThemeData _theme;
+  bool _didInitTheme = false;
 
   @override
   void initState() {
     super.initState();
 
     _initParams();
-    _refresh();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _theme = WiredTheme.of(context);
+    if (!_didInitTheme) {
+      _refresh();
+      _didInitTheme = true;
+    } else {
+      setState(() {});
+    }
   }
 
   @override
@@ -212,8 +225,8 @@ class _WiredCalendarState extends State<WiredCalendar> {
             selected: _selected != null && day == DateTime.parse(_selected!),
             dimmed: day.month != firstDayInMonth.month,
             color: day.month == firstDayInMonth.month
-                ? textColor
-                : disabledTextColor,
+                ? _theme.textColor
+                : _theme.disabledTextColor,
             disabled: false,
           ),
         );
@@ -230,7 +243,7 @@ class _WiredCalendarState extends State<WiredCalendar> {
     height = 50.0,
     fontWeight = FontWeight.w500,
     fontSize = 20.0,
-    color = textColor,
+    Color? color,
   }) => selected
       ? Stack(
           fit: StackFit.expand,
@@ -241,7 +254,10 @@ class _WiredCalendarState extends State<WiredCalendar> {
               width: width,
               height: height,
               child: WiredCanvas(
-                painter: WiredCircleBase(diameterRatio: .8),
+                painter: WiredCircleBase(
+                  diameterRatio: .8,
+                  strokeColor: _theme.borderColor,
+                ),
                 fillerType: RoughFilter.NoFiller,
               ),
             ),
@@ -276,15 +292,15 @@ class _WiredCalendarState extends State<WiredCalendar> {
     String text, {
     FontWeight fontWeight = FontWeight.w500,
     double fontSize = 18.0,
-    Color color = textColor,
+    Color? color,
   }) => Text(
     text,
     textAlign: TextAlign.center,
     style: TextStyle(
-      fontFamily: 'Architects Daughter',
+      fontFamily: _theme.fontFamily,
       fontWeight: fontWeight,
       fontSize: fontSize,
-      color: color,
+      color: color ?? _theme.textColor,
     ),
   );
 
@@ -304,7 +320,7 @@ class CalendarCell {
     required this.text,
     required this.selected,
     required this.dimmed,
-    this.color = textColor,
+    required this.color,
     this.disabled = false,
   });
   final String value;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'canvas/wired_canvas.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired input.
 ///
@@ -55,9 +56,19 @@ class WiredInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = WiredTheme.of(context);
+    final effectiveLabelStyle =
+        labelStyle ??
+        TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
+    final effectiveStyle =
+        style ??
+        TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
+    final effectiveHintStyle =
+        hintStyle ??
+        TextStyle(fontFamily: theme.fontFamily, color: theme.disabledTextColor);
     return Row(
       children: [
-        if (labelText != null) Text('$labelText', style: labelStyle),
+        if (labelText != null) Text('$labelText', style: effectiveLabelStyle),
         if (labelText != null) const SizedBox(width: 10),
         Expanded(
           child: Stack(
@@ -71,11 +82,11 @@ class WiredInput extends StatelessWidget {
               ),
               TextField(
                 controller: controller,
-                style: style,
+                style: effectiveStyle,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hintText,
-                  hintStyle: hintStyle,
+                  hintStyle: effectiveHintStyle,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                 ),
                 onChanged: onChanged,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
 import 'canvas/wired_canvas.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired toggle
 class WiredToggle extends StatefulWidget {
@@ -53,36 +53,43 @@ class _WiredToggleState extends State<WiredToggle>
           }
         }
       },
-      child: _buildSwicher(),
+      child: _buildSwicher(context),
     ),
   );
 
-  Widget _buildSwicher() => Stack(
-    clipBehavior: Clip.none,
-    children: [
-      Positioned(
-        left: _animation.value,
-        top: -_thumbRadius / 2,
-        child: SizedBox(
-          height: _thumbRadius * 2,
-          width: _thumbRadius * 2,
-          child: WiredCanvas(
-            painter: WiredCircleBase(diameterRatio: .7, fillColor: textColor),
-            fillerType: RoughFilter.HachureFiller,
-            fillerConfig: FillerConfig.build(hachureGap: 1),
+  Widget _buildSwicher(BuildContext context) {
+    final theme = WiredTheme.of(context);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          left: _animation.value,
+          top: -_thumbRadius / 2,
+          child: SizedBox(
+            height: _thumbRadius * 2,
+            width: _thumbRadius * 2,
+            child: WiredCanvas(
+              painter: WiredCircleBase(
+                diameterRatio: .7,
+                fillColor: theme.textColor,
+                strokeColor: theme.textColor,
+              ),
+              fillerType: RoughFilter.HachureFiller,
+              fillerConfig: FillerConfig.build(hachureGap: 1),
+            ),
           ),
         ),
-      ),
-      SizedBox(
-        width: _thumbRadius * 2.5,
-        height: _thumbRadius,
-        child: WiredCanvas(
-          painter: WiredRectangleBase(),
-          fillerType: RoughFilter.NoFiller,
+        SizedBox(
+          width: _thumbRadius * 2.5,
+          height: _thumbRadius,
+          child: WiredCanvas(
+            painter: WiredRectangleBase(strokeColor: theme.borderColor),
+            fillerType: RoughFilter.NoFiller,
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 
   void _toggle() {
     _isSwitched ? _controller.forward() : _controller.reverse();

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
 import 'canvas/wired_canvas.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired slider.
 ///
@@ -90,61 +90,69 @@ class _WiredSliderState extends State<WiredSlider> {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-    alignment: Alignment.center,
-    children: [
-      SizedBox(
-        height: 1,
-        width: double.infinity,
-        child: WiredCanvas(
-          painter: WiredLineBase(
-            x1: 0,
-            y1: 0,
-            x2: double.infinity,
-            y2: 0,
-            strokeWidth: 2,
-          ),
-          fillerType: RoughFilter.HatchFiller,
-        ),
-      ),
-      Positioned(
-        left: _getWidth() * _currentSliderValue / widget.max - 12,
-        child: SizedBox(
-          height: 24,
-          width: 24,
+  Widget build(BuildContext context) {
+    final theme = WiredTheme.of(context);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SizedBox(
+          height: 1,
+          width: double.infinity,
           child: WiredCanvas(
-            painter: WiredCircleBase(diameterRatio: .7, fillColor: textColor),
-            fillerType: RoughFilter.HachureFiller,
-            fillerConfig: FillerConfig.build(hachureGap: 1),
+            painter: WiredLineBase(
+              x1: 0,
+              y1: 0,
+              x2: double.infinity,
+              y2: 0,
+              strokeWidth: theme.strokeWidth,
+              color: theme.borderColor,
+            ),
+            fillerType: RoughFilter.HatchFiller,
           ),
         ),
-      ),
-      SliderTheme(
-        data: SliderThemeData(trackShape: CustomTrackShape()),
-        child: Slider(
-          value: _currentSliderValue,
-          min: widget.min,
-          max: widget.max,
-          activeColor: Colors.transparent,
-          inactiveColor: Colors.transparent,
-          divisions: widget.divisions,
-          label: widget.label,
-          onChanged: (value) {
-            var result = false;
-            if (widget.onChanged != null) {
-              result = widget.onChanged!(value);
-            }
-
-            if (result) {
-              setState(() {
-                _currentSliderValue = value;
-              });
-            }
-          },
+        Positioned(
+          left: _getWidth() * _currentSliderValue / widget.max - 12,
+          child: SizedBox(
+            height: 24,
+            width: 24,
+            child: WiredCanvas(
+              painter: WiredCircleBase(
+                diameterRatio: .7,
+                fillColor: theme.textColor,
+                strokeColor: theme.textColor,
+              ),
+              fillerType: RoughFilter.HachureFiller,
+              fillerConfig: FillerConfig.build(hachureGap: 1),
+            ),
+          ),
         ),
-      ),
-    ],
-  );
+        SliderTheme(
+          data: SliderThemeData(trackShape: CustomTrackShape()),
+          child: Slider(
+            value: _currentSliderValue,
+            min: widget.min,
+            max: widget.max,
+            activeColor: Colors.transparent,
+            inactiveColor: Colors.transparent,
+            divisions: widget.divisions,
+            label: widget.label,
+            onChanged: (value) {
+              var result = false;
+              if (widget.onChanged != null) {
+                result = widget.onChanged!(value);
+              }
+
+              if (result) {
+                setState(() {
+                  _currentSliderValue = value;
+                });
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   double _getWidth() {
     double width = 0;

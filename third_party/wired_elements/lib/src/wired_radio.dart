@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
 import 'canvas/wired_canvas.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired radio.
 ///
@@ -54,6 +54,7 @@ class _WiredRadioState<T> extends State<WiredRadio<T>> {
   Widget build(BuildContext context) {
     _groupValue = widget.groupValue;
     _isSelected = _groupValue == widget.value;
+    final theme = WiredTheme.of(context);
     return SizedBox(
       height: 48,
       width: 48,
@@ -69,7 +70,10 @@ class _WiredRadioState<T> extends State<WiredRadio<T>> {
                 height: 48,
                 width: 48,
                 child: WiredCanvas(
-                  painter: WiredCircleBase(diameterRatio: .7),
+                  painter: WiredCircleBase(
+                    diameterRatio: .7,
+                    strokeColor: theme.borderColor,
+                  ),
                   fillerType: RoughFilter.NoFiller,
                 ),
               ),
@@ -84,7 +88,8 @@ class _WiredRadioState<T> extends State<WiredRadio<T>> {
                   child: WiredCanvas(
                     painter: WiredCircleBase(
                       diameterRatio: .7,
-                      fillColor: textColor,
+                      fillColor: theme.textColor,
+                      strokeColor: theme.textColor,
                     ),
                     fillerType: RoughFilter.HachureFiller,
                     fillerConfig: FillerConfig.build(hachureGap: 1),

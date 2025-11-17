@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../rough/rough.dart';
+import '../wired_theme.dart';
 import 'wired_painter.dart';
 import 'wired_painter_base.dart';
 
@@ -21,13 +22,17 @@ class WiredCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveDrawConfig = drawConfig ?? DrawConfig.defaultValues;
+    final wiredTheme = WiredTheme.of(context);
+    final baseConfig = drawConfig ?? DrawConfig.defaultValues;
+    final effectiveDrawConfig = baseConfig.copyWith(
+      roughness: wiredTheme.roughness,
+    );
     final effectiveFillerConfig = fillerConfig ?? FillerConfig.defaultConfig;
 
     final filler = _filters[fillerType]!.call(effectiveFillerConfig);
     return CustomPaint(
       size: size == null ? Size.infinite : size!,
-      painter: WiredPainter(effectiveDrawConfig, filler, painter),
+      painter: WiredPainter(effectiveDrawConfig, filler, painter, wiredTheme),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../rough/rough.dart';
 
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired button.
 ///
@@ -26,20 +26,30 @@ class WiredButton extends WiredBaseWidget {
   final void Function() onPressed;
 
   @override
-  Widget buildWiredElement() => Container(
-    padding: EdgeInsets.zero,
-    height: 42,
-    decoration: const RoughBoxDecoration(
-      shape: RoughBoxShape.rectangle,
-      borderStyle: RoughDrawingStyle(width: 1, color: borderColor),
-    ),
-    child: SizedBox(
-      height: double.infinity,
-      child: TextButton(
-        style: TextButton.styleFrom(foregroundColor: textColor),
-        onPressed: onPressed,
-        child: child,
+  @override
+  Widget buildWiredElement(BuildContext context) {
+    final theme = WiredTheme.of(context);
+    return Container(
+      padding: EdgeInsets.zero,
+      height: 42,
+      decoration: RoughBoxDecoration(
+        shape: RoughBoxShape.rectangle,
+        borderStyle: RoughDrawingStyle(
+          width: theme.strokeWidth,
+          color: theme.borderColor,
+        ),
       ),
-    ),
-  );
+      child: SizedBox(
+        height: double.infinity,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: theme.textColor,
+            textStyle: TextStyle(fontFamily: theme.fontFamily),
+          ),
+          onPressed: onPressed,
+          child: child,
+        ),
+      ),
+    );
+  }
 }

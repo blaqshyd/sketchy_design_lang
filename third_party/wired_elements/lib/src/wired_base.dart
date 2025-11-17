@@ -2,40 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
 import 'canvas/wired_painter_base.dart';
-import 'const.dart';
-import 'wired_button.dart';
+import 'wired_theme.dart';
 
-/// The utils for all wired widgets
-class WiredBase {
-  /// Default path painter for canvas
-  static final Paint pathPaint = Paint()
-    ..color = borderColor
-    ..style = PaintingStyle.stroke
-    ..isAntiAlias = true
-    ..strokeCap = StrokeCap.square
-    ..strokeWidth = 1;
+Paint _strokePaint(Color color, double width) => Paint()
+  ..color = color
+  ..style = PaintingStyle.stroke
+  ..isAntiAlias = true
+  ..strokeCap = StrokeCap.square
+  ..strokeWidth = width;
 
-  /// Default fill painter for canvas
-  static final Paint fillPaint = Paint()
-    ..color = filledColor
-    ..style = PaintingStyle.stroke
-    ..isAntiAlias = true
-    ..strokeWidth = 1;
-
-  /// The fill painter for canvas with [color]
-  static Paint fillPainter(Color color) => Paint()
-    ..color = color
-    ..style = PaintingStyle.stroke
-    ..isAntiAlias = true
-    ..strokeWidth = 1;
-
-  /// The path painter for canvas with [strokeWidth]
-  static Paint pathPainter(double strokeWidth) => Paint()
-    ..color = borderColor
-    ..style = PaintingStyle.stroke
-    ..isAntiAlias = true
-    ..strokeWidth = strokeWidth;
-}
+Paint _fillPaint(Color color) => Paint()
+  ..color = color
+  ..style = PaintingStyle.stroke
+  ..isAntiAlias = true
+  ..strokeWidth = 1;
 
 /// The wired base widget usually being extends by specific wired widgets like
 /// [WiredButton] for the purpose of isolates repaints.
@@ -49,10 +29,10 @@ abstract class WiredBaseWidget extends StatelessWidget {
   /// Wrap with [RepaintBoundary] to isolates repaints.
   @override
   Widget build(BuildContext context) =>
-      RepaintBoundary(key: key, child: buildWiredElement());
+      RepaintBoundary(key: key, child: buildWiredElement(context));
 
   /// The method for extended widget to implement to build widgets.
-  Widget buildWiredElement();
+  Widget buildWiredElement(BuildContext context);
 }
 
 /// Mixin to wrap content with a [RepaintBoundary] to isolate repaints.
@@ -66,7 +46,9 @@ class WiredRectangleBase extends WiredPainterBase {
   WiredRectangleBase({
     this.leftIndent = 0.0,
     this.rightIndent = 0.0,
-    this.fillColor = filledColor,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth,
   });
 
   /// The amount of empty space to the leading edge of the rectangle.
@@ -75,7 +57,9 @@ class WiredRectangleBase extends WiredPainterBase {
   /// The amount of empty space to the trailing edge of the rectangle.
   final double rightIndent;
 
-  final Color fillColor;
+  final Color? fillColor;
+  final Color? strokeColor;
+  final double? strokeWidth;
 
   @override
   void paintRough(
@@ -83,6 +67,7 @@ class WiredRectangleBase extends WiredPainterBase {
     Size size,
     DrawConfig drawConfig,
     Filler filler,
+    WiredThemeData theme,
   ) {
     final generator = Generator(drawConfig, filler);
 
@@ -92,22 +77,34 @@ class WiredRectangleBase extends WiredPainterBase {
       size.width - leftIndent - rightIndent,
       size.height,
     );
-    canvas.drawRough(
-      figure,
-      WiredBase.pathPaint,
-      WiredBase.fillPainter(fillColor),
+    final stroke = _strokePaint(
+      strokeColor ?? theme.borderColor,
+      strokeWidth ?? theme.strokeWidth,
     );
+    final fill = _fillPaint(fillColor ?? theme.fillColor);
+    canvas.drawRough(figure, stroke, fill);
   }
 }
 
 /// Base wired inverted triangle.
 class WiredInvertedTriangleBase extends WiredPainterBase {
+  WiredInvertedTriangleBase({
+    this.strokeColor,
+    this.fillColor,
+    this.strokeWidth,
+  });
+
+  final Color? strokeColor;
+  final Color? fillColor;
+  final double? strokeWidth;
+
   @override
   void paintRough(
     Canvas canvas,
     Size size,
     DrawConfig drawConfig,
     Filler filler,
+    WiredThemeData theme,
   ) {
     final generator = Generator(drawConfig, filler);
 
@@ -117,11 +114,12 @@ class WiredInvertedTriangleBase extends WiredPainterBase {
       PointD(size.width / 2, size.height),
     ];
     final figure = generator.polygon(points);
-    canvas.drawRough(
-      figure,
-      WiredBase.pathPaint,
-      WiredBase.fillPainter(borderColor),
+    final stroke = _strokePaint(
+      strokeColor ?? theme.borderColor,
+      strokeWidth ?? theme.strokeWidth,
     );
+    final fill = _fillPaint(fillColor ?? theme.fillColor);
+    canvas.drawRough(figure, stroke, fill);
   }
 }
 
@@ -136,12 +134,14 @@ class WiredLineBase extends WiredPainterBase {
     required this.x2,
     required this.y2,
     this.strokeWidth = 1,
+    this.color,
   });
   final double x1;
   final double y1;
   final double x2;
   final double y2;
   final double strokeWidth;
+  final Color? color;
 
   @override
   void paintRough(
@@ -149,6 +149,7 @@ class WiredLineBase extends WiredPainterBase {
     Size size,
     DrawConfig drawConfig,
     Filler filler,
+    WiredThemeData theme,
   ) {
     var startX = x1;
     var startY = y1;
@@ -167,11 +168,8 @@ class WiredLineBase extends WiredPainterBase {
     final generator = Generator(drawConfig, filler);
 
     final figure = generator.line(startX, startY, endX, endY);
-    canvas.drawRough(
-      figure,
-      WiredBase.pathPainter(strokeWidth),
-      WiredBase.fillPaint,
-    );
+    final stroke = _strokePaint(color ?? theme.borderColor, strokeWidth);
+    canvas.drawRough(figure, stroke, _fillPaint(theme.fillColor));
   }
 }
 
@@ -179,9 +177,16 @@ class WiredLineBase extends WiredPainterBase {
 ///
 /// If [diameterRatio] = 1, then the diameter of circle is the canvas's width.
 class WiredCircleBase extends WiredPainterBase {
-  WiredCircleBase({this.diameterRatio = 1, this.fillColor = filledColor});
+  WiredCircleBase({
+    this.diameterRatio = 1,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth,
+  });
   final double diameterRatio;
-  final Color fillColor;
+  final Color? fillColor;
+  final Color? strokeColor;
+  final double? strokeWidth;
 
   @override
   void paintRough(
@@ -189,6 +194,7 @@ class WiredCircleBase extends WiredPainterBase {
     Size size,
     DrawConfig drawConfig,
     Filler filler,
+    WiredThemeData theme,
   ) {
     final generator = Generator(drawConfig, filler);
 
@@ -199,10 +205,11 @@ class WiredCircleBase extends WiredPainterBase {
           ? size.width * diameterRatio
           : size.height * diameterRatio,
     );
-    canvas.drawRough(
-      figure,
-      WiredBase.pathPaint,
-      WiredBase.fillPainter(fillColor),
+    final stroke = _strokePaint(
+      strokeColor ?? theme.borderColor,
+      strokeWidth ?? theme.strokeWidth,
     );
+    final fill = _fillPaint(fillColor ?? theme.fillColor);
+    canvas.drawRough(figure, stroke, fill);
   }
 }

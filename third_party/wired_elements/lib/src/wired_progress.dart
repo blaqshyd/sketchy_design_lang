@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../rough/rough.dart';
 import 'canvas/wired_canvas.dart';
-import 'const.dart';
 import 'wired_base.dart';
+import 'wired_theme.dart';
 
 /// Wired progress
 ///
@@ -58,9 +58,10 @@ class _WiredProgressState extends State<WiredProgress> with WiredRepaintMixin {
 
   @override
   Widget build(BuildContext context) =>
-      buildWiredElement(child: _buildWidget());
+      buildWiredElement(child: _buildWidget(context));
 
-  Widget _buildWidget() {
+  Widget _buildWidget(BuildContext context) {
+    final theme = WiredTheme.of(context);
     _width = _getWidth();
 
     return Stack(
@@ -69,7 +70,10 @@ class _WiredProgressState extends State<WiredProgress> with WiredRepaintMixin {
           height: _progressHeight,
           width: _width * _animation.value,
           child: WiredCanvas(
-            painter: WiredRectangleBase(fillColor: borderColor),
+            painter: WiredRectangleBase(
+              fillColor: theme.borderColor,
+              strokeColor: theme.borderColor,
+            ),
             fillerType: RoughFilter.HachureFiller,
             fillerConfig: FillerConfig.build(hachureGap: 1.5),
           ),
@@ -78,7 +82,7 @@ class _WiredProgressState extends State<WiredProgress> with WiredRepaintMixin {
           height: _progressHeight,
           width: _width,
           child: WiredCanvas(
-            painter: WiredRectangleBase(),
+            painter: WiredRectangleBase(strokeColor: theme.borderColor),
             fillerType: RoughFilter.NoFiller,
           ),
         ),

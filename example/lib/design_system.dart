@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 import 'package:wired_elements/wired_elements.dart';
 
-SketchyThemeData _resolveSketchyTheme(SketchyColorMode mode, bool isDark) {
-  final base = SketchyThemeData.fromMode(mode);
-  if (!isDark) return base;
-  final swappedColors = base.colors.copyWith(
-    primary: base.colors.secondary,
-    secondary: base.colors.primary,
-    paper: SketchyPalette.charcoal,
-    ink: SketchyPalette.white,
-  );
-  return base.copyWith(colors: swappedColors);
+SketchyThemeData _resolveSketchyTheme(
+  SketchyColorMode mode,
+  bool isDark,
+  double roughness,
+) {
+  final base = SketchyThemeData.fromMode(mode, roughness: roughness);
+  var colors = base.colors;
+  if (isDark) {
+    colors = colors.copyWith(
+      primary: colors.secondary,
+      secondary: colors.primary,
+    );
+  }
+  colors = colors.copyWith(ink: colors.primary, paper: colors.secondary);
+  return base.copyWith(colors: colors);
 }
 
 ThemeData _materialThemeFromSketchy(
@@ -66,6 +71,25 @@ ThemeData _materialThemeFromSketchy(
   );
 }
 
+WiredThemeData _wiredThemeFromSketchy(
+  SketchyThemeData sketchyTheme,
+  bool isDark,
+) {
+  final primary = sketchyTheme.colors.primary;
+  final fill = sketchyTheme.colors.paper;
+  final disabled = primary.withValues(alpha: 0.4);
+  final wiredRoughness = 0.2 + sketchyTheme.roughness * 1.6;
+  return WiredThemeData(
+    borderColor: primary,
+    fillColor: fill,
+    textColor: primary,
+    disabledTextColor: disabled,
+    strokeWidth: sketchyTheme.strokeWidth,
+    fontFamily: sketchyTheme.typography.body.fontFamily ?? 'ComicShanns',
+    roughness: wiredRoughness,
+  );
+}
+
 class PaletteOption {
   const PaletteOption({
     required this.id,
@@ -92,6 +116,7 @@ class SketchyApp extends StatefulWidget {
 class _SketchyAppState extends State<SketchyApp> {
   bool _isDark = false;
   String _activePaletteId = 'monochrome';
+  double _roughness = 0.5;
 
   static const List<PaletteOption> _palettes = <PaletteOption>[
     PaletteOption(
@@ -113,7 +138,11 @@ class _SketchyAppState extends State<SketchyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final sketchyTheme = _resolveSketchyTheme(_activePalette.mode, _isDark);
+    final sketchyTheme = _resolveSketchyTheme(
+      _activePalette.mode,
+      _isDark,
+      _roughness,
+    );
     final materialTheme = _materialThemeFromSketchy(sketchyTheme, _isDark);
 
     return MaterialApp(
@@ -122,13 +151,17 @@ class _SketchyAppState extends State<SketchyApp> {
       theme: materialTheme,
       builder: (context, child) {
         final content = child ?? const SizedBox.shrink();
+        final wired = WiredTheme(
+          data: _wiredThemeFromSketchy(sketchyTheme, _isDark),
+          child: content,
+        );
         return SketchyTheme(
           data: sketchyTheme,
           child: DefaultTextStyle(
             style: sketchyTheme.typography.body.copyWith(
               color: sketchyTheme.colors.ink,
             ),
-            child: content,
+            child: wired,
           ),
         );
       },
@@ -136,11 +169,15 @@ class _SketchyAppState extends State<SketchyApp> {
         palette: _activePalette,
         palettes: _palettes,
         isDark: _isDark,
+        roughness: _roughness,
         onThemeChanged: (id) {
           setState(() => _activePaletteId = id);
         },
         onToggleDarkMode: () {
           setState(() => _isDark = !_isDark);
+        },
+        onRoughnessChanged: (value) {
+          setState(() => _roughness = value.clamp(0.0, 1.0));
         },
       ),
     );
@@ -154,6 +191,8 @@ class SketchyDesignSystemPage extends StatefulWidget {
     required this.isDark,
     required this.onToggleDarkMode,
     required this.onThemeChanged,
+    required this.roughness,
+    required this.onRoughnessChanged,
     super.key,
   });
 
@@ -162,6 +201,8 @@ class SketchyDesignSystemPage extends StatefulWidget {
   final bool isDark;
   final VoidCallback onToggleDarkMode;
   final ValueChanged<String> onThemeChanged;
+  final double roughness;
+  final ValueChanged<double> onRoughnessChanged;
 
   @override
   State<SketchyDesignSystemPage> createState() =>
@@ -174,8 +215,6 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
   // State for the "sketchy" components
   String _selectedRadio = 'Lafayette';
   double _sliderValue = 0.2;
-  double _progressValue = 0.4;
-  Timer? _progressTimer;
   DateTime _selectedDate = DateTime(2021, 7, 22);
   bool _newsletterOptIn = true;
   bool _mascotOptIn = false;
@@ -203,7 +242,6 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
 
   @override
   void dispose() {
-    _progressTimer?.cancel();
     _nameController.dispose();
     _emailController.dispose();
     _ageController.dispose();
@@ -212,27 +250,18 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
   }
 
   void _startProgress() {
-    _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 150), (t) {
-      setState(() {
-        _progressValue += 0.02;
-        if (_progressValue >= 1.0) {
-          _progressValue = 1.0;
-          t.cancel();
-        }
-      });
-    });
+    _progressController
+      ..stop()
+      ..reset();
+    unawaited(_progressController.forward());
   }
 
   void _stopProgress() {
-    _progressTimer?.cancel();
+    _progressController.stop();
   }
 
   void _resetProgress() {
-    _progressTimer?.cancel();
-    setState(() {
-      _progressValue = 0.0;
-    });
+    _progressController.reset();
   }
 
   @override
@@ -263,8 +292,23 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
   Widget _buildHeaderRow(BuildContext context, PaletteOption palette) => Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      // Mascot
-      Image.asset('assets/images/sketchy_mascot.png', width: 96, height: 96),
+      Tooltip(
+        message: 'meh',
+        textStyle: TextStyle(
+          fontFamily: 'ComicShanns',
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Image.asset(
+          'assets/images/sketchy_mascot.png',
+          width: 96,
+          height: 96,
+        ),
+      ),
       const SizedBox(width: 16),
       Expanded(
         child: Column(
@@ -316,7 +360,11 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
         runSpacing: 12,
         children: widget.palettes.map((option) {
           final isActive = option.id == active.id;
-          final previewColors = _resolveSketchyTheme(option.mode, false).colors;
+          final previewColors = _resolveSketchyTheme(
+            option.mode,
+            false,
+            0.5,
+          ).colors;
           return GestureDetector(
             onTap: () => widget.onThemeChanged(option.id),
             child: Column(
@@ -413,6 +461,28 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
             ),
           ),
         ),
+        SizedBox(
+          width: 240,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Rough',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              WiredSlider(
+                value: widget.roughness,
+                onChanged: (value) {
+                  widget.onRoughnessChanged(value.clamp(0.0, 1.0));
+                  return true;
+                },
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -477,9 +547,13 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
                 'Cancel',
                 style: _buttonLabelStyle(
                   context,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7)
+                      : Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
               ),
               onPressed: () {},
@@ -615,7 +689,7 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        WiredProgress(controller: _progressController, value: _progressValue),
+        WiredProgress(controller: _progressController, value: 0),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -838,13 +912,7 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
     );
   }
 
-  Color _cardBorderColor(SketchyThemeData sketchy) {
-    if (!widget.isDark) return sketchy.colors.ink;
-    if (sketchy.mode == SketchyColorMode.white) {
-      return sketchy.colors.ink;
-    }
-    return sketchy.colors.secondary;
-  }
+  Color _cardBorderColor(SketchyThemeData sketchy) => sketchy.colors.primary;
 
   Widget _buildCheckboxOption({
     required String label,
