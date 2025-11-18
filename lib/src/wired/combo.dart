@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
-import 'package:rough_flutter/rough_flutter.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+import '../widgets/icons.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired combo
 ///
@@ -44,11 +45,11 @@ class SketchyCombo extends StatefulWidget {
   final Function(dynamic)? onChanged;
 
   @override
-  _SketchyComboState createState() => _SketchyComboState();
+  State<SketchyCombo> createState() => _SketchyComboState();
 }
 
 class _SketchyComboState extends State<SketchyCombo> {
-  final double _height = 60;
+  final double _height = 56;
   dynamic _value;
 
   @override
@@ -58,64 +59,36 @@ class _SketchyComboState extends State<SketchyCombo> {
   }
 
   @override
-  Widget build(BuildContext context) => _buildWidget();
-
-  Widget _buildWidget() => Container(
-    color: Colors.transparent,
-    padding: EdgeInsets.zero,
-    margin: EdgeInsets.zero,
+  Widget build(BuildContext context) => SizedBox(
     height: _height,
     child: Stack(
       children: [
-        Positioned(
-          right: 10,
-          top: 20,
-          child: WiredCanvas(
-            painter: WiredInvertedTriangleBase(),
-            fillerType: RoughFilter.HachureFiller,
-            fillerConfig: FillerConfig.build(hachureGap: 2),
-            size: const Size(18, 18),
-          ),
-        ),
-        SizedBox(
+        SketchyFrame(
           height: _height,
-          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          fill: SketchyFill.none,
           child: DropdownButtonHideUnderline(
             child: DropdownButton(
-              itemHeight: _height,
+              value: _value,
               isExpanded: true,
               elevation: 0,
-              icon: const Visibility(
-                visible: false,
-                child: Icon(Icons.arrow_downward),
-              ),
-              value: _value,
-              items: widget.items
-                  .map(
-                    (item) => DropdownMenuItem<dynamic>(
-                      value: item.value,
-                      child: Stack(
-                        children: [
-                          WiredCanvas(
-                            painter: WiredRectangleBase(),
-                            fillerType: RoughFilter.NoFiller,
-                            size: Size(double.infinity, _height),
-                          ),
-                          Positioned(top: 20, child: item.child),
-                        ],
-                      ),
-                    ),
-                  )
-                  .toList(),
+              icon: const SizedBox.shrink(),
+              items: widget.items,
               onChanged: (dynamic value) {
-                _value = value;
-                if (widget.onChanged != null) {
-                  widget.onChanged!(_value);
-                }
-
-                setState(() {});
+                setState(() {
+                  _value = value;
+                });
+                widget.onChanged?.call(_value);
               },
             ),
+          ),
+        ),
+        Positioned(
+          right: 12,
+          top: (_height - 20) / 2,
+          child: Transform.rotate(
+            angle: math.pi / 2,
+            child: const SketchyIcon(icon: SketchyIcons.chevronRight),
           ),
         ),
       ],

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
 import '../widgets/surface.dart';
-import 'wired_base.dart';
 
 /// Wired checkbox.
 ///
@@ -27,14 +26,14 @@ class SketchyCheckbox extends StatefulWidget {
   final bool? value;
 
   /// Called once the checkbox check status changes.
+  // ignore: avoid_positional_boolean_parameters
   final void Function(bool?) onChanged;
 
   @override
   State<SketchyCheckbox> createState() => _SketchyCheckboxState();
 }
 
-class _SketchyCheckboxState extends State<SketchyCheckbox>
-    with WiredRepaintMixin {
+class _SketchyCheckboxState extends State<SketchyCheckbox> {
   bool _value = false;
 
   @override
@@ -44,10 +43,7 @@ class _SketchyCheckboxState extends State<SketchyCheckbox>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      buildWiredElement(key: widget.key, child: _buildWidget(context));
-
-  Widget _buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     final theme = SketchyTheme.of(context);
     return SketchySurface(
       width: 27,
@@ -58,9 +54,7 @@ class _SketchyCheckboxState extends State<SketchyCheckbox>
       padding: EdgeInsets.zero,
       alignment: Alignment.center,
       createPrimitive: () => SketchyPrimitive.rectangle(fill: SketchyFill.none),
-      child: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
+      child: SizedBox.expand(
         child: Transform.scale(
           scale: 1.5,
           child: Checkbox(

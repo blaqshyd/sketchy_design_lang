@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:rough_flutter/rough_flutter.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+
 import '../theme/sketchy_theme.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired toggle
 class SketchyToggle extends StatefulWidget {
@@ -16,11 +17,12 @@ class SketchyToggle extends StatefulWidget {
   final ValueChanged<bool>? onChanged;
 
   @override
-  _SketchyToggleState createState() => _SketchyToggleState();
+  State<SketchyToggle> createState() => _SketchyToggleState();
 }
 
+// ignore: library_private_types_in_public_api
 class _SketchyToggleState extends State<SketchyToggle>
-    with SingleTickerProviderStateMixin, WiredRepaintMixin {
+    with SingleTickerProviderStateMixin {
   bool _isSwitched = false;
   final double _thumbRadius = 24;
   late Animation<double> _animation;
@@ -55,19 +57,17 @@ class _SketchyToggleState extends State<SketchyToggle>
   }
 
   @override
-  Widget build(BuildContext context) => buildWiredElement(
-    child: GestureDetector(
-      onTap: () {
-        final nextValue = !_isSwitched;
-        widget.onChanged?.call(nextValue);
-        _isSwitched = nextValue;
-        _toggle();
-      },
-      child: _buildSwicher(context),
-    ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () {
+      final nextValue = !_isSwitched;
+      widget.onChanged?.call(nextValue);
+      _isSwitched = nextValue;
+      _toggle();
+    },
+    child: _buildSwitcher(context),
   );
 
-  Widget _buildSwicher(BuildContext context) {
+  Widget _buildSwitcher(BuildContext context) {
     final theme = SketchyTheme.of(context);
     return Stack(
       clipBehavior: Clip.none,
@@ -78,23 +78,20 @@ class _SketchyToggleState extends State<SketchyToggle>
           child: SizedBox(
             height: _thumbRadius * 2,
             width: _thumbRadius * 2,
-            child: WiredCanvas(
-              painter: WiredCircleBase(
-                diameterRatio: .7,
-                fillColor: theme.textColor,
-                strokeColor: theme.textColor,
-              ),
-              fillerType: RoughFilter.HachureFiller,
-              fillerConfig: FillerConfig.build(hachureGap: 1),
+            child: SketchyFrame(
+              shape: SketchyFrameShape.circle,
+              fill: SketchyFill.solid,
+              fillColor: theme.colors.ink,
+              child: const SizedBox.expand(),
             ),
           ),
         ),
         SizedBox(
           width: _thumbRadius * 2.5,
           height: _thumbRadius,
-          child: WiredCanvas(
-            painter: WiredRectangleBase(strokeColor: theme.borderColor),
-            fillerType: RoughFilter.NoFiller,
+          child: const SketchyFrame(
+            fill: SketchyFill.none,
+            child: SizedBox.expand(),
           ),
         ),
       ],
@@ -102,7 +99,7 @@ class _SketchyToggleState extends State<SketchyToggle>
   }
 
   void _toggle() {
-    _isSwitched ? _controller.forward() : _controller.reverse();
+    unawaited(_isSwitched ? _controller.forward() : _controller.reverse());
   }
 
   @override

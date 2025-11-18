@@ -1,9 +1,8 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'package:rough_flutter/rough_flutter.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+
 import '../theme/sketchy_theme.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired radio.
 ///
@@ -43,9 +42,10 @@ class SketchyRadio<T> extends StatefulWidget {
   final ValueChanged<T?>? onChanged;
 
   @override
-  _SketchyRadioState<T> createState() => _SketchyRadioState<T>();
+  State<SketchyRadio<T>> createState() => _SketchyRadioState<T>();
 }
 
+// ignore: library_private_types_in_public_api
 class _SketchyRadioState<T> extends State<SketchyRadio<T>> {
   bool _isSelected = false;
   T? _groupValue;
@@ -55,47 +55,34 @@ class _SketchyRadioState<T> extends State<SketchyRadio<T>> {
     _groupValue = widget.groupValue;
     _isSelected = _groupValue == widget.value;
     final theme = SketchyTheme.of(context);
-    return SizedBox(
-      height: 48,
-      width: 48,
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: _handleTap,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _handleTap,
+      child: SizedBox(
+        height: 48,
+        width: 48,
         child: Stack(
+          alignment: Alignment.center,
           children: [
-            Positioned(
-              left: 0,
-              top: 0,
-              child: SizedBox(
-                height: 48,
-                width: 48,
-                child: WiredCanvas(
-                  painter: WiredCircleBase(
-                    diameterRatio: .7,
-                    strokeColor: theme.borderColor,
-                  ),
-                  fillerType: RoughFilter.NoFiller,
-                ),
+            const SketchyFrame(
+              width: 36,
+              height: 36,
+              shape: SketchyFrameShape.circle,
+              fill: SketchyFill.none,
+              child: SizedBox.expand(),
+            ),
+            AnimatedOpacity(
+              opacity: _isSelected ? 1 : 0,
+              duration: const Duration(milliseconds: 150),
+              child: SketchyFrame(
+                width: 20,
+                height: 20,
+                shape: SketchyFrameShape.circle,
+                fill: SketchyFill.solid,
+                fillColor: theme.colors.ink,
+                child: const SizedBox.expand(),
               ),
             ),
-            if (_isSelected)
-              Positioned(
-                left: 12,
-                top: 12,
-                child: SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: WiredCanvas(
-                    painter: WiredCircleBase(
-                      diameterRatio: .7,
-                      fillColor: theme.textColor,
-                      strokeColor: theme.textColor,
-                    ),
-                    fillerType: RoughFilter.HachureFiller,
-                    fillerConfig: FillerConfig.build(hachureGap: 1),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

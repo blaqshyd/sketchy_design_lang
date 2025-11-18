@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+
+import '../theme/sketchy_theme.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired card.
 ///
@@ -56,30 +57,22 @@ class SketchyCard extends StatelessWidget {
   final double? height;
 
   @override
-  Widget build(BuildContext context) => Container(
-    color: Colors.transparent,
-    padding: EdgeInsets.zero,
-    margin: EdgeInsets.zero,
-    height: height,
-    child: Stack(
-      children: [
-        WiredCanvas(
-          painter: WiredRectangleBase(),
-          fillerType: fill ? RoughFilter.HachureFiller : RoughFilter.NoFiller,
+  Widget build(BuildContext context) {
+    final theme = SketchyTheme.of(context);
+    return SketchyFrame(
+      height: height,
+      padding: const EdgeInsets.all(16),
+      strokeColor: theme.borderColor,
+      strokeWidth: theme.strokeWidth,
+      fill: fill ? SketchyFill.hachure : SketchyFill.none,
+      cornerRadius: theme.borderRadius,
+      child: SizedBox.expand(
+        child: Card(
+          color: Colors.transparent,
+          shadowColor: Colors.transparent,
+          child: child,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Card(
-                color: Colors.transparent,
-                shadowColor: Colors.transparent,
-                child: child,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

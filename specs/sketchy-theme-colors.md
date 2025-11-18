@@ -1,24 +1,13 @@
-| Name          | Hex Code |
-| ------------- | -------- |
-| black         | #000000  |
-| white         | #ffffff  |
-| scarlet       | #981200  |
-| ember-rose    | #e6b9b0  |
-| red           | #ff2500  |
-| blush-red     | #f5cccc  |
-| orange        | #ff9a02  |
-| apricot-wash  | #fce5cc  |
-| yellow        | #fffb03  |
-| pollen-haze   | #fffb03  |
-| green         | #09f902  |
-| mint-mist     | #d9ead3  |
-| cyan          | #0afdff  |
-| powder-blue   | #d0e1e3  |
-| blue          | #4a86e8  |
-| periwinkle    | #c9daf8  |
-| ultramarine   | #0133ff  |
-| frost-navy    | #d0e3f2  |
-| indigo        | #9938ff  |
-| lavender-veil | #d9d1e9  |
-| violet        | #ff40ff  |
-| petal-violet  | #ead1dc  |
+| Theme       | Primary Hex | Secondary Name    | Secondary Hex |
+| ----------- | ----------- | ----------------- | ------------- |
+| monochrome  | #000000     | white             | #ffffff       |
+| scarlet     | #981200     | deep-teal         | #007f7f       |
+| red         | #ff2500     | light-sea-green   | #20b2aa       |
+| orange      | #ff9a02     | deep-sky-blue     | #00b7ff       |
+| yellow      | #fffb03     | ultramarine       | #3f00ff       |
+| green       | #09f902     | process-magenta   | #ff00a6       |
+| cyan        | #0afdff     | hollywood-cerise  | #f400a1       |
+| blue        | #4a86e8     | spanish-orange    | #e86c00       |
+| ultramarine | #0133ff     | goldenrod         | #daa520       |
+| indigo      | #9938ff     | lime-green        | #32cd32       |
+| violet      | #ff40ff     | bright-chartreuse | #ccff40       |

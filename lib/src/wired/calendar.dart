@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/sketchy_theme.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired calendar.
 ///
@@ -254,16 +253,13 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          SizedBox(
+          SketchyFrame(
             width: width * 0.75,
             height: height * 0.75,
-            child: WiredCanvas(
-              painter: WiredCircleBase(
-                diameterRatio: 1,
-                strokeColor: _theme.borderColor,
-              ),
-              fillerType: RoughFilter.NoFiller,
-            ),
+            shape: SketchyFrameShape.circle,
+            fill: SketchyFill.none,
+            strokeColor: _theme.borderColor,
+            child: const SizedBox.expand(),
           ),
           content,
         ],

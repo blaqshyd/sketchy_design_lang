@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
 
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+import '../theme/sketchy_theme.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired dialog.
 ///
@@ -27,7 +27,7 @@ import 'wired_base.dart';
 /// 					),
 /// 					SizedBox(height: 15.0),
 /// 					WiredText(
-/// 					  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+/// 					  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
 /// 					),
 /// 					SizedBox(height: 15.0),
 /// 					Row(
@@ -62,18 +62,16 @@ class SketchyDialog extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    child: Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(5),
-          child: WiredCanvas(
-            painter: WiredRectangleBase(),
-            fillerType: RoughFilter.NoFiller,
-          ),
-        ),
-        Padding(padding: padding ?? const EdgeInsets.all(20), child: child),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final theme = SketchyTheme.of(context);
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: SketchyFrame(
+        padding: padding ?? const EdgeInsets.all(20),
+        cornerRadius: theme.borderRadius,
+        fill: SketchyFill.none,
+        child: child,
+      ),
+    );
+  }
 }

@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'canvas/wired_canvas.dart';
-import 'wired_base.dart';
+
 import '../theme/sketchy_theme.dart';
+import '../widgets/sketchy_frame.dart';
 
 /// Wired input.
 ///
@@ -72,64 +72,25 @@ class SketchyTextInput extends StatelessWidget {
         if (labelText != null) Text('$labelText', style: effectiveLabelStyle),
         if (labelText != null) const SizedBox(width: 10),
         Expanded(
-          child: Stack(
-            children: [
-              SizedBox(
-                height: 48,
-                child: WiredCanvas(
-                  painter: WiredRectangleBase(),
-                  fillerType: RoughFilter.NoFiller,
-                ),
-              ),
-              TextField(
+          child: SketchyFrame(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            fill: SketchyFill.none,
+            child: Center(
+              child: TextField(
                 controller: controller,
                 style: effectiveStyle,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hintText,
                   hintStyle: effectiveHintStyle,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                 ),
                 onChanged: onChanged,
               ),
-            ],
+            ),
           ),
         ),
       ],
     );
-
-    // return Stack(
-    //   children: [
-    //     SizedBox(
-    //       height: 148.0,
-    //       width: double.maxFinite,
-    //       child: WiredCanvas(
-    //         painter: WiredBaseRectangle(leftIndent: 40.0),
-    //         fillerType: RoughFilter.NoFiller,
-    //       ),
-    //     ),
-    //     Row(
-    //       children: [
-    //         Text(
-    //           '$labelText',
-    //           style: labelStyle,
-    //         ),
-    //         SizedBox(width: 5.0),
-    //         Expanded(
-    //           child: TextField(
-    //             controller: controller,
-    //             style: style,
-    //             decoration: InputDecoration(
-    //               border: InputBorder.none,
-    //               hintText: hintText,
-    //               hintStyle: hintStyle,
-    //             ),
-    //             onChanged: onChanged,
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ],
-    // );
   }
 }
