@@ -9,11 +9,8 @@ class CollaborativeCritiqueBoardExample extends StatelessWidget {
       const CollaborativeCritiqueBoardExample();
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-    final colors = SketchyTheme.of(context).colors;
-
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Critique Board')),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -31,7 +28,7 @@ class CollaborativeCritiqueBoardExample extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: colors.paper,
+                        color: theme.colors.paper,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -53,12 +50,12 @@ class CollaborativeCritiqueBoardExample extends StatelessWidget {
                         children: [
                           Text(
                             'Mobile shell concept #$index',
-                            style: typography.title,
+                            style: theme.typography.title,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Need a stronger ink fill here to pop.',
-                            style: typography.caption,
+                            style: theme.typography.caption,
                           ),
                         ],
                       ),
@@ -70,6 +67,6 @@ class CollaborativeCritiqueBoardExample extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

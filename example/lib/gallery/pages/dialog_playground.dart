@@ -20,9 +20,10 @@ class _SketchyDialogPlaygroundExampleState
   void _toggleDialog() => setState(() => _showDialog = !_showDialog);
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
+      return SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Dialog Playground')),
       body: Stack(
         children: [
@@ -108,6 +109,7 @@ class _SketchyDialogPlaygroundExampleState
             ),
         ],
       ),
-    );
-  }
+      );
+    },
+  );
 }

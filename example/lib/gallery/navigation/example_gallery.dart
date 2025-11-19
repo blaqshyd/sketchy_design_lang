@@ -118,36 +118,38 @@ class _GalleryShell extends StatelessWidget {
   final ValueChanged<double> onRoughnessChanged;
 
   @override
-  Widget build(BuildContext context) {
-    final modeName = _describeMode(SketchyTheme.of(context).mode);
-    return SketchyScaffold(
-      appBar: SketchyAppBar(
-        title: Text('Sketchy Examples — $modeName'),
-        actions: [
-          _ModeButton(onPressed: onCycleMode),
-          const SizedBox(width: 12),
-          SketchyTooltip(
-            message: 'rough.',
-            child: SizedBox(
-              width: 220,
-              child: SketchySlider(
-                value: roughness,
-                onChanged: onRoughnessChanged,
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final modeName = _describeMode(theme.mode);
+      return SketchyScaffold(
+        appBar: SketchyAppBar(
+          title: Text('Sketchy Examples — $modeName'),
+          actions: [
+            _ModeButton(onPressed: onCycleMode),
+            const SizedBox(width: 12),
+            SketchyTooltip(
+              message: 'rough.',
+              child: SizedBox(
+                width: 220,
+                child: SketchySlider(
+                  value: roughness,
+                  onChanged: onRoughnessChanged,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Padding(padding: const EdgeInsets.all(24), child: child),
-          ),
-          const _MascotBadge(),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Padding(padding: const EdgeInsets.all(24), child: child),
+            ),
+            const _MascotBadge(),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 class _ExampleTile extends StatelessWidget {
@@ -162,10 +164,8 @@ class _ExampleTile extends StatelessWidget {
   final bool selected;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = SketchyTheme.of(context);
-    final typography = SketchyTypography.of(context);
-    return GestureDetector(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => GestureDetector(
       onTap: onTap,
       child: SketchySurface(
         padding: const EdgeInsets.all(16),
@@ -180,14 +180,14 @@ class _ExampleTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(entry.title, style: typography.title),
+            Text(entry.title, style: theme.typography.title),
             const SizedBox(height: 8),
-            Text(entry.description, style: typography.body),
+            Text(entry.description, style: theme.typography.body),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _ModeButton extends StatelessWidget {
@@ -196,9 +196,8 @@ class _ModeButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = SketchyTheme.of(context);
-    return SketchyTooltip(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyTooltip(
       message: 'mode.',
       child: GestureDetector(
         onTap: onPressed,
@@ -213,8 +212,8 @@ class _ModeButton extends StatelessWidget {
           child: const SizedBox.shrink(),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _MascotBadge extends StatelessWidget {

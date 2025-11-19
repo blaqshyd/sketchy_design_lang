@@ -25,25 +25,25 @@ class _ExpenseTrackerExampleState extends State<ExpenseTrackerExample> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = SketchyTheme.of(context);
-    final typography = theme.typography;
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
 
-    return Column(
-      children: [
-        // Header replacement for AppBar
-        Container(
-          height: 56,
-          color: theme.colors.primary,
-          alignment: Alignment.center,
-          child: Text(
-            'Expense Tracker',
-            style: typography.title.copyWith(
-              color: theme.colors.secondary,
-              fontSize: 24,
+      return Column(
+        children: [
+          // Header replacement for AppBar
+          Container(
+            height: 56,
+            color: theme.colors.primary,
+            alignment: Alignment.center,
+            child: Text(
+              'Expense Tracker',
+              style: typography.title.copyWith(
+                color: theme.colors.secondary,
+                fontSize: 24,
+              ),
             ),
           ),
-        ),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -138,6 +138,7 @@ class _ExpenseTrackerExampleState extends State<ExpenseTrackerExample> {
           ),
         ),
       ],
-    );
-  }
+      );
+    },
+  );
 }

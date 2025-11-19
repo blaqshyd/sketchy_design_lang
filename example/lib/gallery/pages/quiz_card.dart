@@ -15,10 +15,8 @@ class _QuizCardExampleState extends State<QuizCardExample> {
   final _selected = <int>{};
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Quiz Card')),
       body: Center(
         child: ConstrainedBox(
@@ -30,14 +28,14 @@ class _QuizCardExampleState extends State<QuizCardExample> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Question 2 of 5', style: typography.caption),
+                  Text('Question 2 of 5', style: theme.typography.caption),
                   const SizedBox(height: 8),
                   const SketchyProgressBar(value: 0.4),
                   const SizedBox(height: 16),
                   Text(
                     'Which statements describe the benefits of sketch-style '
                     'interfaces?',
-                    style: typography.title,
+                    style: theme.typography.title,
                   ),
                   const SizedBox(height: 16),
                   ...List.generate(
@@ -62,7 +60,7 @@ class _QuizCardExampleState extends State<QuizCardExample> {
                   const SizedBox(height: 24),
                   SketchyButton(
                     onPressed: _selected.isEmpty ? null : () {},
-                    child: Text('Check answer', style: typography.label),
+                    child: Text('Check answer', style: theme.typography.label),
                   ),
                 ],
               ),
@@ -70,8 +68,8 @@ class _QuizCardExampleState extends State<QuizCardExample> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 const _answers = [

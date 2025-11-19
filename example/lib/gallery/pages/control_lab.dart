@@ -20,9 +20,10 @@ class _SketchyControlLabExampleState extends State<SketchyControlLabExample> {
   double _focus = 0.55;
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
+      return SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Control Lab')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -118,17 +119,19 @@ class _SketchyControlLabExampleState extends State<SketchyControlLabExample> {
           ),
         ),
       ),
-    );
-  }
+      );
+    },
+  );
 
   Widget _checkboxTile(
     BuildContext context, {
     required String label,
     required bool value,
     required ValueChanged<bool> onChanged,
-  }) {
-    final typography = SketchyTypography.of(context);
-    return Row(
+  }) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
+      return Row(
       children: [
         SketchyCheckbox(
           value: value,
@@ -137,8 +140,9 @@ class _SketchyControlLabExampleState extends State<SketchyControlLabExample> {
         const SizedBox(width: 12),
         Expanded(child: Text(label, style: typography.body)),
       ],
-    );
-  }
+      );
+    },
+  );
 
   Widget _radioTile(
     BuildContext context, {
@@ -146,9 +150,10 @@ class _SketchyControlLabExampleState extends State<SketchyControlLabExample> {
     required String value,
     required String groupValue,
     required ValueChanged<String?> onChanged,
-  }) {
-    final typography = SketchyTypography.of(context);
-    return Padding(
+  }) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
+      return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
@@ -161,6 +166,7 @@ class _SketchyControlLabExampleState extends State<SketchyControlLabExample> {
           Expanded(child: Text(title, style: typography.body)),
         ],
       ),
-    );
-  }
+      );
+    },
+  );
 }

@@ -9,10 +9,11 @@ class WireframeDashboardExample extends StatelessWidget {
       const WireframeDashboardExample();
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
 
-    return SketchyScaffold(
+      return SketchyScaffold(
       appBar: const SketchyAppBar(
         title: Text('Wireframe Productivity Dashboard'),
         actions: [
@@ -121,8 +122,9 @@ class WireframeDashboardExample extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
+      );
+    },
+  );
 }
 
 class _DashboardCard extends StatelessWidget {
@@ -131,9 +133,10 @@ class _DashboardCard extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-    return SketchyCard(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
+      return SketchyCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -145,8 +148,9 @@ class _DashboardCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+      );
+    },
+  );
 }
 
 /// Minimal rough-styled line chart used inside the dashboard.

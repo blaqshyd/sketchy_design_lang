@@ -25,9 +25,8 @@ class _SketchyCalendarPlannerExampleState
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Studio Scheduler')),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -41,7 +40,10 @@ class _SketchyCalendarPlannerExampleState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Pick a review slot', style: typography.headline),
+                      Text(
+                        'Pick a review slot',
+                        style: theme.typography.headline,
+                      ),
                       const SizedBox(height: 16),
                       SizedBox(
                         height: 320,
@@ -67,7 +69,7 @@ class _SketchyCalendarPlannerExampleState
                     children: [
                       Text(
                         DateFormat('EEEE, MMM d').format(_selected),
-                        style: typography.title,
+                        style: theme.typography.title,
                       ),
                       const SizedBox(height: 16),
                       for (final item in _agenda) ...[
@@ -80,7 +82,10 @@ class _SketchyCalendarPlannerExampleState
                       const SizedBox(height: 8),
                       SketchyButton(
                         onPressed: () {},
-                        child: Text('Send invites', style: typography.label),
+                        child: Text(
+                          'Send invites',
+                          style: theme.typography.label,
+                        ),
                       ),
                     ],
                   ),
@@ -90,6 +95,6 @@ class _SketchyCalendarPlannerExampleState
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

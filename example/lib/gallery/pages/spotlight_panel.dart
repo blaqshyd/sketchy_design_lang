@@ -9,10 +9,8 @@ class SketchySpotlightPanelExample extends StatelessWidget {
       const SketchySpotlightPanelExample();
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
-
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Spotlight Panel')),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -28,13 +26,13 @@ class SketchySpotlightPanelExample extends StatelessWidget {
                   children: [
                     const SketchyBadge(label: 'Beta'),
                     const SizedBox(height: 12),
-                    Text('Team Hub', style: typography.headline),
+                    Text('Team Hub', style: theme.typography.headline),
                     const SizedBox(height: 8),
                     Text(
                       'Spin up a collaborative canvas that feels like a living '
                       'wireframe. Invite teammates, drop sketches, and layer '
                       'annotations in seconds.',
-                      style: typography.body,
+                      style: theme.typography.body,
                     ),
                     const SizedBox(height: 24),
                     Row(
@@ -42,7 +40,10 @@ class SketchySpotlightPanelExample extends StatelessWidget {
                         Expanded(
                           child: SketchyButton(
                             onPressed: () {},
-                            child: Text('Create hub', style: typography.label),
+                            child: Text(
+                              'Create hub',
+                              style: theme.typography.label,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -51,7 +52,7 @@ class SketchySpotlightPanelExample extends StatelessWidget {
                             onPressed: () {},
                             child: Text(
                               'Browse templates',
-                              style: typography.label,
+                              style: theme.typography.label,
                             ),
                           ),
                         ),
@@ -64,6 +65,6 @@ class SketchySpotlightPanelExample extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -50,8 +50,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
   String _monthYear = '';
 
   DateTime? _selected;
-  late SketchyThemeData _theme;
-  bool _didInitTheme = false;
+  SketchyThemeData? _previousTheme;
 
   @override
   void initState() {
@@ -61,52 +60,43 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final newTheme = SketchyTheme.of(context);
-    final shouldRefresh = !_didInitTheme || !identical(newTheme, _theme);
-    final isInitialPass = !_didInitTheme;
-    _theme = newTheme;
-
-    if (shouldRefresh) {
-      _refresh();
-    }
-    if (isInitialPass) {
-      _didInitTheme = true;
-    } else if (shouldRefresh) {
-      setState(() {});
-    }
-  }
-
-  @override
   void didUpdateWidget(SketchyCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selected != oldWidget.selected) {
       _selected = widget.selected;
-      _refresh();
     }
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(10),
-    child: Column(
-      children: [
-        _buildWeekdaysNav(),
-        const SizedBox(height: 20),
-        _buildWeeksHeaderUI(),
-        Expanded(child: _buildWeekdaysUI()),
-      ],
-    ),
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final themeChanged = !identical(_previousTheme, theme);
+      if (_previousTheme == null || themeChanged) {
+        _previousTheme = theme;
+        _refresh(theme);
+      }
+
+      return Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            _buildWeekdaysNav(theme),
+            const SizedBox(height: 20),
+            _buildWeeksHeaderUI(theme),
+            Expanded(child: _buildWeekdaysUI(theme)),
+          ],
+        ),
+      );
+    },
   );
 
-  void _refresh() {
+  void _refresh(SketchyThemeData theme) {
     _setInitialConditions();
-    _computeCalendar();
+    _computeCalendar(theme);
   }
 
-  Padding _buildWeekdaysNav() {
-    final casing = widget.textCase ?? _theme.textCase;
+  Padding _buildWeekdaysNav(SketchyThemeData theme) {
+    final casing = widget.textCase ?? theme.textCase;
     final displayMonthYear = applyTextCase(_monthYear, casing);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -114,21 +104,24 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: _onPre,
+            onTap: () => _onPre(theme),
             child: _sketchyText(
+              theme,
               '<<',
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),
           ),
           _sketchyText(
+            theme,
             displayMonthYear,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
           GestureDetector(
-            onTap: _onNext,
+            onTap: () => _onNext(theme),
             child: _sketchyText(
+              theme,
               '>>',
               fontWeight: FontWeight.bold,
               fontSize: 24,
@@ -139,25 +132,30 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
     );
   }
 
-  void _onPre() {
+  void _onPre(SketchyThemeData theme) {
     _firstOfMonthDate = getPreviousMonth(_firstOfMonthDate);
-    _computeCalendar();
+    _computeCalendar(theme);
     setState(() {});
   }
 
-  void _onNext() {
+  void _onNext(SketchyThemeData theme) {
     _firstOfMonthDate = getNextMonth(_firstOfMonthDate);
-    _computeCalendar();
+    _computeCalendar(theme);
     setState(() {});
   }
 
-  Row _buildWeeksHeaderUI() {
-    final casing = widget.textCase ?? _theme.textCase;
+  Row _buildWeeksHeaderUI(SketchyThemeData theme) {
+    final casing = widget.textCase ?? theme.textCase;
     final headers = <Widget>[];
     for (final weekday in weekdaysShort) {
       final displayWeekday = applyTextCase(weekday, casing);
       headers.add(
-        _buildCell(displayWeekday, fontWeight: FontWeight.bold, fontSize: 18),
+        _buildCell(
+          theme,
+          displayWeekday,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
       );
     }
 
@@ -167,7 +165,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
     );
   }
 
-  GridView _buildWeekdaysUI() {
+  GridView _buildWeekdaysUI(SketchyThemeData theme) {
     final weekdays = <Widget>[];
     for (final cell in _cells) {
       weekdays.add(
@@ -175,7 +173,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
           onTap: () {
             if (isSameDay(_selected, cell.value)) return;
             _selected = cell.value;
-            _refresh();
+            _refresh(theme);
             setState(() {});
 
             if (widget.onSelected != null) {
@@ -183,6 +181,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
             }
           },
           child: _buildCell(
+            theme,
             cell.text,
             selected: cell.selected,
             color: cell.color,
@@ -203,16 +202,17 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
     _firstOfMonthDate = getFirstOfMonth(reference);
   }
 
-  void _computeCalendar() {
+  void _computeCalendar(SketchyThemeData theme) {
     _monthYear = formatMonthYear(_firstOfMonthDate);
     _cells = computeCalendarCells(
       firstOfMonth: _firstOfMonthDate,
       selectedDate: _selected,
-      inkColor: _theme.colors.ink,
+      inkColor: theme.colors.ink,
     );
   }
 
   RenderObjectWidget _buildCell(
+    SketchyThemeData theme,
     String text, {
     bool selected = false,
     double width = 45.0,
@@ -223,6 +223,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
   }) {
     final content = Center(
       child: _sketchyText(
+        theme,
         text,
         fontWeight: fontWeight,
         fontSize: fontSize,
@@ -243,7 +244,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
             height: height * 0.75,
             shape: SketchyFrameShape.circle,
             fill: SketchyFill.none,
-            strokeColor: _theme.borderColor,
+            strokeColor: theme.borderColor,
             child: const SizedBox.expand(),
           ),
           content,
@@ -253,6 +254,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
   }
 
   Text _sketchyText(
+    SketchyThemeData theme,
     String text, {
     FontWeight fontWeight = FontWeight.w500,
     double fontSize = 18.0,
@@ -261,10 +263,10 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
     text,
     textAlign: TextAlign.center,
     style: TextStyle(
-      fontFamily: _theme.fontFamily,
+      fontFamily: theme.fontFamily,
       fontWeight: fontWeight,
       fontSize: fontSize,
-      color: color ?? _theme.colors.ink,
+      color: color ?? theme.colors.ink,
     ),
   );
 }

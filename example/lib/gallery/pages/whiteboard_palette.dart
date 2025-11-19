@@ -18,16 +18,14 @@ class _WhiteboardPaletteExampleState extends State<WhiteboardPaletteExample> {
   bool _showGrid = true;
 
   @override
-  Widget build(BuildContext context) {
-    final colors = SketchyTheme.of(context).colors;
-
-    return SketchyScaffold(
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Whiteboard Palette')),
       body: Stack(
         children: [
           Positioned.fill(
             child: ColoredBox(
-              color: colors.paper,
+              color: theme.colors.paper,
               child: CustomPaint(
                 painter: _WhiteboardPainter(showGrid: _showGrid),
               ),
@@ -82,8 +80,8 @@ class _WhiteboardPaletteExampleState extends State<WhiteboardPaletteExample> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _WhiteboardPainter extends CustomPainter {

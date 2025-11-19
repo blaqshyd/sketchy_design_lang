@@ -112,8 +112,28 @@ colors so dark mode still feels native without extra setup.
   `xkcd` font + `TextCase.allCaps`.
 - **Stroke width & border radius** – consistent outlines for every widget.
 
-Access the theme with `SketchyTheme.of(context)` or granular helpers like
-`SketchyTypography.of(context)`.
+Access the theme with `SketchyTheme.of(context)` or the consumer pattern
+`SketchyTheme.consumer()`. Granular helpers like `SketchyTypography.of(context)`
+are also available, though `theme.typography` via the consumer is preferred.
+
+**Traditional pattern:**
+```dart
+final theme = SketchyTheme.of(context);
+return Text('Hello', style: TextStyle(color: theme.colors.ink));
+```
+
+**Consumer pattern (recommended):**
+```dart
+return SketchyTheme.consumer(
+  builder: (context, theme) => Text(
+    'Hello',
+    style: TextStyle(color: theme.colors.ink),
+  ),
+);
+```
+
+The consumer pattern provides cleaner access to both theme and typography without
+multiple lookups, and rebuilds automatically when the theme changes.
 
 ### Primitives & surfaces
 

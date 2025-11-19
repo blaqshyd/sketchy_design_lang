@@ -16,10 +16,11 @@ class _DocsViewerExampleState extends State<DocsViewerExample> {
   int _index = 0;
 
   @override
-  Widget build(BuildContext context) {
-    final typography = SketchyTypography.of(context);
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) {
+      final typography = theme.typography;
 
-    return SketchyScaffold(
+      return SketchyScaffold(
       appBar: const SketchyAppBar(title: Text('Docs Viewer')),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -87,8 +88,9 @@ class _DocsViewerExampleState extends State<DocsViewerExample> {
           ],
         ),
       ),
-    );
-  }
+      );
+    },
+  );
 }
 
 class _DocSection {
