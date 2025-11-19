@@ -266,8 +266,8 @@ modes, and theme experiments. Let's keep wireframes fun. ✍️
 ### Acknowledgements
 
 - [wired_elements](https://github.com/KevinZhang19870314/wired_elements) – MIT
-  License. The original hand-drawn widget kit that inspired Sketchy’s controls.
+  License. The original hand-drawn widget kit that inspired Sketchy!
 - [rough_flutter](https://github.com/acyment/flutter_rough) – MIT License. Fork
-  of the rough renderer that powers our primitives.
+  of the rough renderer that powers Sketchy primitives.
 - [Comic Shanns font](https://github.com/shannpersand/comic-shanns) – MIT
-  License. The playful typeface bundled with Sketchy by default.
+  License. The typeface bundled with Sketchy by default.

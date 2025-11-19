@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import '../theme/sketchy_theme.dart';
 import '../widgets/icons.dart';
 import '../widgets/sketchy_frame.dart';
 
@@ -119,6 +120,7 @@ class _SketchyComboState<T> extends State<SketchyCombo<T>> {
     final box = context.findRenderObject()! as RenderBox;
     final position = box.localToGlobal(Offset.zero);
     final size = box.size;
+    final theme = SketchyTheme.of(context);
 
     unawaited(
       showGeneralDialog(
@@ -140,7 +142,8 @@ class _SketchyComboState<T> extends State<SketchyCombo<T>> {
                   alignment: null,
                   cornerRadius: 0,
                   fill: SketchyFill.solid,
-                  fillColor: const Color(0xFFFFFFFF),
+                  fillColor: theme.colors.paper,
+                  strokeColor: theme.borderColor,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
