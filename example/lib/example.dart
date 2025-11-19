@@ -794,6 +794,7 @@ Comic Shanns font.
               detachSelected: true,
               detachGap: theme.strokeWidth,
               backgroundColor: theme.colors.paper,
+              eraseSelectedBorder: true,
               onChanged: (index) {
                 setState(() => _selectedConversationTab = index);
               },

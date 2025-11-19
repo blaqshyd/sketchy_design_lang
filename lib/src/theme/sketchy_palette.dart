@@ -95,6 +95,12 @@ class SketchyPalette {
   /// Light gray ink for dark mode.
   static const Color lightGray = Color(0xFFF5F5F5);
 
+  /// Neutral fill for monochrome light mode accents.
+  static const Color ash = Color(0xFFE0E0E0);
+
+  /// Neutral fill for monochrome dark mode accents.
+  static const Color slate = Color(0xFF3A3A3A);
+
   // Mode-specific paper colors (light backgrounds for each mode)
   /// Pale rose paper for red mode.
   static const Color redPaper = Color(0xFFFFF3F0);

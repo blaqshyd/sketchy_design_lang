@@ -17,6 +17,7 @@ class SketchyTabs extends StatelessWidget {
     this.detachSelected = false,
     this.detachGap = 4,
     this.backgroundColor,
+    this.eraseSelectedBorder = false,
     super.key,
   });
 
@@ -42,61 +43,91 @@ class SketchyTabs extends StatelessWidget {
   /// Background color painted in the detached gap.
   final Color? backgroundColor;
 
+  /// Paints over the active tab's bottom border so it blends with the
+  /// container underneath.
+  final bool eraseSelectedBorder;
+
   @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
-        builder: (context, theme) => Row(
-          children: [
-            for (var i = 0; i < tabs.length; i++) ...[
-              GestureDetector(
-                onTap: () => onChanged(i),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SketchySurface(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        fillColor: i == selectedIndex
-                            ? theme.colors.secondary
-                            : theme.colors.paper,
-                        strokeColor: theme.colors.ink,
-                        createPrimitive: () =>
-                            SketchyPrimitive.roundedRectangle(
-                          cornerRadius: theme.borderRadius,
-                          fill: i == selectedIndex
-                              ? SketchyFill.solid
-                              : SketchyFill.none,
-                        ),
-                        child: SketchyText(
-                          tabs[i],
-                          textCase: textCase,
-                          style: theme.typography.body.copyWith(
-                            fontWeight: i == selectedIndex
-                                ? FontWeight.w700
-                                : FontWeight.normal,
-                          ),
+    builder: (context, theme) => Row(
+      children: [
+        for (var i = 0; i < tabs.length; i++) ...[
+          GestureDetector(
+            onTap: () => onChanged(i),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTabSurface(theme, i),
+                  if (detachSelected && detachGap > 0)
+                    SizedBox(
+                      height: detachGap,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: i == selectedIndex
+                              ? backgroundColor ?? theme.colors.paper
+                              : const Color(0x00000000),
                         ),
                       ),
-                      if (detachSelected)
-                        SizedBox(
-                          height: detachGap,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: i == selectedIndex
-                                  ? backgroundColor ?? theme.colors.paper
-                                  : const Color(0x00000000),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
+
+  Widget _buildTabSurface(SketchyThemeData theme, int i) {
+    final isSelected = i == selectedIndex;
+    final radius = theme.borderRadius;
+    final primitiveBuilder = radius <= 0
+        ? () => SketchyPrimitive.rectangle(
+            fill: isSelected ? SketchyFill.solid : SketchyFill.none,
+          )
+        : () => SketchyPrimitive.roundedRectangle(
+            cornerRadius: radius,
+            fill: isSelected ? SketchyFill.solid : SketchyFill.none,
+          );
+
+    Widget surface = SketchySurface(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      fillColor: isSelected ? theme.colors.secondary : theme.colors.paper,
+      strokeColor: theme.colors.ink,
+      createPrimitive: primitiveBuilder,
+      child: SketchyText(
+        tabs[i],
+        textCase: textCase,
+        style: theme.typography.body.copyWith(
+          fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
+        ),
+      ),
+    );
+
+    if (eraseSelectedBorder && isSelected) {
+      surface = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          surface,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: -theme.strokeWidth,
+            child: SizedBox(
+              height: theme.strokeWidth,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: backgroundColor ?? theme.colors.paper,
                 ),
               ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       );
+    }
+
+    return surface;
+  }
 }

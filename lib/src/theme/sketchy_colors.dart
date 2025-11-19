@@ -98,7 +98,7 @@ const Map<SketchyColorMode, _ModePalette> _modePalettes =
         ink: SketchyPalette.ink,
         paper: SketchyPalette.paper,
         primary: SketchyPalette.black,
-        secondary: SketchyPalette.white,
+        secondary: SketchyPalette.ash,
       ),
       SketchyColorMode.red: _ModePalette(
         ink: SketchyPalette.redInk,
@@ -158,6 +158,6 @@ const Map<SketchyColorMode, _ModePalette> _modePalettes =
         ink: SketchyPalette.white,
         paper: SketchyPalette.black,
         primary: SketchyPalette.white,
-        secondary: SketchyPalette.black,
+        secondary: SketchyPalette.slate,
       ),
     };

@@ -143,19 +143,28 @@ The library exposes `SketchyFillOptions` so you can control hachure gaps or line
 weights (e.g., the progress bar uses denser fills for stronger contrast). Most
 widgets read the theme roughness and adapt automatically.
 
+### Isolated Material usage
+
+While Sketchy is designed to be independent of Material, `SketchyApp` and
+`SketchyTextInput` use isolated Material contexts internally to provide advanced
+text editing capabilities (like selection handles, cursors, and clipboard access)
+without leaking Material styles into your app. You do **not** need to wrap your
+app in `MaterialApp` or `Theme`; `SketchyApp` handles the necessary localization
+delegates automatically.
+
 ---
 
 ## Using Sketchy widgets
 
 Sketchy mirrors common UI building blocks. Highlights:
 
-| Category   | Widgets                                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| Category   | Widgets                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Inputs     | `SketchyTextInput`, `SketchyCombo`, `SketchySlider`, `SketchyCheckbox`, `SketchyToggle`, `SketchyRadio`, `SketchyOptionTile` |
-| Actions    | `SketchyButton`, `SketchyIconButton`, `SketchyChip`                                                                 |
-| Containers | `SketchyCard`, `SketchyPanel`, `SketchyListTile`, `SketchyDivider`                                                  |
-| Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`                                           |
-| Navigation | `SketchyTabs`, `SketchyAppBar`, `SketchyScaffold`                                                                   |
+| Actions    | `SketchyButton`, `SketchyIconButton`, `SketchyChip`                                                                          |
+| Containers | `SketchyCard`, `SketchyPanel`, `SketchyListTile`, `SketchyDivider`                                                           |
+| Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`                                                   |
+| Navigation | `SketchyTabs`, `SketchyAppBar`, `SketchyScaffold`                                                                            |
 
 ### Quick examples
 
@@ -182,9 +191,9 @@ SketchyOptionTile.radio<String>(
       style: SketchyTheme.of(context).typography.body),
 );
 
-`SketchyOptionTile` keeps the checkbox or radio button and its label (any widget)
-in sync and makes the entire row tappable—think of it as SketchyListTile for
-options.
+// `SketchyOptionTile` keeps the checkbox or radio button and its label (any widget)
+// in sync and makes the entire row tappable—think of it as SketchyListTile for
+// options.
 
 SketchySlider(
   value: roughness,

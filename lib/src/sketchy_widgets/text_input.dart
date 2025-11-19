@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/sketchy_text_case.dart';
 import '../theme/sketchy_theme.dart';
@@ -19,24 +20,46 @@ import '../widgets/sketchy_frame.dart';
 /// 	fontFamily: handWriting2,
 /// 	fontSize: 18.0,
 ///   ),
-/// ),
+/// )
 /// ```
 class SketchyTextInput extends StatefulWidget {
   /// Creates a sketchy-styled text field.
   const SketchyTextInput({
     super.key,
     this.controller,
+    this.focusNode,
     this.style,
     this.labelText,
     this.labelStyle,
     this.hintText,
     this.hintStyle,
     this.onChanged,
+    this.onSubmitted,
     this.textCase,
+    this.keyboardType,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.obscureText = false,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
+    this.maxLines = 1,
+    this.minLines,
+    this.expands = false,
+    this.readOnly = false,
+    this.showCursor,
+    this.maxLength,
+    this.onTap,
+    this.onTapOutside,
+    this.inputFormatters,
+    this.enabled,
+    this.autofocus = false,
   });
 
   /// Controls the text being edited.
   final TextEditingController? controller;
+
+  /// Defines the keyboard focus for this widget.
+  final FocusNode? focusNode;
 
   /// The text style for input.
   final TextStyle? style;
@@ -55,12 +78,66 @@ class SketchyTextInput extends StatefulWidget {
   final TextStyle? hintStyle;
 
   /// Called when the text changes.
-  final void Function(String)? onChanged;
+  final ValueChanged<String>? onChanged;
+
+  /// Called when the user indicates that they are done editing the text in the field.
+  final ValueChanged<String>? onSubmitted;
 
   /// Text casing transformation for label and hint. If null, uses theme
   /// default. Note: This does NOT affect the actual input text, only the
   /// label and hint.
   final TextCase? textCase;
+
+  /// The type of keyboard to use for editing the text.
+  final TextInputType? keyboardType;
+
+  /// The type of action button to use for the keyboard.
+  final TextInputAction? textInputAction;
+
+  /// Configures how the platform should select capital letters.
+  final TextCapitalization textCapitalization;
+
+  /// Whether to hide the text being edited (e.g., for passwords).
+  final bool obscureText;
+
+  /// Whether to enable autocorrection.
+  final bool autocorrect;
+
+  /// Whether to show input suggestions.
+  final bool enableSuggestions;
+
+  /// The maximum number of lines to show at one time, wrapping if necessary.
+  final int? maxLines;
+
+  /// The minimum number of lines to occupy when the content spans fewer lines.
+  final int? minLines;
+
+  /// Whether this widget's height will be sized to fill its parent.
+  final bool expands;
+
+  /// Whether the text can be changed.
+  final bool readOnly;
+
+  /// Whether to show the cursor.
+  final bool? showCursor;
+
+  /// The maximum number of characters (Unicode scalar values) to allow in the text field.
+  final int? maxLength;
+
+  /// Called for each distinct tap except for every second tap of a double tap.
+  final GestureTapCallback? onTap;
+
+  /// Called for each tap that occurs outside of the [TextFieldTapRegion] group when the text field is focused.
+  final TapRegionCallback? onTapOutside;
+
+  /// Optional input validation and formatting overrides.
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// If false the text field is "disabled": it ignores taps and its [decoration] is rendered in grey.
+  final bool? enabled;
+
+  /// Whether this text field should focus itself if nothing else is already focused.
+  final bool autofocus;
 
   @override
   State<SketchyTextInput> createState() => _SketchyTextInputState();
@@ -74,7 +151,7 @@ class _SketchyTextInputState extends State<SketchyTextInput> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-    _focusNode = FocusNode();
+    _focusNode = widget.focusNode ?? FocusNode();
   }
 
   @override
@@ -83,6 +160,9 @@ class _SketchyTextInputState extends State<SketchyTextInput> {
     if (widget.controller != null && widget.controller != _controller) {
       _controller = widget.controller!;
     }
+    if (widget.focusNode != null && widget.focusNode != _focusNode) {
+      _focusNode = widget.focusNode!;
+    }
   }
 
   @override
@@ -90,65 +170,110 @@ class _SketchyTextInputState extends State<SketchyTextInput> {
     if (widget.controller == null) {
       _controller.dispose();
     }
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
-        builder: (context, theme) {
-          final casing = widget.textCase ?? theme.textCase;
-          final effectiveLabelStyle = widget.labelStyle ??
-              TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
-          final effectiveStyle = widget.style ??
-              TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
-          final effectiveHintStyle = widget.hintStyle ??
-              TextStyle(
-                fontFamily: theme.fontFamily,
-                color: theme.disabledTextColor,
-              );
+    builder: (context, theme) {
+      final casing = widget.textCase ?? theme.textCase;
+      final effectiveLabelStyle =
+          widget.labelStyle ??
+          TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
+      final effectiveStyle =
+          widget.style ??
+          TextStyle(fontFamily: theme.fontFamily, color: theme.textColor);
+      final effectiveHintStyle =
+          widget.hintStyle ??
+          TextStyle(
+            fontFamily: theme.fontFamily,
+            color: theme.disabledTextColor,
+          );
 
-          final displayLabel = widget.labelText != null
-              ? applyTextCase(widget.labelText!, casing)
-              : null;
-          final displayHint = widget.hintText != null
-              ? applyTextCase(widget.hintText!, casing)
-              : null;
+      final displayLabel = widget.labelText != null
+          ? applyTextCase(widget.labelText!, casing)
+          : null;
+      final displayHint = widget.hintText != null
+          ? applyTextCase(widget.hintText!, casing)
+          : null;
 
-          return Row(
-            children: [
-              if (displayLabel != null)
-                Text(displayLabel, style: effectiveLabelStyle),
-              if (displayLabel != null) const SizedBox(width: 10),
-              Expanded(
-                child: SketchyFrame(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  fill: SketchyFill.none,
-                  child: Center(
-                    child: Stack(
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        if (displayHint != null && _controller.text.isEmpty)
-                          Text(displayHint, style: effectiveHintStyle),
-                        EditableText(
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          style: effectiveStyle,
-                          cursorColor: theme.colors.ink,
-                          backgroundCursorColor: theme.colors.paper,
-                          onChanged: (value) {
-                            setState(() {}); // To update hint visibility
-                            widget.onChanged?.call(value);
-                          },
+      // Calculate height based on lines if not expanding
+      final height = widget.expands
+          ? null
+          : (widget.maxLines ?? 1) * 24.0 + 24.0;
+
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (displayLabel != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(displayLabel, style: effectiveLabelStyle),
+            ),
+            const SizedBox(width: 10),
+          ],
+          Expanded(
+            child: SketchyFrame(
+              height: height,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              fill: SketchyFill.none,
+              child: Center(
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    textSelectionTheme: TextSelectionThemeData(
+                      cursorColor: theme.colors.ink,
+                      selectionColor: theme.colors.primary.withOpacity(0.3),
+                      selectionHandleColor: theme.colors.ink,
+                    ),
+                  ),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      style: effectiveStyle,
+                      cursorColor: theme.colors.ink,
+                      decoration: InputDecoration(
+                        hintText: displayHint,
+                        hintStyle: effectiveHintStyle,
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 4,
                         ),
-                      ],
+                        counterText: '', // Hide default counter
+                      ),
+                      onChanged: widget.onChanged,
+                      onSubmitted: widget.onSubmitted,
+                      keyboardType: widget.keyboardType,
+                      textInputAction: widget.textInputAction,
+                      textCapitalization: widget.textCapitalization,
+                      obscureText: widget.obscureText,
+                      autocorrect: widget.autocorrect,
+                      enableSuggestions: widget.enableSuggestions,
+                      maxLines: widget.maxLines,
+                      minLines: widget.minLines,
+                      expands: widget.expands,
+                      readOnly: widget.readOnly,
+                      showCursor: widget.showCursor,
+                      maxLength: widget.maxLength,
+                      onTap: widget.onTap,
+                      onTapOutside: widget.onTapOutside,
+                      inputFormatters: widget.inputFormatters,
+                      enabled: widget.enabled,
+                      autofocus: widget.autofocus,
                     ),
                   ),
                 ),
               ),
-            ],
-          );
-        },
+            ),
+          ),
+        ],
       );
+    },
+  );
 }

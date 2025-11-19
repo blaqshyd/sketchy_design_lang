@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../theme/sketchy_theme.dart';
 import 'sketchy_page_route.dart';
@@ -128,7 +128,11 @@ class SketchyApp extends StatelessWidget {
     color: theme.colors.paper,
     locale: locale,
     supportedLocales: supportedLocales,
-    localizationsDelegates: localizationsDelegates,
+    localizationsDelegates: [
+      ...?localizationsDelegates,
+      DefaultMaterialLocalizations.delegate,
+      DefaultWidgetsLocalizations.delegate,
+    ],
     localeListResolutionCallback: localeListResolutionCallback,
     localeResolutionCallback: localeResolutionCallback,
     showPerformanceOverlay: showPerformanceOverlay,
