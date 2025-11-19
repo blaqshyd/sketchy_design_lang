@@ -83,7 +83,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
             _buildWeekdaysNav(theme),
             const SizedBox(height: 20),
             _buildWeeksHeaderUI(theme),
-            Expanded(child: _buildWeekdaysUI(theme)),
+            _buildWeekdaysUI(theme),
           ],
         ),
       );
@@ -165,7 +165,7 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
     );
   }
 
-  GridView _buildWeekdaysUI(SketchyThemeData theme) {
+  Widget _buildWeekdaysUI(SketchyThemeData theme) {
     final weekdays = <Widget>[];
     for (final cell in _cells) {
       weekdays.add(
@@ -190,7 +190,12 @@ class _SketchyCalendarState extends State<SketchyCalendar> {
       );
     }
 
-    return GridView.count(crossAxisCount: 7, children: [...weekdays]);
+    return GridView.count(
+      crossAxisCount: 7,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: weekdays,
+    );
   }
 
   void _initParams() {

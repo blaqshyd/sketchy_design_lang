@@ -714,7 +714,7 @@ Comic Shanns font.
   Widget _buildCalendarSection() => SketchyTheme.consumer(
     builder: (context, theme) => _sectionCard(
       title: 'Sketchy calendar',
-      height: 516,
+      height: 640,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -726,7 +726,6 @@ Comic Shanns font.
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 385,
             child: SketchyCalendar(
               selected: _selectedDate,
               onSelected: (date) => setState(() => _selectedDate = date),
