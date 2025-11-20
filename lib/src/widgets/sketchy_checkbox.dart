@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
-import 'icons.dart';
-import 'surface.dart';
+import 'sketchy_icons.dart';
+import 'sketchy_surface.dart';
 import 'value_sync_mixin.dart';
 
 /// Sketchy checkbox.

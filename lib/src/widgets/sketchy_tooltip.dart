@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_text_case.dart';
 import '../theme/sketchy_theme.dart';
-import 'text.dart';
+import 'sketchy_text.dart';
 
 /// Basic tooltip that appears on hover similar to Flutter's Material tooltip.
 class SketchyTooltip extends StatefulWidget {

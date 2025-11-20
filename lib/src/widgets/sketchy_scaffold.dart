@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_theme.dart';
-import 'app_bar.dart';
+import 'sketchy_app_bar.dart';
 
 /// Minimal scaffold that avoids pulling in Material widgets.
 class SketchyScaffold extends StatelessWidget {

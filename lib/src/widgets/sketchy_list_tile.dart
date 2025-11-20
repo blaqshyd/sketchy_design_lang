@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
-import 'surface.dart';
+import 'sketchy_surface.dart';
 
 /// Alignment options for [SketchyListTile].
 enum SketchyTileAlignment {

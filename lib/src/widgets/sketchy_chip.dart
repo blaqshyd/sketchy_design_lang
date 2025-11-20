@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_text_case.dart';
 import '../theme/sketchy_theme.dart';
-import 'icons.dart';
-import 'surface.dart';
-import 'text.dart';
+import 'sketchy_icons.dart';
+import 'sketchy_surface.dart';
+import 'sketchy_text.dart';
 
 /// Visual tones supported by [SketchyChip].
 enum SketchyChipTone {

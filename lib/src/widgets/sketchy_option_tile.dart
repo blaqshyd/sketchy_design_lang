@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_theme.dart';
-import 'checkbox.dart';
-import 'radio.dart';
+import 'sketchy_checkbox.dart';
+import 'sketchy_radio.dart';
 
 enum _SketchyOptionTileType { checkbox, radio }
 

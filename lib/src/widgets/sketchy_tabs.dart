@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_text_case.dart';
 import '../theme/sketchy_theme.dart';
-import 'surface.dart';
-import 'text.dart';
+import 'sketchy_surface.dart';
+import 'sketchy_text.dart';
 
 /// Segmented control used to switch between sections.
 class SketchyTabs extends StatelessWidget {

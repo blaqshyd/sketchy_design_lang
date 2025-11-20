@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import '../theme/sketchy_theme.dart';
-import 'icons.dart';
 import 'sketchy_frame.dart';
+import 'sketchy_icons.dart';
 import 'value_sync_mixin.dart';
 
 /// A item for [SketchyCombo].
