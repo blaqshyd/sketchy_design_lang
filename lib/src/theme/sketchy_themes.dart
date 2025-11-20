@@ -37,7 +37,8 @@ enum SketchyThemes {
 
 /// Extension mapping themes to their core color palette.
 extension SketchyThemePalette on SketchyThemes {
-  /// Returns the tuple of (ink, paper, primary, secondary) colors for this theme.
+  /// Returns the tuple of (ink, paper, primary, secondary) colors for this
+  /// theme.
   (Color, Color, Color, Color) get palette => switch (this) {
     SketchyThemes.monochrome => (
       SketchyColors.black,

@@ -176,9 +176,9 @@ class SketchyGenerator {
     Size size,
     double roughness,
   ) {
-    // Check cache (keyed by seed + size + roughness)
-    // Note: This is a simplified cache strategy. In a real app you might want
-    // a better key or LRU eviction.
+    // Check cache (keyed by seed + size + roughness) Note: This is a simplified
+    // cache strategy. In a real app you might want a better key or LRU
+    // eviction.
     final cacheKey = primitive.seed;
     final cached = _cache[cacheKey];
     if (cached != null) {
@@ -189,7 +189,8 @@ class SketchyGenerator {
     }
 
     final config = _buildConfig(primitive.seed, roughness.clamp(0, 1));
-    // Note: For solid, we use NoFiller here because the painter handles the fill.
+    // Note: For solid, we use NoFiller here because the painter handles the
+    // fill.
     final effectiveFill = primitive.fill == SketchyFill.solid
         ? SketchyFill.none
         : primitive.fill;
