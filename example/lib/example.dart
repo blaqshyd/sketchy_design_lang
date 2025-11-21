@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart'; // Used for Scaffold, BottomNavigationBar etc which Sketchy doesn't fully replace yet for layout
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
-const Map<String, String> _fontOptions = <String, String>{
+import 'font_awesome_browser.dart';
+
+Map<String, String> get _fontOptions => <String, String>{
   'Comic Shanns': 'ComicShanns',
   'Excalifont': 'Excalifont',
   'xkcd': 'XKCD',
+  'Gloria Hallelujah': GoogleFonts.gloriaHallelujah().fontFamily!,
 };
 
 SketchyThemeData _resolveSketchyTheme({
@@ -133,6 +138,9 @@ class _SketchyDesignSystemAppState extends State<SketchyDesignSystemApp> {
       onFontChanged: (family) {
         setState(() => _fontFamily = family);
       },
+      // onRoughnessUpdate: (value) { // Removed unreachable callback
+      //   setState(() => _roughness = value.clamp(0.0, 1.0));
+      // },
       textCase: _textCase,
       onTitleCasingChanged: (casing) {
         setState(() => _textCase = casing);
@@ -154,6 +162,7 @@ class SketchyDesignSystemPage extends StatefulWidget {
     required this.onFontChanged,
     required this.textCase,
     required this.onTitleCasingChanged,
+    // required this.onRoughnessUpdate,
     super.key,
   });
 
@@ -168,6 +177,7 @@ class SketchyDesignSystemPage extends StatefulWidget {
   final ValueChanged<String> onFontChanged;
   final TextCase textCase;
   final ValueChanged<TextCase> onTitleCasingChanged;
+  // final ValueChanged<double> onRoughnessUpdate; // Removed unreachable member
 
   @override
   State<SketchyDesignSystemPage> createState() =>
@@ -176,8 +186,10 @@ class SketchyDesignSystemPage extends StatefulWidget {
 
 class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
     with TickerProviderStateMixin {
-  static const double _cardWidth = 520;
+  int _selectedIndex = 0;
+
   // State for the "sketchy" components
+  static const double _cardWidth = 520;
   String _selectedRadio = 'Lafayette';
   double _sliderValue = 0.2;
   DateTime _selectedDate = DateTime(2021, 7, 22);
@@ -252,19 +264,39 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
       final palette = widget.palette;
       return SketchyScaffold(
         appBar: _buildHeroAppBar(theme),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildThemeRow(palette),
-              const SizedBox(height: 24),
-              _buildModeToggleRow(),
-              const SizedBox(height: 32),
-              _buildShowcaseBoard(),
-              const SizedBox(height: 32),
-            ],
-          ),
+        body: Column(
+          children: [
+            _buildConfigSection(palette),
+            Expanded(
+              child: IndexedStack(
+                index: _selectedIndex,
+                children: [
+                  SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildShowcaseBoard(),
+                  ),
+                  const FontAwesomeBrowserExample(),
+                ],
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
+          selectedItemColor: theme.primaryColor,
+          unselectedItemColor: theme.inkColor.withValues(alpha: 0.5),
+          backgroundColor: theme.paperColor,
+          items: const [
+            BottomNavigationBarItem(
+              icon: SketchyIcon(icon: SketchyIcons.rectangle),
+              label: 'Widgets',
+            ),
+            BottomNavigationBarItem(
+              icon: SketchyIcon(icon: SketchyIcons.circle),
+              label: 'Icons',
+            ),
+          ],
         ),
       );
     },
@@ -277,10 +309,16 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
       message: 'meh.',
       preferBelow: true,
       child: SketchyFrame(
-        child: Image.asset(
-          'assets/images/sketchy_mascot.png',
+        child: SizedBox(
           width: 96,
           height: 96,
+          child: Center(
+            child: FaIcon(
+              FontAwesomeIcons.faceGrinTongueWink,
+              size: 64,
+              color: theme.inkColor,
+            ),
+          ),
         ),
       ),
     ),
@@ -304,49 +342,76 @@ Comic Shanns font.
     ),
   );
 
+  Widget _buildConfigSection(PaletteOption palette) => SketchyTheme.consumer(
+    builder: (context, theme) => Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: theme.inkColor.withValues(alpha: 0.1),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          _buildThemeRow(palette),
+          const SizedBox(height: 16),
+          _buildModeToggleRow(),
+        ],
+      ),
+    ),
+  );
+
   Widget _buildThemeRow(PaletteOption active) => SketchyTheme.consumer(
     builder: (context, theme) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SketchyText('Theme colors', style: _titleStyle(theme)),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: widget.palettes.map((option) {
-            final isActive = option.id == active.id;
-            final previewTheme = _resolveSketchyTheme(
-              theme: option.theme,
-              roughness: 0.5,
-              fontFamily: widget.fontFamily,
-              textCase: TextCase.none,
-              mode: SketchyThemeMode.light,
-            );
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: widget.palettes.map((option) {
+              final isActive = option.id == active.id;
+              final previewTheme = _resolveSketchyTheme(
+                theme: option.theme,
+                roughness: 0.5,
+                fontFamily: widget.fontFamily,
+                textCase: TextCase.none,
+                mode: SketchyThemeMode.light,
+              );
 
-            return GestureDetector(
-              onTap: () => widget.onThemeChanged(option.id),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _colorChip(previewTheme.primaryColor, isActive),
-                  const SizedBox(height: 4),
-                  _colorChip(
-                    previewTheme.secondaryColor,
-                    isActive,
-                    stroke: true,
-                    size: 22,
+              return Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: GestureDetector(
+                  onTap: () => widget.onThemeChanged(option.id),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _colorChip(previewTheme.primaryColor, isActive),
+                      const SizedBox(height: 4),
+                      _colorChip(
+                        previewTheme.secondaryColor,
+                        isActive,
+                        stroke: true,
+                        size: 22,
+                      ),
+                      const SizedBox(height: 4),
+                      SketchyText(
+                        option.label,
+                        style: TextStyle(
+                          fontWeight: isActive
+                              ? FontWeight.bold
+                              : FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  SketchyText(
-                    option.label,
-                    style: TextStyle(
-                      fontWeight: isActive ? FontWeight.bold : FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ],
     ),

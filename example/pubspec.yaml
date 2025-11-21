@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.12.0
+  google_fonts: ^6.3.2
   intl: ^0.20.2
   sketchy_design_lang:
     path: ../

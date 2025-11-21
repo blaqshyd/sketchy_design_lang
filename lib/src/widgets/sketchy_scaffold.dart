@@ -11,6 +11,7 @@ class SketchyScaffold extends StatelessWidget {
     this.appBar,
     this.body,
     this.floatingActionButton,
+    this.bottomNavigationBar,
     this.backgroundColor,
   });
 
@@ -22,6 +23,9 @@ class SketchyScaffold extends StatelessWidget {
 
   /// Optional floating action button.
   final Widget? floatingActionButton;
+
+  /// Optional bottom navigation bar.
+  final Widget? bottomNavigationBar;
 
   /// Override for the paper background color.
   final Color? backgroundColor;
@@ -49,6 +53,11 @@ class SketchyScaffold extends StatelessWidget {
             ),
             if (floatingActionButton != null)
               Positioned(right: 24, bottom: 24, child: floatingActionButton!),
+            if (bottomNavigationBar != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: bottomNavigationBar,
+              ),
           ],
         ),
       ),

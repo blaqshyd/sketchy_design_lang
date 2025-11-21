@@ -27,6 +27,9 @@ enum SketchyIconSymbol {
 
   /// Checkmark icon.
   check,
+
+  /// Circle outline.
+  circle,
 }
 
 /// Convenience constants for referencing [SketchyIconSymbol]s.
@@ -54,6 +57,9 @@ class SketchyIcons {
 
   /// Check icon symbol.
   static const SketchyIconSymbol check = SketchyIconSymbol.check;
+
+  /// Circle icon symbol.
+  static const SketchyIconSymbol circle = SketchyIconSymbol.circle;
 }
 
 /// Custom painter-based icon rendered in the sketch style.
@@ -162,6 +168,12 @@ class _SketchyIconPainter extends CustomPainter {
           ..lineTo(size.width / 2.5, size.height - 4)
           ..lineTo(size.width - 4, 4);
         canvas.drawPath(path, paint);
+      case SketchyIconSymbol.circle:
+        canvas.drawCircle(
+          Offset(size.width / 2, size.height / 2),
+          size.width / 2 - 2,
+          paint,
+        );
     }
   }
 
