@@ -142,8 +142,15 @@ class SketchyTheme extends InheritedWidget {
   /// ```
   static Widget consumer({
     required Widget Function(BuildContext, SketchyThemeData) builder,
-  }) =>
-      Builder(builder: (context) => builder(context, SketchyTheme.of(context)));
+  }) => Builder(
+    builder: (context) {
+      final theme = SketchyTheme.of(context);
+      return IconTheme(
+        data: IconThemeData(color: theme.inkColor, size: 24),
+        child: builder(context, theme),
+      );
+    },
+  );
 
   @override
   bool updateShouldNotify(SketchyTheme oldWidget) => data != oldWidget.data;

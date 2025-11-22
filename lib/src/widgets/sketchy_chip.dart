@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_text_case.dart';
 import '../theme/sketchy_theme.dart';
-import 'sketchy_icons.dart';
 import 'sketchy_surface.dart';
 import 'sketchy_text.dart';
 
@@ -28,7 +27,7 @@ class SketchyChip extends StatelessWidget {
     SketchyChipTone tone = SketchyChipTone.neutral,
     TextCase? textCase,
     SketchyFill? fillStyle,
-    SketchyIconSymbol? icon,
+    Widget? icon,
     bool iconOnly = false,
     Key? key,
   }) : this._(
@@ -67,7 +66,7 @@ class SketchyChip extends StatelessWidget {
     SketchyChipTone tone = SketchyChipTone.accent,
     TextCase? textCase,
     SketchyFill? fillStyle,
-    SketchyIconSymbol? icon,
+    Widget? icon,
     bool iconOnly = false,
     Key? key,
   }) : this._(
@@ -90,7 +89,7 @@ class SketchyChip extends StatelessWidget {
     SketchyChipTone tone = SketchyChipTone.neutral,
     TextCase? textCase,
     SketchyFill? fillStyle,
-    SketchyIconSymbol? icon,
+    Widget? icon,
     bool iconOnly = false,
     Key? key,
   }) : this._(
@@ -113,7 +112,7 @@ class SketchyChip extends StatelessWidget {
     SketchyChipTone tone = SketchyChipTone.neutral,
     TextCase? textCase,
     SketchyFill? fillStyle,
-    SketchyIconSymbol? icon,
+    Widget? icon,
     bool iconOnly = false,
     Key? key,
   }) : this._(
@@ -155,7 +154,7 @@ class SketchyChip extends StatelessWidget {
   final SketchyFill? fillStyle;
 
   /// Optional icon symbol rendered before/without text.
-  final SketchyIconSymbol? icon;
+  final Widget? icon;
 
   /// When true, renders only the icon (no text).
   final bool iconOnly;
@@ -212,7 +211,10 @@ class SketchyChip extends StatelessWidget {
   Widget _buildContent(TextStyle style, SketchyThemeData theme) {
     final hasIcon = icon != null;
     final iconWidget = hasIcon
-        ? SketchyIcon(icon: icon!, size: compact ? 14 : 18)
+        ? IconTheme(
+            data: IconThemeData(size: compact ? 14 : 18, color: theme.inkColor),
+            child: icon!,
+          )
         : null;
     if (iconOnly && iconWidget != null) {
       return iconWidget;

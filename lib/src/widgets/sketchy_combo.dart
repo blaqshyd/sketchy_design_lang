@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
+import 'package:rough_flutter/rough_flutter.dart';
 
+import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
 import 'sketchy_frame.dart';
-import 'sketchy_icons.dart';
 import 'value_sync_mixin.dart';
 
 /// A item for [SketchyCombo].
@@ -104,7 +105,13 @@ class _SketchyComboState<T> extends State<SketchyCombo<T>>
                 top: (_height - 20) / 2,
                 child: Transform.rotate(
                   angle: math.pi / 2,
-                  child: const SketchyIcon(icon: SketchyIcons.chevronRight),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CustomPaint(
+                      painter: _SketchyChevronPainter(color: theme.inkColor),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -169,4 +176,33 @@ class _SketchyComboState<T> extends State<SketchyCombo<T>>
       ),
     );
   }
+}
+
+class _SketchyChevronPainter extends CustomPainter {
+  _SketchyChevronPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final generator = SketchyGenerator.createGenerator(seed: 2);
+
+    final drawable = generator.linearPath([
+      PointD(4, 4),
+      PointD(size.width - 4, size.height / 2),
+      PointD(4, size.height - 4),
+    ]);
+
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawRough(drawable, paint, paint);
+  }
+
+  @override
+  bool shouldRepaint(_SketchyChevronPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

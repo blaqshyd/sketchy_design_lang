@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
-import 'sketchy_icons.dart';
 import 'sketchy_surface.dart';
 
 /// Rough-styled icon button wrapper.
@@ -16,7 +15,7 @@ class SketchyIconButton extends StatelessWidget {
   });
 
   /// Icon displayed in the button.
-  final SketchyIconSymbol icon;
+  final Widget icon;
 
   /// Tap handler; when null the button is disabled.
   final VoidCallback? onPressed;
@@ -34,7 +33,10 @@ class SketchyIconButton extends StatelessWidget {
         strokeColor: theme.inkColor,
         createPrimitive: () =>
             SketchyPrimitive.rectangle(fill: SketchyFill.none),
-        child: SketchyIcon(icon: icon),
+        child: IconTheme(
+          data: IconThemeData(color: theme.inkColor),
+          child: icon,
+        ),
       );
 
       if (onPressed == null) {

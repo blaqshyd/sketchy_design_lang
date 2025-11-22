@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:rough_flutter/rough_flutter.dart';
 
 import '../primitives/sketchy_primitives.dart';
 import '../theme/sketchy_theme.dart';
-import 'sketchy_icons.dart';
 import 'sketchy_surface.dart';
 import 'value_sync_mixin.dart';
 
@@ -65,13 +65,45 @@ class _SketchyCheckboxState extends State<SketchyCheckbox>
         child: value
             ? Transform.scale(
                 scale: 0.7,
-                child: SketchyIcon(
-                  icon: SketchyIcons.check,
-                  color: theme.inkColor,
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CustomPaint(
+                    painter: _SketchyCheckPainter(color: theme.inkColor),
+                  ),
                 ),
               )
             : const SizedBox(),
       ),
     ),
   );
+}
+
+class _SketchyCheckPainter extends CustomPainter {
+  _SketchyCheckPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final generator = SketchyGenerator.createGenerator(seed: 1);
+
+    final drawable = generator.linearPath([
+      PointD(4, size.height / 2),
+      PointD(size.width / 2.5, size.height - 4),
+      PointD(size.width - 4, 4),
+    ]);
+
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawRough(drawable, paint, paint);
+  }
+
+  @override
+  bool shouldRepaint(_SketchyCheckPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

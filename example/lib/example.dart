@@ -12,7 +12,8 @@ Map<String, String> get _fontOptions => <String, String>{
   'Comic Shanns': 'ComicShanns',
   'Excalifont': 'Excalifont',
   'xkcd': 'XKCD',
-  'Gloria Hallelujah': GoogleFonts.gloriaHallelujah().fontFamily!,
+  'Gloria Hallelujah':
+      GoogleFonts.gloriaHallelujah().fontFamily ?? 'ComicShanns',
 };
 
 SketchyThemeData _resolveSketchyTheme({
@@ -265,6 +266,7 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
       return SketchyScaffold(
         appBar: _buildHeroAppBar(theme),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildConfigSection(palette),
             Expanded(
@@ -289,11 +291,11 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
           backgroundColor: theme.paperColor,
           items: const [
             BottomNavigationBarItem(
-              icon: SketchyIcon(icon: SketchyIcons.rectangle),
+              icon: FaIcon(FontAwesomeIcons.square),
               label: 'Widgets',
             ),
             BottomNavigationBarItem(
-              icon: SketchyIcon(icon: SketchyIcons.circle),
+              icon: FaIcon(FontAwesomeIcons.circle),
               label: 'Icons',
             ),
           ],
@@ -344,34 +346,56 @@ Comic Shanns font.
 
   Widget _buildConfigSection(PaletteOption palette) => SketchyTheme.consumer(
     builder: (context, theme) => Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.inkColor.withValues(alpha: 0.1),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Column(
+      child: Wrap(
+        spacing: 24,
+        runSpacing: 16,
+        crossAxisAlignment: WrapCrossAlignment.start,
         children: [
-          _buildThemeRow(palette),
-          const SizedBox(height: 16),
-          _buildModeToggleRow(),
+          _buildThemeColorsControl(palette),
+          ..._buildSettingsControls(theme),
         ],
       ),
     ),
   );
 
-  Widget _buildThemeRow(PaletteOption active) => SketchyTheme.consumer(
-    builder: (context, theme) => Column(
+  Widget _buildControlGroup(
+    SketchyThemeData theme, {
+    required String label,
+    required Widget child,
+    double? width,
+  }) {
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        SketchyText('Theme colors', style: _titleStyle(theme)),
-        const SizedBox(height: 12),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+        SketchyText(
+          label,
+          style: theme.typography.title.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+      ],
+    );
+
+    if (width != null) {
+      return SizedBox(width: width, child: content);
+    }
+    return content;
+  }
+
+  Widget _buildThemeColorsControl(PaletteOption active) =>
+      SketchyTheme.consumer(
+        builder: (context, theme) => _buildControlGroup(
+          theme,
+          label: 'Theme Colors',
+          child: Wrap(
+            spacing: 12,
+            runSpacing: 12,
             children: widget.palettes.map((option) {
               final isActive = option.id == active.id;
               final previewTheme = _resolveSketchyTheme(
@@ -382,40 +406,36 @@ Comic Shanns font.
                 mode: SketchyThemeMode.light,
               );
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: GestureDetector(
-                  onTap: () => widget.onThemeChanged(option.id),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _colorChip(previewTheme.primaryColor, isActive),
-                      const SizedBox(height: 4),
-                      _colorChip(
-                        previewTheme.secondaryColor,
-                        isActive,
-                        stroke: true,
-                        size: 22,
+              return GestureDetector(
+                onTap: () => widget.onThemeChanged(option.id),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _colorChip(previewTheme.primaryColor, isActive),
+                    const SizedBox(height: 4),
+                    _colorChip(
+                      previewTheme.secondaryColor,
+                      isActive,
+                      stroke: true,
+                      size: 22,
+                    ),
+                    const SizedBox(height: 4),
+                    SketchyText(
+                      option.label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isActive
+                            ? FontWeight.bold
+                            : FontWeight.w400,
                       ),
-                      const SizedBox(height: 4),
-                      SketchyText(
-                        option.label,
-                        style: TextStyle(
-                          fontWeight: isActive
-                              ? FontWeight.bold
-                              : FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }).toList(),
           ),
         ),
-      ],
-    ),
-  );
+      );
 
   Widget _colorChip(
     Color color,
@@ -448,139 +468,95 @@ Comic Shanns font.
     ),
   );
 
-  Widget _buildModeToggleRow() => SketchyTheme.consumer(
-    builder: (context, theme) {
-      final activeMode = widget.themeMode;
-      final labelStyle = theme.typography.title.copyWith(
-        fontWeight: FontWeight.bold,
-      );
+  List<Widget> _buildSettingsControls(SketchyThemeData theme) {
+    final activeMode = widget.themeMode;
+    final labelStyle = theme.typography.label.copyWith(
+      fontWeight: FontWeight.bold,
+    );
 
-      Widget modeButton(String label, SketchyThemeMode mode) {
-        final isActive = activeMode == mode;
-        return Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: SketchyButton(
-            onPressed: isActive ? null : () => widget.onThemeModeChanged(mode),
-            child: SketchyText(
-              label,
-              style: _buttonLabelStyle(
-                theme,
-                color: isActive
-                    ? theme.primaryColor
-                    : theme.inkColor.withValues(alpha: 0.5),
-              ),
+    Widget modeButton(String label, SketchyThemeMode mode) {
+      final isActive = activeMode == mode;
+      return Padding(
+        padding: const EdgeInsets.only(right: 8),
+        child: SketchyButton(
+          onPressed: isActive ? null : () => widget.onThemeModeChanged(mode),
+          child: SketchyText(
+            label,
+            style: labelStyle.copyWith(
+              color: isActive
+                  ? theme.primaryColor
+                  : theme.inkColor.withValues(alpha: 0.5),
             ),
           ),
-        );
-      }
-
-      Widget buildModeControls() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SketchyText('Mode', style: labelStyle),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              modeButton('Light', SketchyThemeMode.light),
-              modeButton('Dark', SketchyThemeMode.dark),
-            ],
-          ),
-        ],
+        ),
       );
+    }
 
-      Widget buildRoughControls() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SketchyText('Rough', style: labelStyle),
-          const SizedBox(height: 8),
-          SketchySlider(
-            value: widget.roughness,
-            onChanged: (value) =>
-                widget.onRoughnessChanged(value.clamp(0.0, 1.0)),
-          ),
-        ],
-      );
-
-      Widget buildFontControls() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SketchyText('Font', style: labelStyle),
-          const SizedBox(height: 8),
-          SketchyCombo<String>(
-            value: widget.fontFamily,
-            items: _fontOptions.entries
-                .map(
-                  (entry) => SketchyComboItem<String>(
-                    value: entry.value,
-                    child: SketchyText(entry.key, style: _bodyStyle(theme)),
+    return [
+      _buildControlGroup(
+        theme,
+        label: 'Mode',
+        width: 160,
+        child: Row(
+          children: [
+            modeButton('Light', SketchyThemeMode.light),
+            modeButton('Dark', SketchyThemeMode.dark),
+          ],
+        ),
+      ),
+      _buildControlGroup(
+        theme,
+        label: 'Roughness',
+        width: 240,
+        child: SketchySlider(
+          value: widget.roughness,
+          onChanged: (value) =>
+              widget.onRoughnessChanged(value.clamp(0.0, 1.0)),
+        ),
+      ),
+      _buildControlGroup(
+        theme,
+        label: 'Font',
+        width: 240,
+        child: SketchyCombo<String>(
+          value: widget.fontFamily,
+          items: _fontOptions.entries
+              .map(
+                (entry) => SketchyComboItem<String>(
+                  value: entry.value,
+                  child: SketchyText(entry.key, style: theme.typography.body),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value != null) widget.onFontChanged(value);
+          },
+        ),
+      ),
+      _buildControlGroup(
+        theme,
+        label: 'Title Casing',
+        width: 240,
+        child: SketchyCombo<TextCase>(
+          value: widget.textCase,
+          items: TextCase.values
+              .map(
+                (casing) => SketchyComboItem<TextCase>(
+                  value: casing,
+                  child: SketchyText(
+                    _textCaseLabel(casing),
+                    style: theme.typography.body,
                   ),
-                )
-                .toList(),
-            onChanged: (value) {
-              if (value != null) widget.onFontChanged(value);
-            },
-          ),
-        ],
-      );
-
-      Widget buildTitleCasingControls() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SketchyText('Title Casing', style: labelStyle),
-          const SizedBox(height: 8),
-          SketchyCombo<TextCase>(
-            value: widget.textCase,
-            items: TextCase.values
-                .map(
-                  (casing) => SketchyComboItem<TextCase>(
-                    value: casing,
-                    child: SketchyText(
-                      _textCaseLabel(casing),
-                      style: _bodyStyle(theme),
-                    ),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              if (value != null) widget.onTitleCasingChanged(value);
-            },
-          ),
-        ],
-      );
-
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final isNarrow = constraints.maxWidth < 960;
-          if (isNarrow) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildModeControls(),
-                const SizedBox(height: 16),
-                buildRoughControls(),
-                const SizedBox(height: 16),
-                buildFontControls(),
-                const SizedBox(height: 16),
-                buildTitleCasingControls(),
-              ],
-            );
-          }
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(width: 200, child: buildModeControls()),
-              const SizedBox(width: 24),
-              SizedBox(width: 200, child: buildRoughControls()),
-              const SizedBox(width: 24),
-              SizedBox(width: 200, child: buildFontControls()),
-              const SizedBox(width: 24),
-              SizedBox(width: 200, child: buildTitleCasingControls()),
-            ],
-          );
-        },
-      );
-    },
-  );
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value != null) widget.onTitleCasingChanged(value);
+          },
+        ),
+      ),
+    ];
+  }
 
   Widget _buildShowcaseBoard() {
     final cards = <Widget>[
@@ -692,7 +668,7 @@ Comic Shanns font.
                     compact: true,
                     filled: true,
                     tone: SketchyChipTone.accent,
-                    icon: SketchyIcons.check,
+                    icon: FaIcon(FontAwesomeIcons.check),
                     iconOnly: true,
                     fillStyle: SketchyFill.solid,
                   ),
@@ -718,7 +694,7 @@ Comic Shanns font.
                   SketchyChip.choice(
                     label: 'Archive',
                     selected: _archiveChip,
-                    icon: SketchyIcons.rectangle,
+                    icon: const FaIcon(FontAwesomeIcons.square),
                     fillStyle: SketchyFill.solid,
                     onSelected: () =>
                         setState(() => _archiveChip = !_archiveChip),
@@ -726,7 +702,7 @@ Comic Shanns font.
                   SketchyChip.choice(
                     label: '',
                     selected: _iconOnlyChip,
-                    icon: SketchyIcons.send,
+                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
                     iconOnly: true,
                     fillStyle: SketchyFill.solid,
                     onSelected: () =>
@@ -753,7 +729,7 @@ Comic Shanns font.
                   SketchyChip.badge(
                     label: 'Beta tag',
                     tone: SketchyChipTone.accent,
-                    icon: SketchyIcons.pen,
+                    icon: FaIcon(FontAwesomeIcons.pen),
                   ),
                 ]),
               ),
@@ -772,7 +748,7 @@ Comic Shanns font.
                   SketchyChip(
                     label: '',
                     tone: SketchyChipTone.accent,
-                    icon: SketchyIcons.plus,
+                    icon: FaIcon(FontAwesomeIcons.plus),
                     iconOnly: true,
                     fillStyle: SketchyFill.solid,
                   ),
@@ -806,30 +782,39 @@ Comic Shanns font.
         children: [
           Row(
             children: [
-              SketchyIconButton(icon: SketchyIcons.plus, onPressed: () {}),
+              SketchyIconButton(
+                icon: const FaIcon(FontAwesomeIcons.plus),
+                onPressed: () {},
+              ),
               const SizedBox(width: 12),
-              SketchyIconButton(icon: SketchyIcons.pen, onPressed: () {}),
+              SketchyIconButton(
+                icon: const FaIcon(FontAwesomeIcons.pen),
+                onPressed: () {},
+              ),
               const SizedBox(width: 12),
-              SketchyIconButton(icon: SketchyIcons.send, onPressed: () {}),
+              SketchyIconButton(
+                icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                onPressed: () {},
+              ),
             ],
           ),
           const SizedBox(height: 16),
           SketchyListTile(
-            leading: const SketchyIcon(icon: SketchyIcons.pen),
+            leading: const FaIcon(FontAwesomeIcons.pen),
             title: SketchyText('Brand refresh', style: _bodyStyle(theme)),
             subtitle: SketchyText(
               'Rally design + docs for review',
               style: _mutedStyle(theme),
             ),
             trailing: SketchyIconButton(
-              icon: SketchyIcons.check,
+              icon: const FaIcon(FontAwesomeIcons.check),
               onPressed: () {},
               size: 32,
             ),
           ),
           const SizedBox(height: 12),
           SketchyListTile(
-            leading: const SketchyIcon(icon: SketchyIcons.copy),
+            leading: const FaIcon(FontAwesomeIcons.copy),
             title: SketchyText('Follow-up nudges', style: _bodyStyle(theme)),
             subtitle: SketchyText(
               'Mute autopings after 10pm',

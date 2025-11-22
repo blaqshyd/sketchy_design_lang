@@ -170,6 +170,19 @@ class SketchyPrimitive {
 class SketchyGenerator {
   static final Map<int, (Size, double, Drawable)> _cache = {};
 
+  /// Creates a [Generator] configured with Sketchy defaults.
+  ///
+  /// [seed] is used for deterministic rendering.
+  /// [roughness] is a normalized value (0.0 - 1.0).
+  static Generator createGenerator({
+    required int seed,
+    double roughness = 0.5,
+  }) {
+    final config = _buildConfig(seed, roughness);
+    final filler = NoFiller(FillerConfig.build(drawConfig: config));
+    return Generator(config, filler);
+  }
+
   /// Generates a [Drawable] for the given [primitive].
   static Drawable generate(
     SketchyPrimitive primitive,

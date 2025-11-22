@@ -48,16 +48,14 @@ class SketchyScaffold extends StatelessWidget {
                       ),
                       child: body!,
                     ),
-                  ),
+                  )
+                else
+                  const Spacer(),
+                if (bottomNavigationBar != null) bottomNavigationBar!,
               ],
             ),
             if (floatingActionButton != null)
               Positioned(right: 24, bottom: 24, child: floatingActionButton!),
-            if (bottomNavigationBar != null)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: bottomNavigationBar,
-              ),
           ],
         ),
       ),
