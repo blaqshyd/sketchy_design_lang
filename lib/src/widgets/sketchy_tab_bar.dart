@@ -216,9 +216,7 @@ class _SketchyTabBarState extends State<SketchyTabBar> {
             (isSelected ? widget.labelStyle : widget.unselectedLabelStyle) ??
             theme.typography.body.copyWith(
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
-              color: isSelected
-                  ? widget.labelColor
-                  : widget.unselectedLabelColor,
+              color: theme.inkColor, // Ensure text is always visible
             ),
         child: tab,
       ),

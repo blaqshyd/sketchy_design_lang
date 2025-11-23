@@ -49,7 +49,7 @@ class _IconTileSectionState extends State<IconTileSection> {
               style: mutedStyle(theme),
             ),
             trailing: SketchyIconButton(
-              icon: const FaIcon(FontAwesomeIcons.check),
+              icon: const FaIcon(FontAwesomeIcons.xmark),
               onPressed: () {},
               iconSize: 32,
             ),

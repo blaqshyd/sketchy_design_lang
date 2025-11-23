@@ -67,6 +67,7 @@ class SketchyDesignSystemPage extends StatelessWidget {
             textCase: textCase,
             onTitleCasingChanged: onTitleCasingChanged,
           ),
+          const SketchyDivider(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
