@@ -1,12 +1,8 @@
-<div align="center">
-
 # Sketchy Design Language for Flutter
 
 Sketchy is a hand-drawn, xkcd-inspired design language for Flutter on mobile,
 desktop, and web. It's powered by the wired_elements code, the flutter_rough
 package and the Comic Shanns font.
-
-</div>
 
 Sketchy is a complete design language: a theming system, widget catalog, and
 example gallery that avoids Material/Cupertino entirely. Every control is drawn
@@ -17,15 +13,33 @@ the Sketchy Mode color brief.
 
 ## Table of contents
 
-1. [Getting started](#getting-started)
-2. [Core concepts](#core-concepts)
-3. [Using Sketchy widgets](#using-sketchy-widgets)
-4. [Example gallery & docs](#example-gallery--docs)
-5. [Customization recipes](#customization-recipes)
-6. [Testing & tooling](#testing--tooling)
-7. [Contributing](#contributing)
+- [Sketchy Design Language for Flutter](#sketchy-design-language-for-flutter)
+  - [Table of contents](#table-of-contents)
+  - [Look 'n' Feel](#look-n-feel)
+  - [Getting started](#getting-started)
+    - [Install](#install)
+    - [Minimal app](#minimal-app)
+  - [Core concepts](#core-concepts)
+    - [Theme data](#theme-data)
+    - [Primitives \& surfaces](#primitives--surfaces)
+    - [Roughness-aware fills](#roughness-aware-fills)
+    - [Isolated Material usage](#isolated-material-usage)
+  - [Using Sketchy widgets](#using-sketchy-widgets)
+    - [Quick examples](#quick-examples)
+  - [Example gallery \& docs](#example-gallery--docs)
+  - [Customization recipes](#customization-recipes)
+    - [Change fonts](#change-fonts)
+    - [Create a custom surface](#create-a-custom-surface)
+    - [Respond to mode changes](#respond-to-mode-changes)
+  - [Testing \& tooling](#testing--tooling)
+  - [Contributing](#contributing)
+  - [Acknowledgements](#acknowledgements)
 
 ---
+
+## Look 'n' Feel
+
+![alt text](readme/design-system.gif)
 
 ## Getting started
 
@@ -79,8 +93,8 @@ class SketchyDemo extends StatelessWidget {
 The entire widget tree now uses the Sketchy palette, typography, and primitives.
 `SketchyApp` works like `MaterialApp`: provide a light `theme`, optionally a
 `darkTheme`, and control `themeMode` (`system`, `light`, `dark`). When you omit
-`darkTheme`, Sketchy auto-derives one by swapping ink/paper and primary/secondary
-colors so dark mode still feels native without extra setup.
+`darkTheme`, Sketchy auto-derives one by swapping ink/paper and
+primary/secondary colors so dark mode still feels native without extra setup.
 
 ---
 
@@ -90,15 +104,16 @@ colors so dark mode still feels native without extra setup.
 
 `SketchyThemeData` carries:
 
-- **Colors** – ink, paper, primary/secondary, error. Themes include monochrome plus Red → Violet families. Dark mode swaps ink/paper automatically.
+- **Colors** – ink, paper, primary/secondary, error. Themes include monochrome
+  plus Red → Violet families. Dark mode swaps ink/paper automatically.
 - **Roughness** – a 0–1 dial that controls wobble, bowing, hachure spacing, and
   randomness (0 = crisp, 1 = sketchbook chaos).
 - **Typography** – defaults to Comic Shanns but you can swap entire families via
   `copyWith`.
 - **TextCase** – transforms all text display (labels, headers, tooltips, etc.)
-  with four options: `none` (default), `allCaps`, `titleCase`, `allLower`.
-  Does NOT affect actual user input. For maximum sketchy vibes, try
-  `xkcd` font + `TextCase.allCaps`.
+  with four options: `none` (default), `allCaps`, `titleCase`, `allLower`. Does
+  NOT affect actual user input. For maximum sketchy vibes, try `xkcd` font +
+  `TextCase.allCaps`.
 - **Stroke width & border radius** – consistent outlines for every widget.
 
 Access the theme with `SketchyTheme.of(context)` or the consumer pattern
@@ -121,8 +136,8 @@ return SketchyTheme.consumer(
 );
 ```
 
-The consumer pattern provides cleaner access to both theme and typography without
-multiple lookups, and rebuilds automatically when the theme changes.
+The consumer pattern provides cleaner access to both theme and typography
+without multiple lookups, and rebuilds automatically when the theme changes.
 
 ### Primitives & surfaces
 
@@ -146,10 +161,10 @@ widgets read the theme roughness and adapt automatically.
 
 While Sketchy is designed to be independent of Material, `SketchyApp` and
 `SketchyTextField` use isolated Material contexts internally to provide advanced
-text editing capabilities (like selection handles, cursors, and clipboard access)
-without leaking Material styles into your app. You do **not** need to wrap your
-app in `MaterialApp` or `Theme`; `SketchyApp` handles the necessary localization
-delegates automatically.
+text editing capabilities (like selection handles, cursors, and clipboard
+access) without leaking Material styles into your app. You do **not** need to
+wrap your app in `MaterialApp` or `Theme`; `SketchyApp` handles the necessary
+localization delegates automatically.
 
 ---
 
@@ -233,7 +248,8 @@ change modes, and the roughness slider affects outlines/fills at once.
   Sketchy widget scenario.
 - Specs live under `specs/` (`design-system.md`, `technical_design.md`,
   `requirements.md`) with UX references and rationale.
-- `example` hosts the gallery showing real layouts built purely with Sketchy widgets.
+- `example` hosts the gallery showing real layouts built purely with Sketchy
+  widgets.
 
 Use the gallery as your reference implementation—it demonstrates recommended
 layout patterns, theming hooks, and roughness transitions.
@@ -315,7 +331,7 @@ APIs, and keep lines ≤80 characters (per repo lint settings).
 Ideas? Bug reports? Open an issue! We love seeing new rough widgets, color
 modes, and theme experiments. Let's keep wireframes fun. ✍️
 
-### Acknowledgements
+## Acknowledgements
 
 - [wired_elements](https://github.com/KevinZhang19870314/wired_elements) – MIT
   License. The original hand-drawn widget kit that inspired Sketchy!

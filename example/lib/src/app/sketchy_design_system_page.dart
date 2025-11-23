@@ -88,11 +88,11 @@ class SketchyDesignSystemPage extends StatelessWidget {
                     const RadioSection(),
                     const SliderSection(),
                     const ProgressSection(),
-                    const CalendarSection(),
                     const CheckboxSection(),
                     const ToggleSection(),
                     const ComboSection(),
                     const DialogSection(),
+                    const CalendarSection(),
                   ];
 
                   return Wrap(
