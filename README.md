@@ -157,13 +157,14 @@ delegates automatically.
 
 Sketchy mirrors common UI building blocks. Highlights:
 
-| Category   | Widgets                                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| Category   | Widgets                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Inputs     | `SketchyTextField`, `SketchyDropdownButton`, `SketchySlider`, `SketchyCheckbox`, `SketchySwitch`, `SketchyRadio`, `SketchyCheckboxListTile`, `SketchyRadioListTile` |
-| Actions    | `SketchyOutlinedButton`, `SketchyIconButton`, `SketchyChip`                                                                      |
-| Containers | `SketchyCard`, `SketchyListTile`, `SketchyDivider`                                                                               |
-| Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`, `SketchySnackBar`                                           |
-| Navigation | `SketchyTabBar`, `SketchyAppBar`, `SketchyScaffold`                                                                              |
+| Actions    | `SketchyOutlinedButton`, `SketchyIconButton`, `SketchyChip`                                                                                                         |
+| Icons      | `SketchySymbol`                                                                                                                                                     |
+| Containers | `SketchyCard`, `SketchyListTile`, `SketchyDivider`                                                                                                                  |
+| Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`, `SketchySnackBar`                                                                       |
+| Navigation | `SketchyTabBar`, `SketchyAppBar`, `SketchyScaffold`                                                                                                                 |
 
 ### Quick examples
 

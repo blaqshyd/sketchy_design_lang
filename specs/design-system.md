@@ -88,6 +88,8 @@ The rough look is powered by `SketchyPrimitive`s backed by `rough_flutter`:
 - Slight randomness in stroke path
 - Rectangular shapes that feel hand-drawn rather than geometric
 
+**Flicker Control:** To prevent the "boiling" effect common in randomized rendering, Sketchy widgets cache their drawing seeds. This ensures that while every button looks unique, a single button doesn't jitter distractingly while it's being animated or interacted with.
+
 Guidelines:
 
 - Prefer the built-in Sketchy widgets for all visible UI.
@@ -227,6 +229,7 @@ applies the active theme:
 * `SketchySnackBar`
 * `SketchyAppBar`
 * `SketchyScaffold`
+* `SketchySymbol`
 
 App code **never talks to internal primitives directly**; that lets Sketchy
 evolve internals without breaking consumers.
@@ -380,6 +383,21 @@ Guidelines:
 * Designed primarily for **single date selection**.
 * Use Sketchy typography for month and weekday labels.
 * Selected date should be clearly indicated but still feel hand-drawn.
+
+### 8. Sketchy Symbols (Icons)
+
+**Base widget:** `SketchySymbol`
+
+A set of hand-drawn, scalable symbols that use the theme's ink color and roughness.
+
+Available symbols:
+* `plus`, `chevronRight`, `chevronDown`
+* `rectangle`, `send`
+* `bullet`, `x` (close)
+
+Guidelines:
+* Use for standard UI actions where a full icon set isn't needed.
+* Symbols adapt to `theme.roughness` automatically.
 
 ---
 
