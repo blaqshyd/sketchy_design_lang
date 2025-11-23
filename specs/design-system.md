@@ -46,43 +46,43 @@ The entire app uses Comic Shanns via `ThemeData.fontFamily`.
 
 ### Color System
 
-Sketchy defines a base set of themes:
+Sketchy defines a comprehensive set of themes, each with its own ink, paper, primary, and secondary colors.
 
-- `monochrome`
-- `red`
-- `orange`
-- `yellow`
-- `green`
-- `blue`
-- `indigo`
-- `violet`
+*   **Ink**: The color used for text, borders, and outlines (primary content).
+*   **Paper**: The background color, emulating the surface being drawn on.
+*   **Primary**: The main accent color for highlights, active states, and key actions.
+*   **Secondary**: A softer accent for fills, backgrounds, and secondary elements.
+*   **Error**: A consistent error color (`Carmine`, #D64550) is used across all themes.
 
-Each theme has:
+#### Theme Palette Table
 
-- **Primary color** – accents, app bars, highlights  
-- **Secondary color** – softer surfaces, chips, subtle fills  
+| Theme          | Ink Name     | Ink Hex   | Paper Name | Paper Hex | Primary Name | Primary Hex | Secondary Name | Secondary Hex |
+| :------------- | :----------- | :-------- | :--------- | :-------- | :----------- | :---------- | :------------- | :------------ |
+| **monochrome** | Black        | `#000000` | White      | `#FFFFFF` | Black        | `#000000`   | White          | `#FFFFFF`     |
+| **scarlet**    | Maroon       | `#5C1111` | Rose       | `#FFF1F7` | Dark Scarlet | `#981200`   | Rosewash       | `#E6B9B0`     |
+| **red**        | Maroon       | `#5C1111` | Rose       | `#FFF1F7` | Red          | `#FF2500`   | Blush          | `#F5CCCC`     |
+| **orange**     | Rust         | `#7A2F05` | Apricot    | `#FFF4E9` | Orange       | `#FF9A02`   | Creamsicle     | `#FCE5CC`     |
+| **yellow**     | Ochre        | `#7C5B04` | Cream      | `#FFFBE6` | Yellow       | `#FFFB03`   | Buttercream    | `#FFF3CC`     |
+| **green**      | Forest Green | `#184B2B` | Mint       | `#F1FFF4` | Green        | `#09F902`   | Mint Fade      | `#D9EAD3`     |
+| **cyan**       | Deep Teal    | `#06464E` | Aqua       | `#F0FDFF` | Cyan         | `#0AFDFF`   | Ice Mist       | `#D0E1E3`     |
+| **dusty**      | Navy         | `#0F305D` | Cloud      | `#F0F6FF` | Dusty        | `#4A86E8`   | Powder Blue    | `#C9DAF8`     |
+| **blue**       | Navy         | `#0F305D` | Cloud      | `#F0F6FF` | Blue         | `#0133FF`   | Skywash        | `#D0E3F2`     |
+| **indigo**     | Midnight     | `#261E61` | Lavender   | `#F4F0FF` | Indigo       | `#5C6BC0`   | Periwinkle     | `#D1C4E9`     |
+| **violet**     | Plum         | `#3C164D` | Orchid     | `#FFF0FF` | Violet       | `#9938FF`   | Lavender Haze  | `#D9D1E9`     |
+| **pink**       | Wine         | `#5A0E2A` | Rose       | `#FFF1F7` | Pink         | `#FF40FF`   | Petal Blush    | `#EAD1DC`     |
 
-In **light mode**, the primary and secondary colors are used as defined.  
-In **dark mode**, **primary and secondary swap roles**:
+In **light mode**, the primary and secondary colors are used as defined above.  
+In **dark mode**, the roles are swapped to maintain contrast and hierarchy:
+*   **Ink** becomes **Paper** (and vice-versa).
+*   **Primary** becomes **Secondary** (and vice-versa).
 
-- primary ⇄ secondary  
-
-This makes dark mode feel like the same world, just inverted.
-
-Conceptually:
-
-| Theme      | Primary (light) | Secondary (light) |
-| ---------- | --------------- | ----------------- |
-| monochrome | Black           | Light gray        |
-| red        | Bright red      | Soft pink         |
-| blue       | Bright blue     | Pale blue         |
-| …          | …               | …                 |
+This inversion makes dark mode feel like the same world, just inverted (e.g., white chalk on a blackboard).
 
 ---
 
 ### Line Style & Shapes
 
-The rough look is powered by Sketchy primitives backed by `rough_flutter`:
+The rough look is powered by `SketchyPrimitive`s backed by `rough_flutter`:
 
 - Double-line, jittery rectangles and circles
 - Slight randomness in stroke path
@@ -100,62 +100,20 @@ Guidelines:
 
 ### Light Mode
 
-- Background: off-white / paper-like (`#FFFDF6` by default)  
-- Primary color: theme primary  
-- Secondary color: theme secondary  
+- Background: Theme's **Paper** color.
+- Foreground/Text: Theme's **Ink** color.
+- Primary/Secondary: Used as defined in the palette.
 - Shadows are minimal; hierarchy is driven mostly by layout, stroke, and color.
 
 ### Dark Mode
 
-- Background: very dark gray / near black  
-- Primary color: **secondary** from the selected theme (swapped)  
-- Secondary color: **primary** from the selected theme (swapped)  
-- Text uses light grays / white; outlines remain clearly visible.
+- Background: Theme's **Ink** color (swapped).
+- Foreground/Text: Theme's **Paper** color (swapped).
+- Primary/Secondary: Swapped (Primary becomes darker/softer, Secondary becomes brighter/bolder).
+- Text uses light colors; outlines remain clearly visible.
 
 Mode switching is exposed via Sketchy-styled toggle buttons: **Light** and
 **Dark**.
-
----
-
-## Tokens (Conceptual)
-
-Even though the look is rough, the system is token-driven.
-
-### Color Tokens
-
-At minimum:
-
-- `color.primary`
-- `color.secondary`
-- `color.background`
-- `color.surface`
-- `color.text.primary`
-- `color.text.muted`
-- `color.border.default`
-- `color.accent.success`
-- `color.accent.error`
-- `color.accent.warning`
-
-Each theme & mode pair maps these tokens to actual colors; Sketchy components
-use tokens, not raw color literals.
-
-### Spacing & Layout
-
-A simple scale:
-
-- `space.xs` = 4
-- `space.sm` = 8
-- `space.md` = 12
-- `space.lg` = 16
-- `space.xl` = 24
-
-Use these for padding, margins, and inter-component gaps.
-
-### Stroke / Outline
-
-- Stroke thickness ~ **1.5–2.5 px**, but visually varied by jitter.
-- Outlines should stay roughly consistent within a screen (don’t mix ultra-thin
-  and heavy strokes).
 
 ---
 
@@ -166,9 +124,8 @@ depend on.
 
 It has three main layers:
 
-1. **Tokens layer** – Dart types and `ThemeData` / `ThemeExtension`s  
-2. **Components layer** – `Sketchy*` widgets built from tokens and primitive
-   surfaces  
+1. **Theme layer** – `SketchyThemeData` and `SketchyThemes` presets
+2. **Components layer** – `Sketchy*` widgets built from theme data and primitives
 3. **Docs layer** – the in-app “Sketchy Design System” screen itself  
 
 ### Package & Folder Structure
@@ -180,19 +137,19 @@ lib/
   sketchy.dart                     # public exports
 
   src/
-    tokens/
-      sketchy_palette.dart         # color/theme model (light/dark swap)
-      sketchy_spacing.dart         # spacing constants
-      sketchy_typography.dart      # Comic Shanns text styles
-      sketchy_theme_ext.dart       # ThemeExtension bundling Sketchy tokens
+    theme/
+      sketchy_colors.dart          # static color palette
+      sketchy_theme.dart           # theme data configuration
+      sketchy_themes.dart          # preset themes and palette logic
+      sketchy_typography.dart      # comic shanns text styles
 
-    components/
+    widgets/
       sketchy_button.dart
-      sketchy_input.dart
+      sketchy_text_field.dart
       sketchy_divider.dart
       sketchy_radio.dart
       sketchy_slider.dart
-      sketchy_progress.dart
+      sketchy_linear_progress_indicator.dart
       sketchy_calendar.dart
 
     docs/
@@ -202,124 +159,74 @@ lib/
 * **Apps import `package:sketchy/sketchy.dart`** and stay unaware of the
   rendering primitives under the hood.
 
-### Tokens as Code
+### Theme Configuration
 
-Sketchy tokens are **Dart APIs**, not just conceptual names.
+`SketchyThemeData` holds the configuration for the design system:
 
-#### Palette
-
-A theme color pair:
-
-```dart
-class SketchyPalette {
-  final String name;
-  final Color primary;
-  final Color secondary;
-
-  const SketchyPalette({
-    required this.name,
-    required this.primary,
-    required this.secondary,
-  });
-}
+```mermaid
+classDiagram
+    class SketchyThemeData {
+        +Color inkColor
+        +Color paperColor
+        +Color primaryColor
+        +Color secondaryColor
+        +Color errorColor
+        +SketchyTypographyData typography
+        +double strokeWidth
+        +double borderRadius
+        +double roughness
+        +TextCase textCase
+        +copyWith()
+    }
+    class SketchyThemes {
+        <<enumeration>>
+        monochrome
+        scarlet
+        red
+        orange
+        yellow
+        green
+        cyan
+        dusty
+        blue
+        indigo
+        violet
+        pink
+    }
+    SketchyThemes ..> SketchyThemeData : creates via fromTheme factory
 ```
 
-#### Theme Extension
+`SketchyTheme` is an `InheritedWidget` that exposes `SketchyThemeData` to the widget tree.
 
-`SketchyTheme` wraps palette + spacing + any derived colors:
-
-```dart
-@immutable
-class SketchyTheme extends ThemeExtension<SketchyTheme> {
-  final SketchyPalette palette;
-  final double spaceSmall;
-  final double spaceMedium;
-  final double spaceLarge;
-
-  const SketchyTheme({
-    required this.palette,
-    this.spaceSmall = 8,
-    this.spaceMedium = 12,
-    this.spaceLarge = 16,
-  });
-
-  @override
-  SketchyTheme copyWith({
-    SketchyPalette? palette,
-    double? spaceSmall,
-    double? spaceMedium,
-    double? spaceLarge,
-  }) {
-    return SketchyTheme(
-      palette: palette ?? this.palette,
-      spaceSmall: spaceSmall ?? this.spaceSmall,
-      spaceMedium: spaceMedium ?? this.spaceMedium,
-      spaceLarge: spaceLarge ?? this.spaceLarge,
-    );
-  }
-
-  @override
-  SketchyTheme lerp(ThemeExtension<SketchyTheme>? other, double t) {
-    if (other is! SketchyTheme) return this;
-    return this; // non-animated for now; can be refined later
-  }
-}
-```
-
-Added to the app theme:
+Widgets read theme data by accessing the theme from the current context:
 
 ```dart
-ThemeData buildSketchyTheme(SketchyPalette palette, Brightness brightness) {
-  final isDark = brightness == Brightness.dark;
-
-  final base = ThemeData(
-    brightness: brightness,
-    useMaterial3: true,
-    fontFamily: 'ComicShanns',
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: palette.primary,
-      brightness: brightness,
-    ),
-  );
-
-  return base.copyWith(
-    extensions: <ThemeExtension<dynamic>>[
-      SketchyTheme(palette: palette),
-    ],
-  );
-}
+final theme = SketchyTheme.of(context);
 ```
 
-Widgets read tokens with:
-
-```dart
-final sketchy = Theme.of(context).extension<SketchyTheme>()!;
-final primary = sketchy.palette.primary;
-```
-
-This keeps **tokens as the single source of truth** for all Sketchy components.
+This keeps **theme data as the single source of truth** for all Sketchy components.
 
 ### Sketchy Components as the Public API
 
 Each public Sketchy widget is the canonical implementation and automatically
-applies the active tokens:
+applies the active theme:
 
 * `SketchyButton`
-* `SketchyInput`
+* `SketchyTextField`
 * `SketchyDivider`
 * `SketchyRadio<T>`
+* `SketchyCheckbox`
+* `SketchySwitch`
 * `SketchySlider`
-* `SketchyProgress`
+* `SketchyLinearProgressIndicator`
 * `SketchyCalendar`
-
-Example usage from an app:
-
-```dart
-SketchyButton.primary(
-  onPressed: () {},
-  label: 'Submit',
-);
-```
+* `SketchyCard`
+* `SketchyDialog`
+* `SketchyChip`
+* `SketchyTooltip`
+* `SketchySnackBar`
+* `SketchyAppBar`
+* `SketchyScaffold`
 
 App code **never talks to internal primitives directly**; that lets Sketchy
 evolve internals without breaking consumers.
@@ -328,7 +235,7 @@ evolve internals without breaking consumers.
 
 The **Sketchy Design System page** is a first-class artifact:
 
-* Shows **all tokens** (palettes, theme names, light/dark swap behavior).
+* Shows **all themes** (palettes, theme names, light/dark swap behavior).
 * Shows **all components** in representative states with realistic content.
 * Acts as a **storybook** for designers and engineers.
 
@@ -347,7 +254,7 @@ To keep Sketchy stable as it grows:
 * Version Sketchy as a standalone package; document:
 
   * Supported Flutter SDK versions
-  * Breaking changes (token shifts, widget API changes)
+  * Breaking changes (theme shifts, widget API changes)
   * Deprecation paths for old widgets or props
 
 ---
@@ -359,7 +266,7 @@ widgets.
 
 ### 1. Sketchy Buttons
 
-**Base widget:** `SketchyButton` (wraps `WiredButton`)
+**Base widget:** `SketchyButton`
 
 Variants (examples):
 
@@ -377,7 +284,7 @@ Guidelines:
 
 ### 2. Sketchy Divider
 
-**Base widget:** `SketchyDivider` (wraps `WiredDivider`)
+**Base widget:** `SketchyDivider`
 
 Used to:
 
@@ -395,7 +302,7 @@ Typical layout:
 
 ### 3. Sketchy Text Input
 
-**Base widget:** `SketchyInput` (wraps `WiredInput`)
+**Base widget:** `SketchyTextField`
 
 Examples:
 
@@ -413,7 +320,7 @@ Guidelines:
 
 ### 4. Sketchy Radio
 
-**Base widget:** `SketchyRadio<T>` (wraps `WiredRadio<T>`)
+**Base widget:** `SketchyRadio<T>`
 
 Example options:
 
@@ -429,7 +336,7 @@ Guidelines:
 
 ### 5. Sketchy Slider
 
-**Base widget:** `SketchySlider` (wraps `WiredSlider`)
+**Base widget:** `SketchySlider`
 
 Usage:
 
@@ -445,7 +352,7 @@ Guidelines:
 
 ### 6. Sketchy Progress
 
-**Base widget:** `SketchyProgress` (wraps `WiredProgress`)
+**Base widget:** `SketchyLinearProgressIndicator`
 
 Pattern:
 
@@ -462,7 +369,7 @@ Guidelines:
 
 ### 7. Sketchy Calendar
 
-**Base widget:** `SketchyCalendar` (wraps `WiredCalendar`)
+**Base widget:** `SketchyCalendar`
 
 Example:
 
@@ -507,53 +414,10 @@ The design-system board itself is a concrete reference layout.
 
 ---
 
-## Accessibility
-
-Sketchy looks informal, but it should still be accessible:
-
-* Maintain **contrast** between text and background in all themes/modes.
-* Keep touch targets ≥ 44×44 dp.
-* Provide clear **focus states** for keyboard and assistive-tech navigation.
-* Use descriptive labels and semantics for interactive elements (`Semantics`,
-  `aria` on web).
-* Don’t rely solely on color (or squiggles) to signal critical states.
-
----
-
-## Usage Guidelines
-
-Use Sketchy when:
-
-* You’re prototyping interaction flows or data structures.
-* You want stakeholders to focus on **what** the app does, not **how polished**
-  it looks.
-* You’re building internal tools or playful apps where the aesthetic matches the
-  brand.
-
-Avoid Sketchy when:
-
-* You need a serious, formal brand tone (e.g., banking, medical emergencies).
-* Your design must match a rigid corporate design system.
-* High-stress flows require maximum calm and clarity.
-
----
-
-## Roadmap Ideas
-
-Potential future extensions:
-
-* Sketchy **tabs**, **chips**, **badges**, and **toasts**
-* Sketchy **dialogs**, inline alerts, and banners
-* A small **sketchy icon set** (monochrome but tintable)
-* Figma / design-tool libraries that mirror the Flutter implementation
-* JSON / CSS export of tokens for non-Flutter surfaces
-
----
-
 **Summary**
 
 Sketchy is a Flutter-first design system that turns your app into a living
 comic-book UI: playful lines, clear Comic Shanns typography, ROYGBIV-powered
-themes, and a consistent set of tokens & widgets built on top of custom sketchy
+themes, and a consistent set of widgets built on top of custom sketchy
 primitives. It’s intentionally rough, structurally solid, and designed to keep
 conversations centered on user flows and behavior—not pixel-perfect polish.
