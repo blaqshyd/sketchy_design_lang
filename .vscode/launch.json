@@ -6,7 +6,7 @@
       "cwd": "example",
       "request": "launch",
       "type": "dart",
-      "program": "example.dart"
+      "program": "lib/main.dart"
     }
   ]
 }

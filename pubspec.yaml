@@ -2,7 +2,7 @@ name: sketchy_design_lang
 description: |-
   Sketchy is a hand-drawn, xkcd-inspired design language for Flutter on mobile,
   desktop, and web
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/csells/sketchy_design_lang
 repository: https://github.com/csells/sketchy_design_lang
 

@@ -41,6 +41,10 @@ the Sketchy Mode color brief.
 
 ![](https://raw.githubusercontent.com/csells/sketchy_design_lang/refs/heads/main/readme/design-system.gif)
 
+The is the output of the example app as a living design system overview. You can
+[run this example app right now](https://sketchy-design-lang.web.app/) to get a 
+feel for it yourself.
+
 ## Getting started
 
 ### Install
