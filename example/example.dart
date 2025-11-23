@@ -6,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sketchy_design_lang/sketchy_design_lang.dart';
 
-import 'font_awesome_browser.dart';
-
 Map<String, String> get _fontOptions => <String, String>{
   'Comic Shanns': 'ComicShanns',
   'Excalifont': 'Excalifont',
@@ -187,8 +185,6 @@ class SketchyDesignSystemPage extends StatefulWidget {
 
 class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
     with TickerProviderStateMixin {
-  int _selectedIndex = 0;
-
   // State for the "sketchy" components
   static const double _cardWidth = 520;
   String _selectedRadio = 'Lafayette';
@@ -270,33 +266,10 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
           children: [
             _buildConfigSection(palette),
             Expanded(
-              child: IndexedStack(
-                index: _selectedIndex,
-                children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: _buildShowcaseBoard(),
-                  ),
-                  const FontAwesomeBrowserExample(),
-                ],
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: _buildShowcaseBoard(),
               ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: (index) => setState(() => _selectedIndex = index),
-          selectedItemColor: theme.primaryColor,
-          unselectedItemColor: theme.inkColor.withValues(alpha: 0.5),
-          backgroundColor: theme.paperColor,
-          items: const [
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.square),
-              label: 'Widgets',
-            ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.circle),
-              label: 'Icons',
             ),
           ],
         ),
@@ -315,10 +288,11 @@ class _SketchyDesignSystemPageState extends State<SketchyDesignSystemPage>
           width: 96,
           height: 96,
           child: Center(
-            child: FaIcon(
-              FontAwesomeIcons.faceGrinTongueWink,
-              size: 64,
-              color: theme.inkColor,
+            child: Image.asset(
+              'assets/images/sketchy_mascot.png',
+              width: 64,
+              height: 64,
+              fit: BoxFit.contain,
             ),
           ),
         ),
