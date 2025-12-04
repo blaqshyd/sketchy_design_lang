@@ -15,21 +15,21 @@ void main() {
       String? semanticLabel,
       SketchyThemeData? theme,
     }) => SketchyApp(
-        title: 'Test',
-        theme: theme ?? SketchyThemeData.fromTheme(SketchyThemes.monochrome),
-        home: SketchyScaffold(
-          body: Center(
-            child: SketchyCircularProgressIndicator(
-              value: value,
-              strokeWidth: strokeWidth,
-              size: size,
-              backgroundColor: backgroundColor,
-              color: color,
-              semanticLabel: semanticLabel,
-            ),
+      title: 'Test',
+      theme: theme ?? SketchyThemeData.fromTheme(SketchyThemes.monochrome),
+      home: SketchyScaffold(
+        body: Center(
+          child: SketchyCircularProgressIndicator(
+            value: value,
+            strokeWidth: strokeWidth,
+            size: size,
+            backgroundColor: backgroundColor,
+            color: color,
+            semanticLabel: semanticLabel,
           ),
         ),
-      );
+      ),
+    );
 
     group('Widget Creation', () {
       testWidgets('creates without errors', (tester) async {
@@ -81,14 +81,15 @@ void main() {
         );
         await tester.pump();
 
-        // Find CustomPaint widgets that are descendants of SketchyCircularProgressIndicator
+        // Find CustomPaint widgets
+        // that are descendants of SketchyCircularProgressIndicator
         final customPaintFinder = find.descendant(
           of: find.byType(SketchyCircularProgressIndicator),
           matching: find.byType(CustomPaint),
         );
         final customPaints = tester.widgetList<CustomPaint>(customPaintFinder);
 
-        // Find the background track painter (has SketchyShapePainter with circle primitive)
+        // Find the background track painter (with circle primitive)
         final backgroundPainter = customPaints
             .map((cp) => cp.painter)
             .whereType<SketchyShapePainter>()
@@ -104,21 +105,25 @@ void main() {
         await tester.pumpWidget(buildTestWidget(color: testColor, value: 0.5));
         await tester.pump();
 
-        // Find CustomPaint widgets that are descendants of SketchyCircularProgressIndicator
+        // Find CustomPaint widgets
+        // that are descendants of SketchyCircularProgressIndicator
         final customPaintFinder = find.descendant(
           of: find.byType(SketchyCircularProgressIndicator),
           matching: find.byType(CustomPaint),
         );
         final customPaints = tester.widgetList<CustomPaint>(customPaintFinder);
 
-        // Find the background track painter (has SketchyShapePainter with circle primitive)
+        // Find the background track painter (with circle primitive)
         final backgroundPainter = customPaints
             .map((cp) => cp.painter)
             .whereType<SketchyShapePainter>()
             .firstWhere((p) => p.primitive.type == SketchyShapeType.circle);
 
         // Background should be the color with reduced alpha (0.2)
-        expect(backgroundPainter.strokeColor.alpha, lessThan(testColor.alpha));
+        expect(
+          backgroundPainter.strokeColor.toARGB32(),
+          lessThan(testColor.toARGB32()),
+        );
       });
 
       testWidgets('creates with semanticLabel', (tester) async {
@@ -230,7 +235,8 @@ void main() {
         await tester.pump();
 
         // Should have only 1 CustomPaint (background track only)
-        // Note: The exact behavior depends on implementation - at least background exists
+        // Note: The exact behavior depends on implementation
+        // - at least background exists
         final customPaints = find.byType(CustomPaint);
         expect(customPaints, findsWidgets);
       });
@@ -332,7 +338,8 @@ void main() {
         );
         await tester.pump();
 
-        // Find CustomPaint widgets that are descendants of SketchyCircularProgressIndicator
+        // Find CustomPaint widgets
+        // that are descendants of SketchyCircularProgressIndicator
         final customPaintFinder = find.descendant(
           of: find.byType(SketchyCircularProgressIndicator),
           matching: find.byType(CustomPaint),
@@ -621,7 +628,10 @@ void main() {
 
       testWidgets('handles color with alpha', (tester) async {
         await tester.pumpWidget(
-          buildTestWidget(color: Colors.blue.withOpacity(0.5), value: 0.5),
+          buildTestWidget(
+            color: Colors.blue.withValues(alpha: 0.5),
+            value: 0.5,
+          ),
         );
         await tester.pump();
 
@@ -631,7 +641,7 @@ void main() {
       testWidgets('handles backgroundColor with alpha', (tester) async {
         await tester.pumpWidget(
           buildTestWidget(
-            backgroundColor: Colors.grey.withOpacity(0.3),
+            backgroundColor: Colors.grey.withValues(alpha: 0.3),
             value: 0.5,
           ),
         );
@@ -649,7 +659,7 @@ void main() {
 
       testWidgets('updates when size changes', (tester) async {
         // Use a StatefulBuilder to properly trigger rebuilds
-        double currentSize = 48;
+        double? currentSize = 48;
         late StateSetter setState;
 
         await tester.pumpWidget(
@@ -680,7 +690,7 @@ void main() {
 
         // Update size via setState
         setState(() {
-          currentSize = 96.0;
+          currentSize = 96;
         });
         await tester.pump();
 

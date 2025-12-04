@@ -165,6 +165,7 @@ Sketchy mirrors common UI building blocks. Highlights:
 | Actions    | `SketchyOutlinedButton`, `SketchyButton`, `SketchyIconButton`, `SketchyChip`                                                                                        |
 | Icons      | `SketchySymbol`, `SketchyAvatar`                                                                                                                                    |
 | Containers | `SketchyCard`, `SketchyListTile`, `SketchyDivider`, `SketchyDrawer`                                                                                                 |
+| Progress   | `SketchyLinearProgressIndicator`, `SketchyCircularProgressIndicator`                                                                                                |
 | Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`, `SketchySnackBar`                                                                       |
 | Navigation | `SketchyTabBar`, `SketchyAppBar`, `SketchyScaffold`                                                                                                                 |
 
@@ -201,6 +202,34 @@ SketchySlider(
   onChanged: (value) => setState(() => roughness = value),
   min: 0,
   max: 1,
+);
+
+// Linear progress indicator (determinate mode)
+SketchyLinearProgressIndicator(
+  value: 0.65,
+  color: Colors.blue,
+  backgroundColor: Colors.grey.shade200,
+  minHeight: 20,
+);
+
+// Linear progress indicator (indeterminate mode)
+SketchyLinearProgressIndicator(
+  controller: animationController,
+  color: theme.primaryColor,
+);
+
+// Circular progress indicator (determinate mode)
+SketchyCircularProgressIndicator(
+  value: 0.75,
+  size: 48,
+  strokeWidth: 4.0,
+  color: Colors.green,
+);
+
+// Circular progress indicator (indeterminate mode)
+SketchyCircularProgressIndicator(
+  size: 64,
+  color: theme.secondaryColor,
 );
 
 SketchyDialog(
