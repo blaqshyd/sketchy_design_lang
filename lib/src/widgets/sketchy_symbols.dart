@@ -332,21 +332,30 @@ class _SketchySymbolPainter extends CustomPainter {
         final w = size.width;
         final h = size.height;
         draw([
-          // First person (front)
+          // First person (front) - head
           generator.ellipse(w * 0.4, h * 0.25, w * 0.25, h * 0.25),
-          // BUG: Either call to generator.arc causes the app to crash.
-          // generator.arc(w * 0.4, h * 0.85, w * 0.4, h * 0.5, 3.14, 3.14, false),
-          // Second person (back, slightly offset)
+          // First person - body/shoulders (bottom half of ellipse)
+          generator.arc(
+            w * 0.4,
+            h * 0.7,
+            w * 0.4,
+            h * 0.5,
+            math.pi,
+            math.pi * 2,
+            false,
+          ),
+          // Second person (back, slightly offset) - head
           generator.ellipse(w * 0.65, h * 0.2, w * 0.2, h * 0.2),
-          // generator.arc(
-          //   w * 0.65,
-          //   h * 0.75,
-          //   w * 0.35,
-          //   h * 0.4,
-          //   3.14,
-          //   3.14,
-          //   false,
-          // ),
+          // Second person - body/shoulders
+          generator.arc(
+            w * 0.65,
+            h * 0.6,
+            w * 0.35,
+            h * 0.4,
+            math.pi,
+            math.pi * 2,
+            false,
+          ),
         ]);
     }
   }
