@@ -38,6 +38,14 @@ class SketchyCheckbox extends StatefulWidget {
 
 class _SketchyCheckboxState extends State<SketchyCheckbox>
     with ValueSyncMixin<bool, SketchyCheckbox> {
+  late final SketchyPrimitive _primitive;
+
+  @override
+  void initState() {
+    super.initState();
+    _primitive = SketchyPrimitive.rectangle(fill: SketchyFill.none);
+  }
+
   @override
   bool get widgetValue => widget.value!;
 
@@ -60,8 +68,7 @@ class _SketchyCheckboxState extends State<SketchyCheckbox>
         fillColor: theme.secondaryColor,
         padding: EdgeInsets.zero,
         alignment: Alignment.center,
-        createPrimitive: () =>
-            SketchyPrimitive.rectangle(fill: SketchyFill.none),
+        createPrimitive: () => _primitive,
         child: value
             ? Transform.scale(
                 scale: 0.7,

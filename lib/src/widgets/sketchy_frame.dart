@@ -16,7 +16,7 @@ enum SketchyFrameShape {
 }
 
 /// Convenience wrapper around [SketchySurface] that builds common frame shapes.
-class SketchyFrame extends StatelessWidget {
+class SketchyFrame extends StatefulWidget {
   /// Creates a sketchy frame with the given [child].
   const SketchyFrame({
     required this.child,
@@ -71,39 +71,53 @@ class SketchyFrame extends StatelessWidget {
   final SketchyFillOptions? fillOptions;
 
   @override
-  Widget build(BuildContext context) => SketchyTheme.consumer(
-    builder: (context, theme) {
-      final primitive = _buildPrimitive();
-      return SketchySurface(
-        width: width,
-        height: height,
-        padding: padding,
-        alignment: alignment,
-        strokeColor: strokeColor ?? theme.inkColor,
-        fillColor: fillColor ?? const Color(0x00000000),
-        strokeWidth: strokeWidth ?? theme.strokeWidth,
-        createPrimitive: primitive,
-        child: child,
-      );
-    },
-  );
+  State<SketchyFrame> createState() => _SketchyFrameState();
+}
 
-  SketchyPrimitive Function() _buildPrimitive() {
-    switch (shape) {
+class _SketchyFrameState extends State<SketchyFrame> {
+  late final SketchyPrimitive _primitive;
+
+  @override
+  void initState() {
+    super.initState();
+    _primitive = _buildPrimitive();
+  }
+
+  SketchyPrimitive _buildPrimitive() {
+    switch (widget.shape) {
       case SketchyFrameShape.circle:
-        return () =>
-            SketchyPrimitive.circle(fill: fill, fillOptions: fillOptions);
+        return SketchyPrimitive.circle(
+          fill: widget.fill,
+          fillOptions: widget.fillOptions,
+        );
       case SketchyFrameShape.rectangle:
-        final radius = cornerRadius ?? 0;
+        final radius = widget.cornerRadius ?? 0;
         if (radius > 0) {
-          return () => SketchyPrimitive.roundedRectangle(
-            fill: fill,
+          return SketchyPrimitive.roundedRectangle(
+            fill: widget.fill,
             cornerRadius: radius,
-            fillOptions: fillOptions,
+            fillOptions: widget.fillOptions,
           );
         }
-        return () =>
-            SketchyPrimitive.rectangle(fill: fill, fillOptions: fillOptions);
+        return SketchyPrimitive.rectangle(
+          fill: widget.fill,
+          fillOptions: widget.fillOptions,
+        );
     }
   }
+
+  @override
+  Widget build(BuildContext context) => SketchyTheme.consumer(
+    builder: (context, theme) => SketchySurface(
+      width: widget.width,
+      height: widget.height,
+      padding: widget.padding,
+      alignment: widget.alignment,
+      strokeColor: widget.strokeColor ?? theme.inkColor,
+      fillColor: widget.fillColor ?? const Color(0x00000000),
+      strokeWidth: widget.strokeWidth ?? theme.strokeWidth,
+      createPrimitive: () => _primitive,
+      child: widget.child,
+    ),
+  );
 }

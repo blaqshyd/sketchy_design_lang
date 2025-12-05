@@ -6,7 +6,7 @@ import '../theme/sketchy_theme.dart';
 import 'sketchy_surface.dart';
 
 /// Rough-styled app bar used by Sketchy screens.
-class SketchyAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SketchyAppBar extends StatefulWidget implements PreferredSizeWidget {
   /// Creates a sketchy app bar.
   const SketchyAppBar({
     super.key,
@@ -150,57 +150,70 @@ class SketchyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
+  State<SketchyAppBar> createState() => _SketchyAppBarState();
+}
+
+class _SketchyAppBarState extends State<SketchyAppBar> {
+  SketchyPrimitive? _primitive;
+  double? _lastBorderRadius;
+
+  SketchyPrimitive _getPrimitive(double borderRadius) {
+    if (_primitive == null || _lastBorderRadius != borderRadius) {
+      _primitive = SketchyPrimitive.roundedRectangle(
+        cornerRadius: borderRadius,
+        fill: SketchyFill.none,
+      );
+      _lastBorderRadius = borderRadius;
+    }
+    return _primitive!;
+  }
+
+  @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
     builder: (context, theme) {
       final direction = Directionality.maybeOf(context) ?? TextDirection.ltr;
-      final resolvedPadding = padding.resolve(direction);
+      final resolvedPadding = widget.padding.resolve(direction);
 
       Widget appBarContent = Row(
         children: [
-          if (leading != null)
-            SizedBox(width: leadingWidth, child: leading)
-          else if (automaticallyImplyLeading)
+          if (widget.leading != null)
+            SizedBox(width: widget.leadingWidth, child: widget.leading)
+          else if (widget.automaticallyImplyLeading)
             const SizedBox.shrink(), // Placeholder for back button logic
-          if (leading != null) const SizedBox(width: 12),
+          if (widget.leading != null) const SizedBox(width: 12),
           Expanded(
             child: DefaultTextStyle(
               style:
-                  titleTextStyle ??
+                  widget.titleTextStyle ??
                   theme.typography.title.copyWith(
-                    color: foregroundColor ?? theme.inkColor,
+                    color: widget.foregroundColor ?? theme.inkColor,
                   ),
-              child: title ?? const SizedBox.shrink(),
+              child: widget.title ?? const SizedBox.shrink(),
             ),
           ),
-          if (actions != null && actions!.isNotEmpty) ...[
+          if (widget.actions != null && widget.actions!.isNotEmpty) ...[
             const SizedBox(width: 8),
-            ...actions!.map(
-              (widget) => Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: widget,
-              ),
+            ...widget.actions!.map(
+              (w) => Padding(padding: const EdgeInsets.only(left: 8), child: w),
             ),
           ],
         ],
       );
 
-      if (bottom != null) {
+      if (widget.bottom != null) {
         appBarContent = Column(
           mainAxisSize: MainAxisSize.min,
-          children: [appBarContent, bottom!],
+          children: [appBarContent, widget.bottom!],
         );
       }
 
       return Padding(
-        padding: margin.resolve(direction),
+        padding: widget.margin.resolve(direction),
         child: SketchySurface(
           padding: resolvedPadding,
-          fillColor: backgroundColor ?? theme.paperColor,
+          fillColor: widget.backgroundColor ?? theme.paperColor,
           strokeColor: theme.inkColor,
-          createPrimitive: () => SketchyPrimitive.roundedRectangle(
-            cornerRadius: theme.borderRadius,
-            fill: SketchyFill.none,
-          ),
+          createPrimitive: () => _getPrimitive(theme.borderRadius),
           child: appBarContent,
         ),
       );

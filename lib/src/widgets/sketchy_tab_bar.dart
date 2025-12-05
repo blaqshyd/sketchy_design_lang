@@ -75,6 +75,15 @@ class SketchyTabBar extends StatefulWidget {
 class _SketchyTabBarState extends State<SketchyTabBar> {
   TabController? _controller;
   int _currentIndex = 0;
+  late final SketchyPrimitive _selectedPrimitive;
+  late final SketchyPrimitive _unselectedPrimitive;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPrimitive = SketchyPrimitive.rectangle(fill: SketchyFill.solid);
+    _unselectedPrimitive = SketchyPrimitive.rectangle(fill: SketchyFill.none);
+  }
 
   @override
   void didChangeDependencies() {
@@ -164,9 +173,7 @@ class _SketchyTabBarState extends State<SketchyTabBar> {
 
   Widget _buildTabSurface(SketchyThemeData theme, int i) {
     final isSelected = i == _currentIndex;
-    SketchyPrimitive primitiveBuilder() => SketchyPrimitive.rectangle(
-      fill: isSelected ? SketchyFill.solid : SketchyFill.none,
-    );
+    final primitive = isSelected ? _selectedPrimitive : _unselectedPrimitive;
 
     final tab = widget.tabs[i];
 
@@ -174,7 +181,7 @@ class _SketchyTabBarState extends State<SketchyTabBar> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       fillColor: isSelected ? theme.secondaryColor : theme.paperColor,
       strokeColor: theme.inkColor,
-      createPrimitive: primitiveBuilder,
+      createPrimitive: () => primitive,
       child: DefaultTextStyle(
         style:
             (isSelected ? widget.labelStyle : widget.unselectedLabelStyle) ??

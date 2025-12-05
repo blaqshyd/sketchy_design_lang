@@ -5,7 +5,7 @@ import '../theme/sketchy_theme.dart';
 import 'sketchy_surface.dart';
 
 /// Rough-styled icon button wrapper.
-class SketchyIconButton extends StatelessWidget {
+class SketchyIconButton extends StatefulWidget {
   /// Creates a new icon button with the given [icon].
   const SketchyIconButton({
     required this.icon,
@@ -41,26 +41,38 @@ class SketchyIconButton extends StatelessWidget {
   final Color? disabledColor;
 
   @override
+  State<SketchyIconButton> createState() => _SketchyIconButtonState();
+}
+
+class _SketchyIconButtonState extends State<SketchyIconButton> {
+  late final SketchyPrimitive _primitive;
+
+  @override
+  void initState() {
+    super.initState();
+    _primitive = SketchyPrimitive.rectangle(fill: SketchyFill.none);
+  }
+
+  @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
     builder: (context, theme) {
       final content = SketchySurface(
-        width: iconSize,
-        height: iconSize,
+        width: widget.iconSize,
+        height: widget.iconSize,
         fillColor: theme.paperColor,
         strokeColor: theme.inkColor,
-        createPrimitive: () =>
-            SketchyPrimitive.rectangle(fill: SketchyFill.none),
+        createPrimitive: () => _primitive,
         child: IconTheme(
-          data: IconThemeData(color: color ?? theme.inkColor),
-          child: icon,
+          data: IconThemeData(color: widget.color ?? theme.inkColor),
+          child: widget.icon,
         ),
       );
 
-      if (onPressed == null) {
+      if (widget.onPressed == null) {
         return Opacity(opacity: 0.4, child: IgnorePointer(child: content));
       }
 
-      return GestureDetector(onTap: onPressed, child: content);
+      return GestureDetector(onTap: widget.onPressed, child: content);
     },
   );
 }

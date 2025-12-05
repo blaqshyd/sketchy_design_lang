@@ -407,7 +407,7 @@ class SketchyChoiceChip extends StatelessWidget {
   );
 }
 
-class _SketchyChipImpl extends StatelessWidget {
+class _SketchyChipImpl extends StatefulWidget {
   const _SketchyChipImpl({
     required this.label,
     required this.onPressed,
@@ -436,7 +436,23 @@ class _SketchyChipImpl extends StatelessWidget {
   final TextStyle? labelStyle;
   final EdgeInsetsGeometry? padding;
 
-  Color _toneColor(SketchyThemeData theme) => switch (tone) {
+  @override
+  State<_SketchyChipImpl> createState() => _SketchyChipImplState();
+}
+
+class _SketchyChipImplState extends State<_SketchyChipImpl> {
+  SketchyPrimitive? _primitive;
+  SketchyFill? _lastFill;
+
+  SketchyPrimitive _getPrimitive(SketchyFill fill) {
+    if (_primitive == null || _lastFill != fill) {
+      _primitive = SketchyPrimitive.pill(fill: fill);
+      _lastFill = fill;
+    }
+    return _primitive!;
+  }
+
+  Color _toneColor(SketchyThemeData theme) => switch (widget.tone) {
     SketchyChipTone.accent => theme.primaryColor,
     SketchyChipTone.neutral => theme.inkColor,
   };
@@ -445,52 +461,55 @@ class _SketchyChipImpl extends StatelessWidget {
   Widget build(BuildContext context) => SketchyTheme.consumer(
     builder: (context, theme) {
       final toneColor = _toneColor(theme);
-      final shouldFill = filled || selected;
+      final shouldFill = widget.filled || widget.selected;
       final effectivePadding =
-          padding ??
-          (compact
+          widget.padding ??
+          (widget.compact
               ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
               : const EdgeInsets.symmetric(horizontal: 16, vertical: 10));
 
-      final textStyleBase = compact
+      final textStyleBase = widget.compact
           ? theme.typography.label
           : theme.typography.body;
-      final effectiveTextStyle = (labelStyle ?? textStyleBase).copyWith(
+      final effectiveTextStyle = (widget.labelStyle ?? textStyleBase).copyWith(
         color: theme.inkColor,
-        fontWeight: selected ? FontWeight.w700 : textStyleBase.fontWeight,
+        fontWeight: widget.selected
+            ? FontWeight.w700
+            : textStyleBase.fontWeight,
       );
 
       final effectiveFillColor = shouldFill
-          ? (backgroundColor ??
-                toneColor.withValues(alpha: compact ? 0.35 : 0.2))
-          : (backgroundColor ?? theme.paperColor);
+          ? (widget.backgroundColor ??
+                toneColor.withValues(alpha: widget.compact ? 0.35 : 0.2))
+          : (widget.backgroundColor ?? theme.paperColor);
 
       final effectiveFill = shouldFill
-          ? (fillStyle ?? SketchyFill.hachure)
+          ? (widget.fillStyle ?? SketchyFill.hachure)
           : SketchyFill.none;
 
       final content = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (avatar != null) ...[
+          if (widget.avatar != null) ...[
             IconTheme(
               data: IconThemeData(
-                size: compact ? 14 : 18,
+                size: widget.compact ? 14 : 18,
                 color: theme.inkColor,
               ),
-              child: avatar!,
+              child: widget.avatar!,
             ),
             const SizedBox(width: 6),
           ],
           Flexible(
             child: DefaultTextStyle(
               style: effectiveTextStyle,
-              child: label is sketchy.SketchyText && textCase != null
+              child:
+                  widget.label is sketchy.SketchyText && widget.textCase != null
                   ? sketchy.SketchyText(
-                      (label as sketchy.SketchyText).data,
-                      textCase: textCase,
+                      (widget.label as sketchy.SketchyText).data,
+                      textCase: widget.textCase,
                     )
-                  : label,
+                  : widget.label,
             ),
           ),
         ],
@@ -502,16 +521,16 @@ class _SketchyChipImpl extends StatelessWidget {
             padding: effectivePadding,
             fillColor: effectiveFillColor,
             strokeColor: theme.inkColor,
-            createPrimitive: () => SketchyPrimitive.pill(fill: effectiveFill),
+            createPrimitive: () => _getPrimitive(effectiveFill),
             child: content,
           ),
         ),
       );
 
-      if (onPressed == null) return surface;
+      if (widget.onPressed == null) return surface;
       return MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(onTap: onPressed, child: surface),
+        child: GestureDetector(onTap: widget.onPressed, child: surface),
       );
     },
   );

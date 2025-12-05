@@ -14,7 +14,7 @@ enum SketchyTileAlignment {
 }
 
 /// Sketchy-styled list tile widget.
-class SketchyListTile extends StatelessWidget {
+class SketchyListTile extends StatefulWidget {
   /// Creates a new list tile with optional leading/trailing widgets.
   const SketchyListTile({
     super.key,
@@ -61,69 +61,91 @@ class SketchyListTile extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
 
   @override
+  State<SketchyListTile> createState() => _SketchyListTileState();
+}
+
+class _SketchyListTileState extends State<SketchyListTile> {
+  SketchyPrimitive? _primitive;
+  double? _lastBorderRadius;
+
+  SketchyPrimitive _getPrimitive(double borderRadius) {
+    if (_primitive == null || _lastBorderRadius != borderRadius) {
+      _primitive = SketchyPrimitive.roundedRectangle(
+        cornerRadius: borderRadius,
+        fill: SketchyFill.solid,
+      );
+      _lastBorderRadius = borderRadius;
+    }
+    return _primitive!;
+  }
+
+  @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
     builder: (context, theme) {
-      final bubbleFill = selected
+      final bubbleFill = widget.selected
           ? theme.secondaryColor
-          : (alignment == SketchyTileAlignment.start
+          : (widget.alignment == SketchyTileAlignment.start
                 ? theme.paperColor
                 : theme.secondaryColor.withValues(alpha: 0.5));
 
       final content = SketchySurface(
-        padding: contentPadding ?? const EdgeInsets.all(12),
+        padding: widget.contentPadding ?? const EdgeInsets.all(12),
         fillColor: bubbleFill,
         strokeColor: theme.inkColor,
-        createPrimitive: () => SketchyPrimitive.roundedRectangle(
-          cornerRadius: theme.borderRadius,
-          fill: SketchyFill.solid,
-        ),
+        createPrimitive: () => _getPrimitive(theme.borderRadius),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (leading != null) ...[leading!, const SizedBox(width: 12)],
+            if (widget.leading != null) ...[
+              widget.leading!,
+              const SizedBox(width: 12),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title != null)
+                  if (widget.title != null)
                     DefaultTextStyle(
                       style: theme.typography.body.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: enabled
+                        color: widget.enabled
                             ? theme.textColor
                             : theme.disabledTextColor,
                       ),
-                      child: title!,
+                      child: widget.title!,
                     ),
-                  if (subtitle != null) ...[
+                  if (widget.subtitle != null) ...[
                     const SizedBox(height: 4),
                     DefaultTextStyle(
                       style: theme.typography.caption.copyWith(
-                        color: enabled
+                        color: widget.enabled
                             ? theme.textColor
                             : theme.disabledTextColor,
                       ),
-                      child: subtitle!,
+                      child: widget.subtitle!,
                     ),
                   ],
                 ],
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 12), trailing!],
+            if (widget.trailing != null) ...[
+              const SizedBox(width: 12),
+              widget.trailing!,
+            ],
           ],
         ),
       );
 
-      final bubble = alignment == SketchyTileAlignment.end
+      final bubble = widget.alignment == SketchyTileAlignment.end
           ? Align(alignment: Alignment.centerRight, child: content)
           : Align(alignment: Alignment.centerLeft, child: content);
 
-      if (onTap == null && onLongPress == null) return bubble;
-      if (!enabled) return Opacity(opacity: 0.5, child: bubble);
+      if (widget.onTap == null && widget.onLongPress == null) return bubble;
+      if (!widget.enabled) return Opacity(opacity: 0.5, child: bubble);
 
       return GestureDetector(
-        onTap: onTap,
-        onLongPress: onLongPress,
+        onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
         child: bubble,
       );
     },

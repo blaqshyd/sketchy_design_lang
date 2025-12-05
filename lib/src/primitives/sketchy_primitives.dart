@@ -168,8 +168,6 @@ class SketchyPrimitive {
 
 /// Service responsible for generating rough drawables from [SketchyPrimitive]s.
 class SketchyGenerator {
-  static final Map<int, (Size, double, Drawable)> _cache = {};
-
   /// Creates a [Generator] configured with Sketchy defaults.
   ///
   /// [seed] is used for deterministic rendering.
@@ -189,18 +187,6 @@ class SketchyGenerator {
     Size size,
     double roughness,
   ) {
-    // Check cache (keyed by seed + size + roughness) Note: This is a simplified
-    // cache strategy. In a real app you might want a better key or LRU
-    // eviction.
-    final cacheKey = primitive.seed;
-    final cached = _cache[cacheKey];
-    if (cached != null) {
-      final (cachedSize, cachedRoughness, drawable) = cached;
-      if (cachedSize == size && cachedRoughness == roughness) {
-        return drawable;
-      }
-    }
-
     final config = _buildConfig(primitive.seed, roughness.clamp(0, 1));
     // Note: For solid, we use NoFiller here because the painter handles the
     // fill.
@@ -215,10 +201,7 @@ class SketchyGenerator {
     );
     final generator = Generator(config, filler);
 
-    final drawable = _buildDrawable(generator, primitive, size);
-
-    _cache[cacheKey] = (size, roughness, drawable);
-    return drawable;
+    return _buildDrawable(generator, primitive, size);
   }
 
   /// Generates a clean path for the given [primitive] (used for solid fills).

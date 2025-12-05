@@ -1,4 +1,6 @@
-# Architecture Best Practices
+# Best Practices
+
+## Architecture Principles
 - **TDD (Test-Driven Development)** - write the tests first; the implementation
   code isn't done until the tests pass.
 - **DRY (Don’t Repeat Yourself)** – eliminate duplicated logic by extracting
@@ -28,3 +30,11 @@
   requirements only.
 - **Layered Architecture** - organize code into clear tiers where each layer
   depends only on the one(s) below it, keeping logic cleanly separated.
+
+## Sketchy Widget Guidelines
+
+- **Cache Primitives in State** – all Sketchy widgets that create
+  `SketchyPrimitive` instances must be `StatefulWidget`s and cache their
+  primitives in state (e.g., `late final` in `initState()` or lazy caching when
+  theme values are needed). Never create primitives in `build()` as this causes
+  unbounded memory growth from new random seeds on every rebuild.

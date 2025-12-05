@@ -108,6 +108,20 @@ class SketchySnackBar extends StatefulWidget {
 }
 
 class _SketchySnackBarState extends State<SketchySnackBar> {
+  SketchyPrimitive? _primitive;
+  double? _lastBorderRadius;
+
+  SketchyPrimitive _getPrimitive(double borderRadius) {
+    if (_primitive == null || _lastBorderRadius != borderRadius) {
+      _primitive = SketchyPrimitive.roundedRectangle(
+        fill: SketchyFill.solid,
+        cornerRadius: borderRadius,
+      );
+      _lastBorderRadius = borderRadius;
+    }
+    return _primitive!;
+  }
+
   @override
   Widget build(BuildContext context) => SketchyTheme.consumer(
     builder: (context, theme) => SketchySurface(
@@ -116,10 +130,7 @@ class _SketchySnackBarState extends State<SketchySnackBar> {
           const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       fillColor: widget.backgroundColor ?? theme.inkColor,
       strokeColor: theme.inkColor,
-      createPrimitive: () => SketchyPrimitive.roundedRectangle(
-        fill: SketchyFill.solid,
-        cornerRadius: theme.borderRadius,
-      ),
+      createPrimitive: () => _getPrimitive(theme.borderRadius),
       child: DefaultTextStyle(
         style: theme.typography.body.copyWith(
           fontWeight: FontWeight.w600,
