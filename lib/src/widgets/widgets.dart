@@ -14,6 +14,7 @@ export 'sketchy_dialog.dart';
 export 'sketchy_divider.dart';
 export 'sketchy_drawer.dart';
 export 'sketchy_dropdown_button.dart';
+export 'sketchy_fab_location.dart';
 export 'sketchy_frame.dart';
 export 'sketchy_icon_button.dart';
 export 'sketchy_linear_progress_indicator.dart';

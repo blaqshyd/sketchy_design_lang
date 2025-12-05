@@ -1,9 +1,4 @@
-export 'src/app/sketchy_app.dart';
-export 'src/app/sketchy_page_route.dart';
-export 'src/primitives/sketchy_primitives.dart';
-export 'src/theme/sketchy_colors.dart';
-export 'src/theme/sketchy_text_case.dart';
-export 'src/theme/sketchy_theme.dart';
-export 'src/theme/sketchy_themes.dart';
-export 'src/theme/sketchy_typography.dart';
+export 'src/app/app.dart';
+export 'src/primitives/primitives.dart';
+export 'src/theme/theme.dart';
 export 'src/widgets/widgets.dart';
