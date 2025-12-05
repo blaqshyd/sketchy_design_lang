@@ -7,6 +7,7 @@ import 'sketchy_fab_location.dart';
 export 'sketchy_fab_location.dart';
 
 /// Callback for when a drawer is opened or closed.
+// ignore: avoid_positional_boolean_parameters
 typedef SketchyDrawerCallback = void Function(bool isOpened);
 
 /// Minimal scaffold that avoids pulling in Material widgets.

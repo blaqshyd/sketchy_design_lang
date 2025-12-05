@@ -13,7 +13,6 @@ class SketchyTooltip extends StatefulWidget {
   const SketchyTooltip({
     required this.message,
     required this.child,
-    this.preferBelow = false,
     this.textCase,
     super.key,
   });
@@ -24,9 +23,6 @@ class SketchyTooltip extends StatefulWidget {
   /// Widget that triggers the tooltip.
   final Widget child;
 
-  /// Whether the tooltip should render below the pointer instead of above.
-  final bool preferBelow;
-
   /// Text casing transformation. If null, uses theme default.
   final TextCase? textCase;
 
@@ -36,40 +32,45 @@ class SketchyTooltip extends StatefulWidget {
 
 class _SketchyTooltipState extends State<SketchyTooltip> {
   OverlayEntry? _entry;
-  Timer? _hideTimer;
-  Offset? _pointerPosition;
+  Timer? _showTimer;
+  Offset? _lockedPosition;
 
   @override
-  Widget build(BuildContext context) => MouseRegion(
-    opaque: true,
-    onEnter: (event) => _showTooltip(event.position),
-    onHover: (event) => _updatePosition(event.position),
-    onExit: (_) => _hideTooltip(),
-    child: widget.child,
+  Widget build(BuildContext context) => Listener(
+    onPointerDown: (_) => _hideTooltip(),
+    child: MouseRegion(
+      opaque: true,
+      onEnter: (event) => _startShowTimer(event.position),
+      onHover: (event) => _updatePendingPosition(event.position),
+      onExit: (_) => _hideTooltip(),
+      child: widget.child,
+    ),
   );
 
-  void _updatePosition(Offset position) {
-    _pointerPosition = position;
-    _entry?.markNeedsBuild();
+  void _updatePendingPosition(Offset position) {
+    // Only update position if tooltip hasn't been shown yet
+    if (_entry == null && _showTimer != null) {
+      _lockedPosition = position;
+    }
+    // Once shown, position stays locked - don't update
   }
 
-  void _showTooltip(Offset position) {
-    _pointerPosition = position;
-    _hideTimer?.cancel();
-    if (_entry == null) {
-      _entry = OverlayEntry(
-        builder: (context) => _TooltipOverlay(
-          message: widget.message,
-          target: _pointerPosition ?? _fallbackPosition(),
-          preferBelow: widget.preferBelow,
-          textCase: widget.textCase,
-        ),
-      );
-      Overlay.of(context, rootOverlay: true).insert(_entry!);
-    } else {
-      _entry!.markNeedsBuild();
-    }
-    _hideTimer = Timer(const Duration(seconds: 4), _hideTooltip);
+  void _startShowTimer(Offset position) {
+    _lockedPosition = position;
+    _showTimer?.cancel();
+    _showTimer = Timer(const Duration(seconds: 2), _showTooltip);
+  }
+
+  void _showTooltip() {
+    if (_entry != null) return;
+    _entry = OverlayEntry(
+      builder: (context) => _TooltipOverlay(
+        message: widget.message,
+        target: _lockedPosition ?? _fallbackPosition(),
+        textCase: widget.textCase,
+      ),
+    );
+    Overlay.of(context, rootOverlay: true).insert(_entry!);
   }
 
   Offset _fallbackPosition() {
@@ -81,9 +82,11 @@ class _SketchyTooltipState extends State<SketchyTooltip> {
   }
 
   void _hideTooltip() {
-    _hideTimer?.cancel();
+    _showTimer?.cancel();
+    _showTimer = null;
     _entry?.remove();
     _entry = null;
+    _lockedPosition = null;
   }
 
   @override
@@ -97,13 +100,11 @@ class _TooltipOverlay extends StatelessWidget {
   const _TooltipOverlay({
     required this.message,
     required this.target,
-    required this.preferBelow,
     this.textCase,
   });
 
   final String message;
   final Offset target;
-  final bool preferBelow;
   final TextCase? textCase;
 
   @override
@@ -120,7 +121,6 @@ class _TooltipOverlay extends StatelessWidget {
         target,
         tooltipSize,
         MediaQuery.of(context).size,
-        preferBelow,
       );
 
       return Positioned(
@@ -145,34 +145,24 @@ class _TooltipOverlay extends StatelessWidget {
   );
 }
 
-Offset _computeTooltipOffset(
-  Offset target,
-  Size tooltipSize,
-  Size screenSize,
-  bool preferBelow,
-) {
-  const horizontalOffset = 8.0;
-  const verticalOffset = 8.0;
-  const padding = EdgeInsets.all(8);
+Offset _computeTooltipOffset(Offset target, Size tooltipSize, Size screenSize) {
+  // Standard cursor is ~12px wide, ~16px tall from hotspot (top-left)
+  // Position tooltip 8px to the right of cursor and 8px below cursor
+  const cursorWidth = 12.0;
+  const cursorHeight = 16.0;
+  const gap = 8.0;
 
-  var x = target.dx + horizontalOffset;
-  x = math.min(
-    math.max(x, padding.left),
-    screenSize.width - tooltipSize.width - padding.right,
-  );
+  // Position 8px to the right of the cursor's right edge
+  var x = target.dx + cursorWidth + gap;
+  // Clamp: right edge of tooltip must not exceed right edge of window
+  final maxX = screenSize.width - tooltipSize.width;
+  x = math.min(math.max(x, 0), maxX);
 
-  var y = preferBelow
-      ? target.dy + verticalOffset
-      : target.dy - verticalOffset - tooltipSize.height;
-
-  if (y < padding.top) {
-    y = target.dy + verticalOffset;
-  }
-
-  final maxY = screenSize.height - tooltipSize.height - padding.bottom;
-  if (y > maxY) {
-    y = math.max(padding.top, maxY);
-  }
+  // Position 8px below the cursor's bottom edge
+  var y = target.dy + cursorHeight + gap;
+  // Clamp: bottom edge of tooltip must not exceed bottom edge of window
+  final maxY = screenSize.height - tooltipSize.height;
+  y = math.min(math.max(y, 0), maxY);
 
   return Offset(x, y);
 }

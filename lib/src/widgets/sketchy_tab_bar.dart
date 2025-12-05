@@ -12,7 +12,8 @@ import 'sketchy_surface.dart';
 /// [TickerProvider] (typically from [SingleTickerProviderStateMixin]).
 typedef SketchyTabController = material.TabController;
 
-/// Inherited widget that provides a [SketchyTabController] to descendant widgets.
+/// Inherited widget that provides a [SketchyTabController] to descendant
+/// widgets.
 typedef SketchyDefaultTabController = material.DefaultTabController;
 
 /// A single tab in a [SketchyTabBar].
@@ -58,8 +59,8 @@ class SketchyTabBar extends StatefulWidget {
   /// An optional callback that's called when the [SketchyTabBar] is tapped.
   final ValueChanged<int>? onTap;
 
-  // Sketchy specifics
-  /// Text casing transformation. If null, uses theme default.
+  /// Sketchy specifics / Text casing transformation. If null, uses theme
+  /// default.
   final TextCase? textCase;
 
   /// When true, reserves [detachGap] below the active tab to reveal the
@@ -72,8 +73,8 @@ class SketchyTabBar extends StatefulWidget {
   /// Background color painted in the detached gap.
   final Color? backgroundColor;
 
-  /// Paints over the active tab's bottom border so it blends with the
-  /// container underneath.
+  /// Paints over the active tab's bottom border so it blends with the container
+  /// underneath.
   final bool eraseSelectedBorder;
 
   @override

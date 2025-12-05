@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'sketchy_theme.dart';
 
 const _defaultFontFamily = 'ComicShanns';
+const _defaultFontPackage = 'sketchy_design_lang';
 
 /// Collection of text styles used throughout the Sketchy widgets.
 class SketchyTypographyData {
@@ -19,24 +20,33 @@ class SketchyTypographyData {
   factory SketchyTypographyData.comicShanns() => const SketchyTypographyData(
     headline: TextStyle(
       fontFamily: _defaultFontFamily,
+      package: _defaultFontPackage,
       fontSize: 28,
       height: 1.2,
       fontWeight: FontWeight.w700,
     ),
     title: TextStyle(
       fontFamily: _defaultFontFamily,
+      package: _defaultFontPackage,
       fontSize: 20,
       height: 1.3,
       fontWeight: FontWeight.w600,
     ),
-    body: TextStyle(fontFamily: _defaultFontFamily, fontSize: 16, height: 1.4),
+    body: TextStyle(
+      fontFamily: _defaultFontFamily,
+      package: _defaultFontPackage,
+      fontSize: 16,
+      height: 1.4,
+    ),
     caption: TextStyle(
       fontFamily: _defaultFontFamily,
+      package: _defaultFontPackage,
       fontSize: 14,
       height: 1.3,
     ),
     label: TextStyle(
       fontFamily: _defaultFontFamily,
+      package: _defaultFontPackage,
       fontSize: 12,
       height: 1.2,
       fontWeight: FontWeight.w600,

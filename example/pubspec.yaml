@@ -1,5 +1,5 @@
 name: example
-description: "An example app for the sketchy_design_lang package showing off the design system."
+description: "Some example apps showing off the Sketchy Design Language for any Flutter platform."
 publish_to: 'none'
 
 environment:
@@ -20,7 +20,6 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-  uses-material-design: true
   assets:
     - assets/images/
   fonts:

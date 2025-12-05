@@ -11,7 +11,6 @@ class HeroAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.all(16),
       leading: SketchyTooltip(
         message: 'meh.',
-        preferBelow: true,
         child: SketchyFrame(
           child: SizedBox(
             width: 96,

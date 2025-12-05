@@ -13,6 +13,14 @@ flutter test           # Run all tests
 flutter run            # Run example app (from /example directory)
 ```
 
+### After Significant Coding Tasks
+Run these commands after completing significant code changes:
+```bash
+dart analyze           # Check for issues
+dart fix --apply       # Auto-fix lint issues
+dart format .          # Format all code
+```
+
 ## Critical Architecture Rules
 
 ### Material Dependency Policy

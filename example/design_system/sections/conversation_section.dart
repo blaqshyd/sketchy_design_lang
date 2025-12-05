@@ -14,7 +14,7 @@ class ConversationSection extends StatefulWidget {
 class _ConversationSectionState extends State<ConversationSection>
     with TickerProviderStateMixin {
   int _selectedConversationTab = 0;
-  late final TabController _conversationTabController;
+  late final SketchyTabController _conversationTabController;
 
   static const List<String> _conversationTabs = ['Inbox', 'Updates', 'Archive'];
   static const List<String> _conversationSenders = [
@@ -31,7 +31,7 @@ class _ConversationSectionState extends State<ConversationSection>
   @override
   void initState() {
     super.initState();
-    _conversationTabController = TabController(
+    _conversationTabController = SketchyTabController(
       length: _conversationTabs.length,
       initialIndex: _selectedConversationTab,
       vsync: this,
