@@ -39,9 +39,6 @@ enum SketchyThemes {
 
   /// Pink theme.
   pink,
-
-  /// Chat theme with warm parchment tones.
-  chat,
 }
 
 /// Extension mapping themes to their core color palette.
@@ -120,12 +117,6 @@ extension SketchyThemePalette on SketchyThemes {
       SketchyColors.rose,
       SketchyColors.pink,
       SketchyColors.petalBlush,
-    ),
-    SketchyThemes.chat => (
-      SketchyColors.sepia,
-      SketchyColors.parchment,
-      SketchyColors.chatLavender,
-      SketchyColors.chatSage,
     ),
   };
 }

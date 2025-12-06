@@ -17,7 +17,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  String _selectedChannelId = 'requirements';
+  String _selectedChannelId = 'session';
   ChatParticipant _currentUser = MockData.currentUser;
   final _drawerController = SketchyDrawerController();
   bool _showMobileSidebar = false;
@@ -54,20 +54,75 @@ class _ChatPageState extends State<ChatPage> {
 
         Widget content;
         if (isWide) {
-          // Wide layout: sidebar always visible
-          content = Row(
-            children: [
-              SizedBox(
-                width: 280,
-                child: ChatSidebar(
-                  selectedChannelId: _selectedChannelId,
-                  onChannelSelected: _onChannelSelected,
-                  onSettingsPressed: _onSettingsPressed,
+          // Wide layout: unified structure with full-width dividers
+          content = ColoredBox(
+            color: theme.paperColor,
+            child: Column(
+              children: [
+                // Header row spanning both panels
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: ChatSidebarHeader(
+                          onSettingsPressed: _onSettingsPressed,
+                        ),
+                      ),
+                      _buildVerticalDivider(theme),
+                      Expanded(
+                        child: ChatMainAreaHeader(channel: _selectedChannel),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(width: 1, color: theme.inkColor.withValues(alpha: 0.2)),
-              Expanded(child: ChatMainArea(channel: _selectedChannel)),
-            ],
+                // Full-width divider
+                const SketchyDivider(),
+                // Content row
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: ChatSidebarContent(
+                          selectedChannelId: _selectedChannelId,
+                          onChannelSelected: _onChannelSelected,
+                        ),
+                      ),
+                      _buildVerticalDivider(theme),
+                      Expanded(
+                        child: ChatMainAreaContent(
+                          key: chatMainAreaContentKey,
+                          channel: _selectedChannel,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Full-width divider
+                const SketchyDivider(),
+                // Footer row spanning both panels
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: ChatSidebarFooter(
+                          onSettingsPressed: _onSettingsPressed,
+                        ),
+                      ),
+                      _buildVerticalDivider(theme),
+                      Expanded(
+                        child: ChatMainAreaFooter(channel: _selectedChannel),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         } else {
           // Narrow layout: sidebar as overlay
@@ -117,4 +172,7 @@ class _ChatPageState extends State<ChatPage> {
       },
     ),
   );
+
+  Widget _buildVerticalDivider(SketchyThemeData theme) =>
+      Container(width: 1, color: theme.inkColor.withValues(alpha: 0.2));
 }

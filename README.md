@@ -11,39 +11,24 @@ the Sketchy Mode color brief.
 
 ---
 
-## Table of contents
-
-- [Sketchy Design Language for Flutter](#sketchy-design-language-for-flutter)
-  - [Table of contents](#table-of-contents)
-  - [Look 'n' Feel](#look-n-feel)
-  - [Getting started](#getting-started)
-    - [Install](#install)
-    - [Minimal app](#minimal-app)
-  - [Core concepts](#core-concepts)
-    - [Theme data](#theme-data)
-    - [Primitives \& surfaces](#primitives--surfaces)
-    - [Roughness-aware fills](#roughness-aware-fills)
-    - [Isolated Material usage](#isolated-material-usage)
-  - [Using Sketchy widgets](#using-sketchy-widgets)
-    - [Quick examples](#quick-examples)
-  - [Example gallery \& docs](#example-gallery--docs)
-  - [Customization recipes](#customization-recipes)
-    - [Change fonts](#change-fonts)
-    - [Create a custom surface](#create-a-custom-surface)
-    - [Respond to mode changes](#respond-to-mode-changes)
-  - [Testing \& tooling](#testing--tooling)
-  - [Contributing](#contributing)
-  - [Acknowledgements](#acknowledgements)
-
----
-
 ## Look 'n' Feel
+
+### Design System example
 
 ![](https://raw.githubusercontent.com/csells/sketchy_design_lang/refs/heads/main/readme/design-system.gif)
 
 The is the output of the example app as a living design system overview. You can
 [run this example app right now](https://sketchy-design-lang.web.app/) to get a 
 feel for it yourself.
+
+### Chat example
+
+![Chat](https://raw.githubusercontent.com/csells/sketchy_design_lang/refs/heads/main/readme/chat.png)
+
+A virtual therapist chat app powered by the classic
+[ELIZA](https://en.wikipedia.org/wiki/ELIZA) algorithm (1966). Features
+therapy-themed channels, real-time responses, responsive two-panel layout with
+full-width dividers, and new widgets like `SketchyAvatar` and `SketchyDrawer`.
 
 ## Getting started
 
@@ -54,9 +39,7 @@ uses:
 
 ```yaml
 dependencies:
-  sketchy_design_lang:
-    git:
-      url: https://github.com/<your-org>/sketchy_design_lang.git
+  sketchy_design_lang: ^latest-version
 ```
 
 Then fetch packages:
@@ -179,9 +162,9 @@ Sketchy mirrors common UI building blocks. Highlights:
 | Category   | Widgets                                                                                                                                                             |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Inputs     | `SketchyTextField`, `SketchyDropdownButton`, `SketchySlider`, `SketchyCheckbox`, `SketchySwitch`, `SketchyRadio`, `SketchyCheckboxListTile`, `SketchyRadioListTile` |
-| Actions    | `SketchyOutlinedButton`, `SketchyIconButton`, `SketchyChip`                                                                                                         |
-| Icons      | `SketchySymbol`                                                                                                                                                     |
-| Containers | `SketchyCard`, `SketchyListTile`, `SketchyDivider`                                                                                                                  |
+| Actions    | `SketchyOutlinedButton`, `SketchyButton`, `SketchyIconButton`, `SketchyChip`                                                                                        |
+| Icons      | `SketchySymbol`, `SketchyAvatar`                                                                                                                                    |
+| Containers | `SketchyCard`, `SketchyListTile`, `SketchyDivider`, `SketchyDrawer`                                                                                                 |
 | Feedback   | `SketchyDialog`, `SketchyTooltip`, `SketchyChip`, `SketchyTypingIndicator`, `SketchySnackBar`                                                                       |
 | Navigation | `SketchyTabBar`, `SketchyAppBar`, `SketchyScaffold`                                                                                                                 |
 
@@ -242,83 +225,6 @@ SketchyDialog(
 
 Every widget respects the active `SketchyTheme`—colors swap immediately when you
 change modes, and the roughness slider affects outlines/fills at once.
-
----
-
-## Example gallery & docs
-
-- Run `flutter run` inside `/example` to explore the design system board: theme
-  picker, mode buttons, roughness slider, fonts, dialogs, demo forms, and every
-  Sketchy widget scenario.
-- Specs live under `specs/` (`design-system.md`, `technical_design.md`,
-  `requirements.md`) with UX references and rationale.
-- `example` hosts the gallery showing real layouts built purely with Sketchy
-  widgets.
-
-Use the gallery as your reference implementation—it demonstrates recommended
-layout patterns, theming hooks, and roughness transitions.
-
----
-
-## Customization recipes
-
-### Change fonts
-
-```dart
-final theme = SketchyTheme.of(context);
-final whimsical = theme.typography.copyWith(
-  headline: theme.typography.headline.copyWith(fontFamily: 'xkcd'),
-);
-
-return SketchyTheme(
-  data: theme.copyWith(typography: whimsical),
-  child: child,
-);
-```
-
-### Create a custom surface
-
-```dart
-SketchySurface(
-  strokeColor: theme.inkColor,
-  fillColor: theme.paperColor,
-  padding: const EdgeInsets.all(12),
-  createPrimitive: () => SketchyPrimitive.roundedRectangle(
-    cornerRadius: 24,
-    fill: SketchyFill.hachure,
-  ),
-  child: const SketchyText('Sticky note'),
-);
-```
-
-### Respond to mode changes
-
-`SketchyThemeData` exposes `copyWith` and `fromTheme`. To toggle at runtime:
-
-```dart
-void _toggleMode() {
-  setState(() {
-    _theme = _theme == SketchyThemes.monochrome
-        ? SketchyThemes.indigo
-        : SketchyThemes.monochrome;
-  });
-}
-```
-
-Wrap your subtree with a new `SketchyTheme` using the updated theme.
-
----
-
-## Testing & tooling
-
-- **Analyze:** `flutter analyze`
-- **Tests:** `flutter test`
-- **Formatting:** Dart format conventions are enforced; no additional scripts.
-- **Example smoke test:** run `flutter run` in `/example` to ensure the gallery
-  still builds.
-
-All pull requests must pass analyzer + tests. Avoid `print`, add docs for public
-APIs, and keep lines ≤80 characters (per repo lint settings).
 
 ---
 

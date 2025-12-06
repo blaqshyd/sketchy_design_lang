@@ -135,6 +135,8 @@ class _ChatInputState extends State<ChatInput> {
     if (text.isNotEmpty) {
       widget.onSubmitted?.call(text);
       _controller.clear();
+      // Request focus back to the input field after submitting
+      _focusNode.requestFocus();
     }
   }
 

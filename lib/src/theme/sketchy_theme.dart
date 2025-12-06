@@ -8,18 +8,18 @@ import 'sketchy_typography.dart';
 /// Complete Sketchy configuration (colors, typography, metrics).
 class SketchyThemeData {
   /// Creates a theme with the provided palette and typography.
-  const SketchyThemeData({
+  SketchyThemeData({
     required this.inkColor,
     required this.paperColor,
     required this.primaryColor,
     required this.secondaryColor,
-    required this.errorColor,
-    required this.typography,
+    SketchyTypographyData? typography,
+    this.errorColor = SketchyColors.carmine,
     this.strokeWidth = 2.0,
     this.borderRadius = 0,
     this.roughness = 0.5,
     this.textCase = TextCase.none,
-  });
+  }) : typography = typography ?? SketchyTypographyData.comicShanns();
 
   /// Builds a theme from the predefined [theme].
   factory SketchyThemeData.fromTheme(
