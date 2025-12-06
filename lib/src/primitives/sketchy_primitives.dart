@@ -329,10 +329,12 @@ class SketchyGenerator {
     // Top-right corner arc (from top to right)
     for (var i = 0; i <= arcSegments; i++) {
       final angle = -pi / 2 + (pi / 2) * (i / arcSegments);
-      points.add(PointD(
-        size.width - effective + effective * cos(angle),
-        effective + effective * sin(angle),
-      ));
+      points.add(
+        PointD(
+          size.width - effective + effective * cos(angle),
+          effective + effective * sin(angle),
+        ),
+      );
     }
 
     // Right edge (top to bottom)
@@ -341,10 +343,12 @@ class SketchyGenerator {
     // Bottom-right corner arc (from right to bottom)
     for (var i = 0; i <= arcSegments; i++) {
       final angle = 0 + (pi / 2) * (i / arcSegments);
-      points.add(PointD(
-        size.width - effective + effective * cos(angle),
-        size.height - effective + effective * sin(angle),
-      ));
+      points.add(
+        PointD(
+          size.width - effective + effective * cos(angle),
+          size.height - effective + effective * sin(angle),
+        ),
+      );
     }
 
     // Bottom edge (right to left)
@@ -353,10 +357,12 @@ class SketchyGenerator {
     // Bottom-left corner arc (from bottom to left)
     for (var i = 0; i <= arcSegments; i++) {
       final angle = pi / 2 + (pi / 2) * (i / arcSegments);
-      points.add(PointD(
-        effective + effective * cos(angle),
-        size.height - effective + effective * sin(angle),
-      ));
+      points.add(
+        PointD(
+          effective + effective * cos(angle),
+          size.height - effective + effective * sin(angle),
+        ),
+      );
     }
 
     // Left edge (bottom to top)
@@ -365,10 +371,12 @@ class SketchyGenerator {
     // Top-left corner arc (from left to top)
     for (var i = 0; i <= arcSegments; i++) {
       final angle = pi + (pi / 2) * (i / arcSegments);
-      points.add(PointD(
-        effective + effective * cos(angle),
-        effective + effective * sin(angle),
-      ));
+      points.add(
+        PointD(
+          effective + effective * cos(angle),
+          effective + effective * sin(angle),
+        ),
+      );
     }
 
     return points;

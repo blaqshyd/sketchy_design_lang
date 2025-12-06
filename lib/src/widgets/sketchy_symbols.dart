@@ -247,7 +247,13 @@ class _SketchySymbolPainter extends CustomPainter {
           generator.ellipse(w * 0.6, h * 0.25, w * 0.28, h * 0.28),
           // Body arc
           generator.arc(
-            w * 0.6, h * 0.9, w * 0.5, h * 0.6, math.pi, math.pi * 2, false,
+            w * 0.6,
+            h * 0.9,
+            w * 0.5,
+            h * 0.6,
+            math.pi,
+            math.pi * 2,
+            false,
           ),
         ]);
         // Back person (smaller, left)
@@ -256,7 +262,13 @@ class _SketchySymbolPainter extends CustomPainter {
           generator.ellipse(w * 0.32, h * 0.3, w * 0.22, h * 0.22),
           // Body arc
           generator.arc(
-            w * 0.32, h * 0.85, w * 0.38, h * 0.5, math.pi, math.pi * 2, false,
+            w * 0.32,
+            h * 0.85,
+            w * 0.38,
+            h * 0.5,
+            math.pi,
+            math.pi * 2,
+            false,
           ),
         ]);
       case SketchySymbols.check:
