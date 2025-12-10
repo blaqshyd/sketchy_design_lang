@@ -1,3 +1,16 @@
+## 0.3.0
+
+* New `SketchyCircularProgressIndicator` from @blaqshyd. Thanks, Daniel!
+
+* New [Widget Request issue
+  template](https://github.com/csells/sketchy_design_lang/issues/new?template=widget-request.md),
+  also from @blaqshyd. Double thanks, Daniel!
+
+* Updates to the primitive caching system, moving it from the lower layer where
+  we have to do explicit cache management, to the higher level where sketchy
+  widgets manage their own primitives and we let Flutter do the cache management
+  for us.
+
 ## 0.2.0
 
 ### New Widgets
