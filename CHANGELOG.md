@@ -1,3 +1,22 @@
+## 0.4.0
+
+### New Features
+
+* **Navigator 2.0 Support** - Added `SketchyApp.router` constructor that accepts
+  `RouterConfig` for declarative routing. This enables integration with modern
+  Flutter routing packages like `go_router`. The original `SketchyApp`
+  constructor continues to support imperative navigation (Navigator 1.0).
+
+* **Router Example App** - New practical example demonstrating `go_router`
+  integration with `SketchyApp.router`.
+
+### Internal Improvements
+
+* Refactored internal build logic to conditionally use `WidgetsApp.router` when
+  `routerConfig` is provided while preserving all existing functionality.
+
+* Navigation fields are now nullable to support both routing modes.
+
 ## 0.3.0
 
 * New `SketchyCircularProgressIndicator` from @blaqshyd. Thanks, Daniel!
