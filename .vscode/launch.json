@@ -6,28 +6,35 @@
       "cwd": "example",
       "request": "launch",
       "type": "dart",
-      "program": "lib/example.dart"
+      "program": "lib/example.dart",
     },
     {
       "name": "counter",
       "cwd": "example",
       "request": "launch",
       "type": "dart",
-      "program": "lib/counter.dart"
+      "program": "lib/counter.dart",
+    },
+    {
+      "name": "router",
+      "cwd": "example",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/router.dart",
     },
     {
       "name": "design system",
       "cwd": "example",
       "request": "launch",
       "type": "dart",
-      "program": "lib/design_system/main.dart"
+      "program": "lib/design_system/main.dart",
     },
     {
       "name": "chat",
       "cwd": "example",
       "request": "launch",
       "type": "dart",
-      "program": "lib/chat/main.dart"
-    }
-  ]
+      "program": "lib/chat/main.dart",
+    },
+  ],
 }
